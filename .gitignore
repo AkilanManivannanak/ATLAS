@@ -1,0 +1,14 @@
+# Python bytecode and test artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local environments and tooling state
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+.DS_Store
