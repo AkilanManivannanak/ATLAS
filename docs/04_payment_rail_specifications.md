@@ -42,4 +42,4 @@ Phase 3 acceptance: `pytest -q` — 55 passed. Tests cover schedule boundaries, 
 
 ## Remaining work
 
-Rail queues are currently passed as in-memory collections and are not automatically scheduled into `SimulationEngine`. The schedule calendar requires caller-supplied holidays. Liquidity-saving cycles do not search for a feasible subset when the whole cycle is infeasible. ISO 20022 schemas, network-specific returns, out-of-order message reconciliation, persistent idempotency, facility draw/repay events, and benchmark performance remain unimplemented.
+Rail queues are currently passed as in-memory collections and are not automatically scheduled into `SimulationEngine`. The schedule calendar requires caller-supplied holidays. Liquidity-saving cycles do not search for a feasible subset when the whole cycle is infeasible. ISO 20022 schemas, network-specific returns, out-of-order message reconciliation, persistent idempotency, and benchmark performance remain unimplemented. Facility draw and collateral operations are documented in [Phase 4](07_funding_collateral_operations.md).

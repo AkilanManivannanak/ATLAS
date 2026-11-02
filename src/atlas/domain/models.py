@@ -254,8 +254,6 @@ class CollateralAsset:
         _require_aware(self.valuation_at, "valuation_at")
         if self.settlement_account_id is not None:
             _require_text(self.settlement_account_id, "settlement_account_id")
-        if self.encumbered_amount_minor > self.market_value_minor:
-            raise ValueError("encumbered amount cannot exceed market value")
 
     @property
     def eligible_value_minor(self) -> int:
@@ -265,6 +263,11 @@ class CollateralAsset:
     @property
     def available_eligible_value_minor(self) -> int:
         return max(0, self.eligible_value_minor - self.encumbered_amount_minor)
+
+    @property
+    def collateral_shortfall_minor(self) -> int:
+        """Amount by which existing pledges exceed current haircut-adjusted value."""
+        return max(0, self.encumbered_amount_minor - self.eligible_value_minor)
 
 
 @dataclass(frozen=True, slots=True)

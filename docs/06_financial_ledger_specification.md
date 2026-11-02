@@ -30,7 +30,15 @@ sender + receiver ledger movement = 0
 credit_draw = 0
 ```
 
-When explicitly enabled and cash is short by `d`, the sender's ledger changes by `d - x`, the receiver's ledger changes by `x`, `intraday_credit_used` increases by `d`, and the event records `credit_draw_minor = d`. The two settlement accounts' combined ledger change is therefore `d`, representing newly drawn credit. This simulator draw is not yet linked to a `FundingFacility` record or a separate facility draw event; Phase 4 will supply that lifecycle.
+When explicitly enabled and cash is short by `d`, the sender's ledger changes by `d - x`, the receiver's ledger changes by `x`, `intraday_credit_used` increases by `d`, and the event records `credit_draw_minor = d`. The two settlement accounts' combined ledger change is therefore `d`, representing newly drawn account credit. This account-level credit line remains distinct from a `FundingFacility` draw.
+
+## Facility funding operations
+
+`draw_funding` validates facility eligibility, institution/currency matching, committed capacity, maturity, and any configured collateral requirement. A successful draw increases the facility's drawn and repayable principal and credits the selected settlement account by the same integer minor-unit amount, emitting `FundingDrawn`. `repay_funding` reduces both principal fields and debits unreserved account cash, emitting `FundingRepaid`. Interest is not silently folded into principal. `calculate_simple_funding_cost` applies a declared annual basis-point rate and elapsed seconds using integer arithmetic, rounds any fractional minor unit upward, and returns a calculation record without posting it.
+
+## Collateral operations
+
+`CollateralInventory` is an immutable ledger that rejects duplicate asset/allocation identifiers and requires each asset's encumbered eligible value to equal its active allocation records. Mobilization has explicit requested, pending, and mobilized states; collateral cannot be allocated before its configured delay elapses. Allocations use haircut-adjusted eligible value and an explicit `CollateralRequirement` maximum advance rate. Facility draws check current effective coverage; a price/haircut change can expose shortfall and block additional borrowing. Release checks that remaining collateral still covers drawn facility principal. Configurable stress scenarios add haircuts and mobilization delay. These are simulator policies, not production facility terms.
 
 Settlement finality is modeled by the terminal payment state. A return must be represented by a separate payment instruction.
 

@@ -73,3 +73,11 @@
 **Reason:** The blueprint requires rail heterogeneity, while public descriptions do not justify claims to reproduce all production rules or proprietary mechanisms.
 
 **Limitation:** Rail queues are in-memory inputs; the liquidity-saving baseline is an all-or-nothing cycle; network-specific returns and detailed message rules are future work.
+
+## D-011 — Separate facility principal, cash, and collateral
+
+**Decision:** A facility draw increases facility principal and credits account ledger cash as one immutable operation. Collateral allocations are separately tracked in an immutable inventory, are limited by haircut-adjusted eligible value, and are checked against configured facility advance-rate requirements.
+
+**Reason:** Undrawn commitments, drawn cash, intraday credit, and pledged collateral represent different resources and must not be added together or reused across facilities.
+
+**Limitation:** Advance rates and eligibility profiles are local assumptions. Interest is calculated but not posted; margin calls, forced liquidation, and persistent event storage remain future work.

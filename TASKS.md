@@ -47,3 +47,14 @@ Phase 2 acceptance: `pytest -q` — 42 passed; `python3 -m compileall -q src tes
 - [x] Document model boundaries, evidence, and deferred exception handling.
 
 Phase 3 acceptance: `pytest -q` — 55 passed; `python3 -m compileall -q src tests` and `git diff --check` passed. These are synthetic archetypes and do not reproduce live network rules or connect to payment services. Durable queues, service-specific returns, ISO 20022 schemas, full holiday calendars, facility draw/repayment, and optimization of partial netting cycles remain out of scope.
+
+## Phase 4 — funding and collateral operations (complete)
+
+- [x] Implement facility draw/repayment as immutable operations with capacity, maturity, account, currency, and eligibility checks plus financial events.
+- [x] Keep facility principal and account intraday credit as separate resources; require available cash for repayment.
+- [x] Add explicit secured-facility collateral requirements, haircut-adjusted allocation, and current-coverage checks before draws.
+- [x] Add collateral inventory with delayed mobilization, allocation/release, revaluation shortfalls, and no-double-pledge invariants.
+- [x] Add configurable haircut/mobilization-delay stress and exact integer simple-interest calculation.
+- [x] Document accounting identities, assumptions, tests, and deferred operations.
+
+Phase 4 acceptance: `pytest -q` — 61 passed; `python3 -m compileall -q src tests` and `git diff --check` passed. Interest is calculated but not accrued into facility balances; full contractual schedules, margin calls, forced liquidation, and collateral optimization remain out of scope.

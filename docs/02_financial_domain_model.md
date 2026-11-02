@@ -6,7 +6,7 @@ The immutable domain package represents institutions, settlement accounts, payme
 
 Institution records carry institution type, jurisdiction, policy identifiers, risk-profile identifier, operational status, optional simulation-agent identifier, and creation time. Account records distinguish cash ledger, reservations, credit limit, credit used, status, reconciliation timestamp, and the rule version used for availability. Payment records retain end-to-end and instruction identifiers, participant/account/rail IDs, execution/due/settlement times, message provenance, schema version, and scenario identifier.
 
-Collateral haircuts use integer basis points and mobilization delay uses seconds. Funding rates use annual basis points. Facility capacity is split into maximum, committed, drawn, repayable, and derived available amounts. These are domain records only; facility draw and repayment operations are not implemented.
+Collateral haircuts use integer basis points and mobilization delay uses seconds. Funding rates use annual basis points. Facility capacity is split into maximum, committed, drawn, repayable, and derived available amounts. Phase 4 adds explicit facility draw/repayment and collateral mobilization/allocation operations; rate accrual is calculated separately and not posted to balances.
 
 ## Account resource convention
 
@@ -31,7 +31,7 @@ eligible_value_minor = floor(market_value_minor × (10,000 - haircut_bps) / 10,0
 available_eligible_value_minor = max(0, eligible_value_minor - encumbered_amount_minor)
 ```
 
-Funding capacity available is `committed_capacity_minor - drawn_amount_minor`. An undrawn facility is not settlement cash. These formulas are simulator conventions and do not specify a real facility's rules.
+Available eligible collateral subtracts encumbered eligible value and floors at zero. A revaluation or stress haircut can cause a shortfall against existing allocations; the shortfall is exposed and prevents the collateral from supporting further draws. Funding capacity available is `committed_capacity_minor - drawn_amount_minor`. An explicit facility draw increases account ledger cash and facility principal; repayment reduces both only from available unreserved cash. An undrawn facility is not settlement cash. These formulas are simulator conventions and do not specify a real facility's rules.
 
 ## Payment lifecycle and events
 
@@ -43,4 +43,4 @@ The transition registry permits explicit transitions only; settled payments are 
 
 ## Remaining scope
 
-Rail-specific eligibility and configurable schedules now exist as synthetic archetypes. Durable event storage, facility draw/repayment workflows, cross-currency settlement, and external message schema validation remain future work. Expected incoming payments do not enter account resources. Reference network names are not evidence that implementation reproduces those networks.
+Rail-specific eligibility and configurable schedules now exist as synthetic archetypes. Durable event storage, cross-currency settlement, and external message schema validation remain future work. Expected incoming payments do not enter account resources. Reference network names are not evidence that implementation reproduces those networks.
