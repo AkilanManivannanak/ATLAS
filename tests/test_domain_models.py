@@ -1,6 +1,7 @@
 from dataclasses import FrozenInstanceError
 from datetime import datetime, timedelta, timezone
 import json
+from zoneinfo import ZoneInfo
 
 import pytest
 
@@ -115,6 +116,15 @@ def test_payment_has_full_instruction_provenance_and_aware_timestamps():
         payment(created_at=datetime(2026, 1, 1))
     with pytest.raises(ValueError, match="due timestamp"):
         payment(due_at=NOW - timedelta(seconds=1))
+
+
+def test_payment_timestamp_validation_uses_absolute_instants_during_dst_fold():
+    eastern = ZoneInfo("America/New_York")
+    first_0130 = datetime(2026, 11, 1, 1, 30, tzinfo=eastern, fold=0)
+    second_0130 = datetime(2026, 11, 1, 1, 30, tzinfo=eastern, fold=1)
+    assert payment(created_at=first_0130, due_at=second_0130)
+    with pytest.raises(ValueError, match="due timestamp"):
+        payment(created_at=second_0130, due_at=first_0130)
 
 
 def test_payment_rejects_float_and_nonpositive_amounts():

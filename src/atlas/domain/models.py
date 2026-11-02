@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, replace
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import StrEnum
 
 from .money import CurrencySpec
@@ -13,6 +13,11 @@ from .money import CurrencySpec
 def _require_aware(value: datetime, field_name: str) -> None:
     if not isinstance(value, datetime) or value.tzinfo is None or value.utcoffset() is None:
         raise ValueError(f"{field_name} must be timezone-aware")
+
+
+def _instant(value: datetime) -> datetime:
+    """Normalize aware timestamps before comparing ambiguous local clock times."""
+    return value.astimezone(timezone.utc)
 
 
 def _require_text(value: str, field_name: str) -> None:
@@ -204,17 +209,17 @@ class PaymentInstruction:
         CurrencySpec(self.currency, 0)
         _require_aware(self.created_at, "created_at")
         _require_aware(self.due_at, "due_at")
-        if self.due_at < self.created_at:
+        if _instant(self.due_at) < _instant(self.created_at):
             raise ValueError("due timestamp cannot precede payment creation")
         if self.requested_execution_at is not None:
             _require_aware(self.requested_execution_at, "requested_execution_at")
-            if self.requested_execution_at < self.created_at:
+            if _instant(self.requested_execution_at) < _instant(self.created_at):
                 raise ValueError("requested execution cannot precede payment creation")
         if self.settlement_at is not None:
             _require_aware(self.settlement_at, "settlement_at")
             if self.status != PaymentStatus.SETTLED:
                 raise ValueError("settlement timestamp is only valid for a settled payment")
-            if self.settlement_at < self.created_at:
+            if _instant(self.settlement_at) < _instant(self.created_at):
                 raise ValueError("settlement timestamp cannot precede payment creation")
         if self.status == PaymentStatus.SETTLED and self.settlement_at is None:
             raise ValueError("settled payment requires settlement timestamp")
@@ -327,7 +332,7 @@ class FinancialEvent:
             _require_text(getattr(self, field_name), field_name)
         _require_aware(self.event_at, "event_at")
         _require_aware(self.ingested_at, "ingested_at")
-        if self.ingested_at < self.event_at:
+        if _instant(self.ingested_at) < _instant(self.event_at):
             raise ValueError("ingestion timestamp cannot precede event timestamp")
         if not isinstance(self.sequence_number, int) or isinstance(self.sequence_number, bool) or self.sequence_number < 0:
             raise ValueError("event sequence number must be a non-negative integer")
@@ -439,7 +444,7 @@ def settle_cash_transfer(
     if sender_account.payment_rail_id != receiver_account.payment_rail_id or payment.payment_rail_id != sender_account.payment_rail_id:
         raise ValueError("payment and both accounts must use the same rail")
     _require_aware(settled_at, "settled_at")
-    if settled_at < payment.created_at:
+    if _instant(settled_at) < _instant(payment.created_at):
         raise ValueError("settlement timestamp cannot precede payment creation")
     if sender_account.cash_available_minor < payment.amount_minor:
         raise ValueError("insufficient unreserved ledger cash; credit draws are not implicit")

@@ -43,3 +43,25 @@
 **Reason:** An undrawn facility is not settlement cash. Credit draw must be an explicit, separately recorded funding operation.
 
 **Limitation:** The settlement operation does not yet use credit or validate rail-specific operating rules.
+
+## D-007 — Version event ordering and phase ties
+
+**Decision:** Event order is timestamp, documented phase priority, insertion order, then event ID. The current contract is `atlas-event-order-v1`.
+
+**Reason:** Same-time event effects must be stable and auditable across replays.
+
+**Limitation:** This order is an ATLAS simulator convention. It must not be presented as a real payment network's internal ordering.
+
+## D-008 — Atomic event-handler effects
+
+**Decision:** Handlers return a new JSON state. Newly scheduled events and random draws are staged and committed with state only after the handler succeeds. A failed handler halts the engine; recovery uses a prior snapshot.
+
+**Reason:** Avoid partial account/state changes and hidden retry behavior.
+
+## D-009 — Named stable random streams
+
+**Decision:** Each named stream is derived from the master seed and stream name and uses SplitMix64 integer draws. Stream state is included in snapshots.
+
+**Reason:** A change in one participant's draws must not shift another participant's random sequence.
+
+**Limitation:** Stream algorithm changes require a new simulator version; no random values are converted into authoritative monetary floats.

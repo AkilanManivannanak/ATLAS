@@ -10,7 +10,7 @@
 
 Acceptance: repository can run its domain tests from a clean Python 3.12+ environment; docs distinguish implemented behavior from future scope.
 
-## Phase 1 — financial domain foundation (in progress)
+## Phase 1 — financial domain foundation (complete)
 
 - [x] Define immutable institution, account, payment, and event-envelope records.
 - [x] Enforce integer minor-unit money, explicit currency, and aware timestamps.
@@ -25,9 +25,13 @@ Acceptance: repository can run its domain tests from a clean Python 3.12+ enviro
 
 Acceptance: all phase tests pass; all required domain fields are represented; domain assumptions and limitations are documented; no binary float enters authoritative money state.
 
-## Phase 2 — deterministic event simulation (next)
+## Phase 2 — deterministic event simulation (complete)
 
-- [ ] Specify deterministic same-time event ordering and version it.
-- [ ] Implement seeded event queue and simulation clock.
-- [ ] Implement deterministic replay and snapshots.
-- [ ] Test repeatability for identical initial state, seed, configuration, and event stream.
+- [x] Specify deterministic same-time event ordering and version it.
+- [x] Implement seeded event queue, configurable clock, insertion ordering, and permitted cancellation.
+- [x] Implement handler replay, canonical snapshots, restore, and state hashes.
+- [x] Add isolated named random streams and handler failure rollback.
+- [x] Test repeatability for identical initial state, seed, configuration, handler version, and event stream.
+- [x] Review Phase 2 acceptance and document remaining limitations before adding rail adapters.
+
+Phase 2 acceptance: `pytest -q` — 42 passed; `python3 -m compileall -q src tests` and `git diff --check` passed. The event engine is deterministic for the documented versioned event stream and handler contract. Durable event storage, business calendars, and rail adapters remain out of scope.
