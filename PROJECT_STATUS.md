@@ -17,7 +17,7 @@ Initial run: `pytest -q` — 16 passed. Python 3.12 is installed, but its interp
 
 ## Known limitations
 
-- The GitHub repository contains only a minimal README and is not the local checkout.
+- The GitHub `main` branch remains unchanged; this foundation is published on `phase0-foundation` pending review.
 - No API, persistence, event engine, rail models, frontend, collateral, agents, or benchmark has been implemented.
 - Account resource formula and payment lifecycle are initial simulator conventions, not claims about live payment systems.
 - No rail-specific rules are implemented; a source-linked rule registry will be needed when those models begin.
