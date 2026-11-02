@@ -20,7 +20,7 @@ available_resources = cash_available + undrawn_credit
 
 Reservations cannot exceed ledger cash. Intraday credit used cannot exceed the configured limit. Undrawn credit is not booked as cash. This is an explicit simulator convention, not a claim about a particular payment rail or actual facility.
 
-`reconcile_account` returns the components and verifies these identities. `settle_cash_transfer` implements a same-currency, same-rail, same-accounting-domain gross cash movement: it requires a settlement-pending payment, active accounts, matching payment/account identifiers, and sufficient unreserved ledger cash. It debits the sender and credits the receiver by equal integer minor units, marks the payment settled, and returns an immutable financial event with before/after balances. It deliberately does not draw credit. Rail eligibility and operating rules must be checked separately by a rail adapter; none exists yet.
+`reconcile_account` returns the components and verifies these identities. `settle_cash_transfer` implements a same-currency, same-rail, same-accounting-domain gross movement and requires a settlement-pending payment, active accounts, and matching identifiers. Cash-only is the default. A rail adapter can explicitly enable an exact intraday-credit draw; account credit usage and event payload record the draw. Rail eligibility and operating rules are implemented as synthetic reference models in `src/atlas/rails/`.
 
 ## Collateral and facilities
 
@@ -39,8 +39,8 @@ The transition registry permits explicit transitions only; settled payments are 
 
 ## Rule and source registry
 
-`FinancialRuleRegistry` is immutable and versioned. Rule versions are append-only and increase monotonically. Official-source rules require an HTTPS source reference with title and retrieval date. Simulator assumptions require a rationale and cannot carry an official-source label. The default registry currently contains only the available-resource assumption. No payment-network rules have been modeled or claimed.
+`FinancialRuleRegistry` is immutable and versioned. Rule versions are append-only and increase monotonically. Official-source rules require an HTTPS source reference with title and retrieval date. Simulator assumptions require a rationale and cannot carry an official-source label. The domain default registry contains the available-resource assumption; `atlas.rails.rules.RAIL_RULES` records limited public rail facts and separate simplification assumptions. No production rule set or network replica is claimed.
 
 ## Remaining scope
 
-No rail-specific eligibility or operating schedule, durable event store/replay, facility draw/repayment, cross-currency settlement, or external message schema validation exists yet. Expected incoming payments do not enter account resources. Reference network names are not used as evidence that the implementation reproduces those networks.
+Rail-specific eligibility and configurable schedules now exist as synthetic archetypes. Durable event storage, facility draw/repayment workflows, cross-currency settlement, and external message schema validation remain future work. Expected incoming payments do not enter account resources. Reference network names are not evidence that implementation reproduces those networks.

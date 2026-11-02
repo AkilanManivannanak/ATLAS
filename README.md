@@ -4,7 +4,7 @@ ATLAS-Σ is a research simulator for financial infrastructure. It models synthet
 
 ## Current status
 
-Phase 1 financial domain foundation is complete. Phase 2 deterministic event simulation is complete; Phase 3 payment-rail models are next. See [PROJECT_STATUS.md](PROJECT_STATUS.md), [TASKS.md](TASKS.md), and [docs/](docs/) for scope and acceptance criteria.
+Phases 1–3 are complete: financial domain foundation, deterministic event simulation, and four synthetic payment-rail archetypes. Phase 4 funding and collateral operations are next. Rail models do not connect to live services or claim to reproduce proprietary payment-system rules. See [PROJECT_STATUS.md](PROJECT_STATUS.md), [TASKS.md](TASKS.md), and [docs/](docs/) for scope and acceptance criteria.
 
 ## Development
 

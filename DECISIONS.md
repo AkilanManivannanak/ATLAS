@@ -34,15 +34,15 @@
 
 **Reason:** Avoid implicit currency precision and prevent modeled assumptions from being presented as official network rules.
 
-**Limitation:** The initial registry has no global currency catalogue and no payment-rail rule. Such rules must be sourced and tested before rail behavior is implemented.
+**Limitation:** The initial domain registry has no global currency catalogue. Rail evidence and assumptions now live in a separate `RAIL_RULES` registry; source facts remain limited and do not establish a network replica.
 
 ## D-006 — Settlement uses cash only until facilities are modeled
 
-**Decision:** The initial gross cash transfer requires sufficient unreserved ledger cash and never silently draws account credit.
+**Decision:** The initial gross cash transfer requires sufficient unreserved ledger cash by default. A rail adapter may explicitly opt into drawing only the required intraday credit shortfall.
 
-**Reason:** An undrawn facility is not settlement cash. Credit draw must be an explicit, separately recorded funding operation.
+**Reason:** An undrawn facility is not settlement cash. Credit draw must be explicit and recorded in account and settlement state.
 
-**Limitation:** The settlement operation does not yet use credit or validate rail-specific operating rules.
+**Limitation:** Credit draws are not yet linked to facility accounting or a separate funding draw event. Rail validation is synthetic and configurable.
 
 ## D-007 — Version event ordering and phase ties
 
@@ -65,3 +65,11 @@
 **Reason:** A change in one participant's draws must not shift another participant's random sequence.
 
 **Limitation:** Stream algorithm changes require a new simulator version; no random values are converted into authoritative monetary floats.
+
+## D-010 — Separate rail archetypes and preserve evidence boundaries
+
+**Decision:** Implement RTGS, liquidity-saving, and two distinct instant-payment archetypes behind shared validation contracts, with independent queue/clock/limit behavior. Keep public-source facts separate from explicit simulator assumptions.
+
+**Reason:** The blueprint requires rail heterogeneity, while public descriptions do not justify claims to reproduce all production rules or proprietary mechanisms.
+
+**Limitation:** Rail queues are in-memory inputs; the liquidity-saving baseline is an all-or-nothing cycle; network-specific returns and detailed message rules are future work.

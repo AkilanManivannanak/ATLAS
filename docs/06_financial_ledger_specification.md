@@ -19,9 +19,9 @@ The record enforces `reserved_balance_minor <= ledger_balance_minor` and `intrad
 
 ## Cash settlement operation
 
-`settle_cash_transfer` is an initial domain operation, not a rail adapter. It accepts only a `SETTLEMENT_PENDING` instruction and active, distinct sender/receiver accounts whose participant, account, currency, and rail identifiers match the instruction. It requires the sender to have enough unreserved ledger cash; it does not silently use undrawn credit. It creates new immutable account/payment values and a `PaymentSettled` event with canonical JSON before/after amounts. The original input values remain unchanged.
+`settle_cash_transfer` is an accounting primitive called by the rail adapters. It accepts only a `SETTLEMENT_PENDING` instruction and active, distinct sender/receiver accounts whose participant, account, currency, and rail identifiers match. Cash-only is the default. An adapter may explicitly enable intraday credit, in which case the exact cash shortfall is drawn, account credit usage is updated, and the event records the draw. It returns immutable account/payment values and a canonical `PaymentSettled` event. The original input values remain unchanged.
 
-For successful settlement of amount `x`:
+For cash-only settlement of amount `x`:
 
 ```text
 sender_ledger_after = sender_ledger_before - x
@@ -29,6 +29,8 @@ receiver_ledger_after = receiver_ledger_before + x
 sender + receiver ledger movement = 0
 credit_draw = 0
 ```
+
+When explicitly enabled and cash is short by `d`, the sender's ledger changes by `d - x`, the receiver's ledger changes by `x`, `intraday_credit_used` increases by `d`, and the event records `credit_draw_minor = d`. The two settlement accounts' combined ledger change is therefore `d`, representing newly drawn credit. This simulator draw is not yet linked to a `FundingFacility` record or a separate facility draw event; Phase 4 will supply that lifecycle.
 
 Settlement finality is modeled by the terminal payment state. A return must be represented by a separate payment instruction.
 

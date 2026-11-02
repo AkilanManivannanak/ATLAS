@@ -177,6 +177,27 @@ def test_successful_cash_settlement_updates_both_accounts_and_emits_event():
     assert result.event.sequence_number == 3
 
 
+def test_intraday_credit_draw_is_explicit_limited_and_recorded_in_event():
+    item = payment(status=PaymentStatus.SETTLEMENT_PENDING, amount_minor=80)
+    sender = account("acct-a", "bank-a", 50, reserved_balance_minor=10, credit_limit_minor=40)
+    receiver = account("acct-b", "bank-b", 100)
+    result = settle_cash_transfer(
+        item, sender, receiver, settled_at=NOW, event_id="ev-credit", sequence_number=4,
+        simulation_id="sim-1", correlation_id="corr-1", allow_intraday_credit=True,
+    )
+    assert result.sender_account.ledger_balance_minor == 10
+    assert result.sender_account.intraday_credit_used_minor == 40
+    assert result.receiver_account.ledger_balance_minor == 180
+    assert json.loads(result.event.payload_json)["credit_draw_minor"] == 40
+
+    too_large = payment(payment_id="p-2", end_to_end_id="e2e-2", instruction_id="i-2", status=PaymentStatus.SETTLEMENT_PENDING, amount_minor=81)
+    with pytest.raises(ValueError, match="permitted intraday credit"):
+        settle_cash_transfer(
+            too_large, sender, receiver, settled_at=NOW, event_id="ev-credit-too-large", sequence_number=5,
+            simulation_id="sim-1", correlation_id="corr-1", allow_intraday_credit=True,
+        )
+
+
 def test_settlement_checks_identity_rail_currency_status_and_finality():
     item = payment(status=PaymentStatus.SETTLEMENT_PENDING, amount_minor=10)
     sender = account("acct-a", "bank-a", 100)

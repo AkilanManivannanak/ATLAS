@@ -35,3 +35,15 @@ Acceptance: all phase tests pass; all required domain fields are represented; do
 - [x] Review Phase 2 acceptance and document remaining limitations before adding rail adapters.
 
 Phase 2 acceptance: `pytest -q` — 42 passed; `python3 -m compileall -q src tests` and `git diff --check` passed. The event engine is deterministic for the documented versioned event stream and handler contract. Durable event storage, business calendars, and rail adapters remain out of scope.
+
+## Phase 3 — payment rail reference models (complete)
+
+- [x] Add shared rail admission contracts with participant, account, currency, lifecycle, duplicate, and timestamp checks.
+- [x] Add configurable overnight RTGS schedule, priority queue processing, cash constraints, and opt-in explicit intraday credit draws.
+- [x] Add independent liquidity-saving settlement using atomic participant net positions, with one configured settlement account per participant within a cycle.
+- [x] Add separate continuous instant models for FedNow-style rollover accounting and privately configured RTP-style limits.
+- [x] Register source-backed public operating facts separately from simulator assumptions.
+- [x] Test service availability, operating windows, holidays, duplicate rejection, liquidity constraints, settlement finality, and cycle accounting.
+- [x] Document model boundaries, evidence, and deferred exception handling.
+
+Phase 3 acceptance: `pytest -q` — 55 passed; `python3 -m compileall -q src tests` and `git diff --check` passed. These are synthetic archetypes and do not reproduce live network rules or connect to payment services. Durable queues, service-specific returns, ISO 20022 schemas, full holiday calendars, facility draw/repayment, and optimization of partial netting cycles remain out of scope.

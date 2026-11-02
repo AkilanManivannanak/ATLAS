@@ -423,11 +423,13 @@ def settle_cash_transfer(
     simulation_id: str,
     correlation_id: str,
     ingested_at: datetime | None = None,
+    allow_intraday_credit: bool = False,
 ) -> SettlementResult:
-    """Settle a same-currency, same-rail cash transfer without drawing credit.
+    """Settle a same-currency, same-rail transfer with an explicit optional credit draw.
 
     Rail eligibility and operating rules must be checked by the calling rail adapter.
-    Undrawn credit is intentionally not converted to cash by this operation.
+    Credit remains unused unless the caller explicitly opts in; only the exact cash
+    shortfall is drawn, and it is recorded in account state and the financial event.
     """
     if payment.status != PaymentStatus.SETTLEMENT_PENDING:
         raise ValueError("only settlement-pending payments can settle")
@@ -446,10 +448,20 @@ def settle_cash_transfer(
     _require_aware(settled_at, "settled_at")
     if _instant(settled_at) < _instant(payment.created_at):
         raise ValueError("settlement timestamp cannot precede payment creation")
-    if sender_account.cash_available_minor < payment.amount_minor:
+    if not isinstance(allow_intraday_credit, bool):
+        raise TypeError("allow_intraday_credit must be a bool")
+    cash_shortfall = max(0, payment.amount_minor - sender_account.cash_available_minor)
+    credit_draw_minor = cash_shortfall if allow_intraday_credit else 0
+    if credit_draw_minor > sender_account.undrawn_credit_minor:
+        raise ValueError("insufficient unreserved ledger cash and permitted intraday credit")
+    if cash_shortfall and not allow_intraday_credit:
         raise ValueError("insufficient unreserved ledger cash; credit draws are not implicit")
 
-    next_sender = replace(sender_account, ledger_balance_minor=sender_account.ledger_balance_minor - payment.amount_minor)
+    next_sender = replace(
+        sender_account,
+        ledger_balance_minor=sender_account.ledger_balance_minor + credit_draw_minor - payment.amount_minor,
+        intraday_credit_used_minor=sender_account.intraday_credit_used_minor + credit_draw_minor,
+    )
     next_receiver = replace(receiver_account, ledger_balance_minor=receiver_account.ledger_balance_minor + payment.amount_minor)
     next_payment = transition_payment(payment, PaymentStatus.SETTLED, at=settled_at)
     payload = {
@@ -459,10 +471,12 @@ def settle_cash_transfer(
         "sender_account_id": sender_account.account_id,
         "sender_ledger_before_minor": sender_account.ledger_balance_minor,
         "sender_ledger_after_minor": next_sender.ledger_balance_minor,
+        "sender_credit_used_before_minor": sender_account.intraday_credit_used_minor,
+        "sender_credit_used_after_minor": next_sender.intraday_credit_used_minor,
         "receiver_account_id": receiver_account.account_id,
         "receiver_ledger_before_minor": receiver_account.ledger_balance_minor,
         "receiver_ledger_after_minor": next_receiver.ledger_balance_minor,
-        "credit_draw_minor": 0,
+        "credit_draw_minor": credit_draw_minor,
     }
     event = FinancialEvent(
         event_id=event_id,
