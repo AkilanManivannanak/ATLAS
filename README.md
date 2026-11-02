@@ -4,7 +4,7 @@ ATLAS-Σ is a research simulator for financial infrastructure. It models synthet
 
 ## Current status
 
-The repository is in its financial domain foundation stage. See [PROJECT_STATUS.md](PROJECT_STATUS.md), [TASKS.md](TASKS.md), and [docs/](docs/) for scope and acceptance criteria.
+Phase 1 financial domain foundation is complete; deterministic event simulation is next. See [PROJECT_STATUS.md](PROJECT_STATUS.md), [TASKS.md](TASKS.md), and [docs/](docs/) for scope and acceptance criteria.
 
 ## Development
 
