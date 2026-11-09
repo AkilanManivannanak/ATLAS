@@ -1,0 +1,212 @@
+{
+ "strategies": [
+  "early",
+  "conservative",
+  "recycler"
+ ],
+ "seeds": [
+  101,
+  102,
+  103,
+  104,
+  105,
+  106
+ ],
+ "policy": "priority",
+ "cost_model": {
+  "delay_bp_per_hour": 2,
+  "late_penalty_bp": 10,
+  "unsettled_penalty_bp": 100,
+  "liquidity_bp_per_day": 5,
+  "credit_bp_per_day": 15
+ },
+ "deviations": [
+  {
+   "profile": "early",
+   "deviation": "conservative",
+   "focal": "@largest",
+   "mean_gain_minor": -6402002.333333333,
+   "ci95": [
+    -62688882.99896829,
+    49884878.33230162
+   ],
+   "epsilon_minor": 2101603.951666666,
+   "profitable_deviation": false,
+   "n_seeds": 6
+  },
+  {
+   "profile": "early",
+   "deviation": "recycler",
+   "focal": "@largest",
+   "mean_gain_minor": -8485842.833333334,
+   "ci95": [
+    -46138159.411092974,
+    29166473.744426303
+   ],
+   "epsilon_minor": 2101603.951666666,
+   "profitable_deviation": false,
+   "n_seeds": 6
+  },
+  {
+   "profile": "early",
+   "deviation": "conservative",
+   "focal": "@median",
+   "mean_gain_minor": -476312.0,
+   "ci95": [
+    -4991316.072791259,
+    4038692.072791259
+   ],
+   "epsilon_minor": 355977.93,
+   "profitable_deviation": false,
+   "n_seeds": 6
+  },
+  {
+   "profile": "early",
+   "deviation": "recycler",
+   "focal": "@median",
+   "mean_gain_minor": -2601157.0,
+   "ci95": [
+    -12053203.948514374,
+    6850889.948514374
+   ],
+   "epsilon_minor": 355977.93,
+   "profitable_deviation": false,
+   "n_seeds": 6
+  },
+  {
+   "profile": "conservative",
+   "deviation": "early",
+   "focal": "@largest",
+   "mean_gain_minor": 14617442.0,
+   "ci95": [
+    -16477923.885954667,
+    45712807.88595466
+   ],
+   "epsilon_minor": 2365491.2516666665,
+   "profitable_deviation": false,
+   "n_seeds": 6
+  },
+  {
+   "profile": "conservative",
+   "deviation": "recycler",
+   "focal": "@largest",
+   "mean_gain_minor": -14123354.333333334,
+   "ci95": [
+    -32229184.239598215,
+    3982475.572931545
+   ],
+   "epsilon_minor": 2365491.2516666665,
+   "profitable_deviation": false,
+   "n_seeds": 6
+  },
+  {
+   "profile": "conservative",
+   "deviation": "early",
+   "focal": "@median",
+   "mean_gain_minor": 4648681.833333333,
+   "ci95": [
+    -4607093.914646207,
+    13904457.581312872
+   ],
+   "epsilon_minor": 406914.5366666666,
+   "profitable_deviation": false,
+   "n_seeds": 6
+  },
+  {
+   "profile": "conservative",
+   "deviation": "recycler",
+   "focal": "@median",
+   "mean_gain_minor": -1550482.3333333333,
+   "ci95": [
+    -13720735.040590618,
+    10619770.37392395
+   ],
+   "epsilon_minor": 406914.5366666666,
+   "profitable_deviation": false,
+   "n_seeds": 6
+  },
+  {
+   "profile": "recycler",
+   "deviation": "early",
+   "focal": "@largest",
+   "mean_gain_minor": 6222318.333333333,
+   "ci95": [
+    -18302992.94698585,
+    30747629.613652512
+   ],
+   "epsilon_minor": 2445015.905,
+   "profitable_deviation": false,
+   "n_seeds": 6
+  },
+  {
+   "profile": "recycler",
+   "deviation": "conservative",
+   "focal": "@largest",
+   "mean_gain_minor": 982631.6666666666,
+   "ci95": [
+    -12892938.88714846,
+    14858202.220481792
+   ],
+   "epsilon_minor": 2445015.905,
+   "profitable_deviation": false,
+   "n_seeds": 6
+  },
+  {
+   "profile": "recycler",
+   "deviation": "early",
+   "focal": "@median",
+   "mean_gain_minor": 5822412.333333333,
+   "ci95": [
+    -1295345.238910175,
+    12940169.90557684
+   ],
+   "epsilon_minor": 465498.8366666666,
+   "profitable_deviation": false,
+   "n_seeds": 6
+  },
+  {
+   "profile": "recycler",
+   "deviation": "conservative",
+   "focal": "@median",
+   "mean_gain_minor": 5652776.333333333,
+   "ci95": [
+    -1478635.004705836,
+    12784187.671372503
+   ],
+   "epsilon_minor": 465498.8366666666,
+   "profitable_deviation": false,
+   "n_seeds": 6
+  }
+ ],
+ "profiles": {
+  "early": {
+   "verdict": "inconclusive",
+   "empirical_epsilon_equilibrium": false,
+   "mean_system_cost_minor": 895826957.1666666,
+   "claim_scope": "tested focal banks and listed deviations only; not a proof of Nash equilibrium"
+  },
+  "conservative": {
+   "verdict": "inconclusive",
+   "empirical_epsilon_equilibrium": false,
+   "mean_system_cost_minor": 1026449643.3333334,
+   "claim_scope": "tested focal banks and listed deviations only; not a proof of Nash equilibrium"
+  },
+  "recycler": {
+   "verdict": "inconclusive",
+   "empirical_epsilon_equilibrium": false,
+   "mean_system_cost_minor": 1075777130.8333333,
+   "claim_scope": "tested focal banks and listed deviations only; not a proof of Nash equilibrium"
+  }
+ },
+ "socially_best_profile": "early",
+ "efficiency_gap": {},
+ "method": "empirical game-theoretic analysis with paired seeds (Wellman 2006); payoffs = own modeled cost",
+ "manifest": {
+  "created_at": "2026-11-09T06:49:19.432637+00:00",
+  "runtime_s": 33.9719148449999,
+  "python": "3.13.18",
+  "platform": "Linux-6.18.44-fc-v310-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "data_origin": "synthetic"
+ }
+}
