@@ -1,15 +1,18 @@
-# Known limitations and initial risk register
+# Known limitations and risk register
 
-| Risk | Why it matters | Current treatment / next control |
+| Risk / limitation | Why it matters | Current treatment / next control |
 |---|---|---|
-| Currency precision drift | Incorrect decimal conversion can create or destroy value. | Versioned currency registry requires explicit minor-unit exponents. Conversion rejects floats and excess precision. No default global currency metadata is assumed. |
-| Account liquidity semantics | Credit, reservations, and ledger balances can be double counted if definitions are vague. | Account resource equation is documented. RTGS credit draws require explicit adapter configuration; facility draws are separate operations that update cash and principal together and do not consume the account credit line. |
-| Rail rules mistaken for live behavior | Simplified models could be mistaken for actual network rules. | Four synthetic archetypes have explicit scope limits; source-backed facts and assumptions are registered separately. None connects to or reproduces a live service. |
-| Nondeterministic replay | Random streams or event tie ordering can make research irreproducible. | Phase 2 now versions event ordering, isolates named seeded streams, and supports snapshot/replay. A durable store and cross-version migration remain future work. |
-| Synthetic data confusion | Simulated values could be interpreted as observed financial data. | Product scope is synthetic-only and the README requires simulation labeling. |
-| Overbuilding before validation | Large infrastructure can obscure domain defects. | Start with a modular monolith and add infrastructure only after evidence. |
-| Incomplete provenance | Results cannot be reproduced without configuration and algorithm identity. | Event envelope has sequence/correlation/schema metadata; durable storage and run manifests remain future work. |
-| Float values entering ledger state | Binary floating-point error may cause monetary reconciliation failures. | Domain amount fields use integer minor units; conversion rejects binary floats. Tests cover arithmetic and rejection behavior. |
-| Liquidity-saving model bias | An all-or-nothing cycle may leave feasible subsets waiting. | The model currently settles only a fully feasible submitted cycle; partial subset search and optimization are future work. |
-| Funding-cost simplification | Unposted interest can understate total facility obligations. | Exact simple interest is calculated with explicit rate, period, and day-count basis; accrual posting, fees, compounding, and repayment schedules are future work. |
-| Collateral eligibility and policy | Generic rules could misstate actual lender terms. | Facility-specific profile lists and advance rates are explicit local configuration; no real eligibility schedule or facility agreement is inferred. Stress can create an exposed shortfall; margin calls and forced liquidation are not modeled. |
+| Synthetic data only | Results describe the model, not real payment systems | Every artifact and UI screen is labeled synthetic; no real data is ingested. |
+| Rail archetypes are not replicas | Readers may over-interpret rail names | Archetypes plus a separate evidence/assumption registry (`RAIL_RULES`); no live connectivity. |
+| Cost model weights are assumptions | Policy rankings can depend on weights | Documented `CostModel`; next: a sensitivity study across weights. |
+| Generator lacks intraday autocorrelation | Forecast horizons barely matter; sequence models cannot show their value | Documented; next: Hawkes/ARMA arrival processes. |
+| Netting heuristic gap on adversarial queues | Up to ~40% value left vs optimal | Exact MILP available and benchmarked; heuristic gap published. |
+| 5-seed benchmark | Wide CIs; small effects may be missed | Extended preset (10 seeds × 11 stresses) exists; run before publication. |
+| Scale not yet benchmarked at 100 banks / 500k payments | Runtime and behaviour at scale unknown | Generator supports it; profile before adding Rust or distributed infrastructure. |
+| Game-theoretic results inconclusive | Equilibrium claims would be premature | Verdicts are three-valued and scoped. |
+| Not implemented: auction mechanism, safe RL, LSTM/TFT/graph forecasters, camt messages, XSD validation, PostgreSQL/ClickHouse/MLflow, AI Decision Center | Blueprint scope remains | Listed in `PROJECT_STATUS.md` and `TASKS.md`; no doc claims them. |
+| Cross-rail transfers are instantaneous | Real liquidity transfers have cutoffs and delays | Safety cutoff 15 minutes before close; next: modeled transfer latency. |
+| Facility interest accrues to close regardless of early repayment | Slight overstatement of funding cost | Documented simplification. |
+| Development-mode API | Open access if exposed | `/health` reports auth mode; set `ATLAS_API_KEYS` for any network deployment. |
+| Docker images not built in the authoring environment | Container regressions possible | CI builds both images and health-checks the API on every push. |
+| Float use | Analytics and costs use floats | Authoritative ledger state is integer-only and validated; floats appear only in metrics, sampling and solvers, and solver output is re-verified in integers. |

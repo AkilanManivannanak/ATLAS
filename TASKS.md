@@ -58,3 +58,36 @@ Phase 3 acceptance: `pytest -q` — 55 passed; `python3 -m compileall -q src tes
 - [x] Document accounting identities, assumptions, tests, and deferred operations.
 
 Phase 4 acceptance: `pytest -q` — 61 passed; `python3 -m compileall -q src tests` and `git diff --check` passed. Interest is calculated but not accrued into facility balances; full contractual schedules, margin calls, forced liquidation, and collateral optimization remain out of scope.
+
+## Phase 5 — vertical slice, persistence and messaging (complete)
+- [x] Append-only hash-chained event store with tamper detection, gap rejection, idempotent retry and atomic batches.
+- [x] Strict event-sourced ledger with before-value checks and a cash-conservation identity.
+- [x] ISO 20022 pacs.008/009/004 normalization with provenance and XXE-safe parsing.
+- [x] End-to-end vertical slice, exposed via API and tested.
+
+Acceptance: property test, where random payment streams replay to an identical hash and never overspend or double-settle, passes.
+
+## Phase 6 — multi-rail simulation, agents and systemic risk (complete)
+- [x] NEXUS-PAY generator; business-day simulator over four rails; six settlement policies.
+- [x] Six release strategies; empirical liquidity-timing game with scoped verdicts.
+- [x] Ten stress scenarios recorded as events; network analytics cross-checked with NetworkX.
+
+Acceptance: every policy and every stress scenario replays exactly; same seed gives the same hash and a different seed gives a different one.
+
+## Phase 7 — optimization and market design (partially complete)
+- [x] Partial netting heuristic v3 and exact MILP; optimality-gap study.
+- [x] CVaR funding LP with expected-value baseline.
+- [ ] Auction-based liquidity provision.
+
+## Phase 8 — adaptive control (partially complete)
+- [x] Safety controller (fail-closed) and MPC rebalancing + queue MILP; rule-based ablation.
+- [ ] Safe RL (PPO / constrained PPO) behind the safety controller.
+
+## Phase 9 — product and infrastructure (complete for this increment)
+- [x] FastAPI service with RBAC, structured errors, counterfactuals, replay verification and Prometheus metrics.
+- [x] Next.js Command Center with eight API-backed screens.
+- [x] Dockerfiles, compose with observability profile, CI (ruff, tests on 3.12/3.13, smoke benchmark, frontend build, docker build).
+
+## Phase 10 — scientific validation (first results published)
+- [x] NEXUS-PAY `standard` benchmark with paired bootstrap CIs; forecasting, game and netting artifacts.
+- [ ] Extended preset, cost-weight sensitivity, 100-institution scale, E3/E4/E7.

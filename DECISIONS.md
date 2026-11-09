@@ -81,3 +81,49 @@
 **Reason:** Undrawn commitments, drawn cash, intraday credit, and pledged collateral represent different resources and must not be added together or reused across facilities.
 
 **Limitation:** Advance rates and eligibility profiles are local assumptions. Interest is calculated but not posted; margin calls, forced liquidation, and persistent event storage remain future work.
+
+## D-012 — In-process day simulator that earns replay through the ledger fold
+
+**Decision:** The multi-rail business-day simulator (`atlas.sim`) keeps state in process and reuses the versioned `atlas-event-order-v1` contract, instead of running every event through the generic JSON-state `SimulationEngine`.
+
+**Reason:** The generic engine serializes the entire state on every event, which is ideal for auditing small models but makes a 5,000-payment day quadratic in practice. The day simulator gets the same guarantee a different way: every balance change is a `FinancialEvent` folded by the strict `Ledger`, which checks the event's *before* values and the cash-conservation identity. Live state therefore *is* the fold of the log, and `SimulationResult.verify_replay()` re-folds the log from opening balances and must reproduce the final state hash. Every benchmark row is rejected unless this holds.
+
+**Alternatives considered:** Optimizing the generic engine (structural sharing); a Rust kernel. Deferred: the measured runtime (≈1–4 s per simulated day on 2 vCPUs) does not justify them yet.
+
+## D-013 — Append-only SQLite event store with a SHA-256 hash chain
+
+**Decision:** `atlas.store.EventStore` stores events append-only with per-simulation gap-free sequences and `record_hash = sha256(prev_hash || canonical_record)`.
+
+**Reason:** Tamper evidence and deterministic reconstruction with a standard-library dependency. The hash is computed over canonical JSON, so a PostgreSQL implementation of the same contract will produce identical chains.
+
+## D-014 — Partial netting: polynomial heuristic for operations, exact MILP as reference
+
+**Decision:** Queue netting uses `gridlock-heuristic-v3` (best of priority removal, best-fit removal and bilateral-seeded growth, each repaired by greedy reinsertion). An exact 0-1 program solved by HiGHS is available as a policy (`multilateral_milp`) and as the optimality reference.
+
+**Reason:** The heuristic is dependency-free and fast; the MILP quantifies how much it leaves on the table. Both outputs are re-verified in exact integer arithmetic before any settlement.
+
+**Limitation:** On adversarial random gridlocked queues the heuristic's optimality gap is large (see `results/netting_optimality.json`); on simulated queues the practical difference is small (see benchmark). This is reported, not hidden.
+
+## D-015 — All controller actions pass a fail-closed safety controller
+
+**Decision:** Controllers (MPC, rule-based, any future learned policy) can only *propose* `settle_batch` or own-account `transfer` actions. `SafetyController` validates each in integer arithmetic (queue membership, joint feasibility, share caps, committed cash, cutoff, rail availability). Rejected actions are logged and dropped, never repaired or partially executed.
+
+**Reason:** Blueprint principles 7 and 15. No optimizer or model can change the ledger without passing the same hard constraints.
+
+## D-016 — Defer PostgreSQL, ClickHouse, MinIO, MLflow and streaming
+
+**Decision:** Docker Compose runs only the API and the web UI, with Prometheus/Grafana behind an `observability` profile. Event storage is SQLite on a volume; research artifacts are versioned JSON in `results/`.
+
+**Reason:** Blueprint section 4: do not introduce infrastructure for appearance. No current workload needs a second database, an object store or a stream processor. Each will be added with a measured reason and the same event-store contract.
+
+## D-017 — Paired-seed benchmark with deterministic bootstrap intervals
+
+**Decision:** Every benchmark arm runs on identical generated days and stress definitions; comparisons are paired differences with 95% percentile-bootstrap intervals generated from the project RNG.
+
+**Reason:** Blueprint section 20 forbids attributing seed-to-seed variation to a policy. Deterministic bootstrap streams make the reported intervals themselves reproducible.
+
+## D-018 — Safe RL deferred; interface ready
+
+**Decision:** PPO/MAPPO/constrained RL are not implemented in this increment. The controller protocol and safety filter they would plug into are implemented and tested.
+
+**Reason:** The blueprint requires the simulator, baselines and optimizer to be validated first. They now are; RL is the next research increment and will be reported against the MPC baseline.

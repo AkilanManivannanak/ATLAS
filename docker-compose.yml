@@ -1,0 +1,44 @@
+# docker compose up --build                       -> API on :8000, Command Center on :3000
+# docker compose --profile observability up --build  -> adds Prometheus :9090 and Grafana :3001
+# PostgreSQL / ClickHouse / MinIO / MLflow are intentionally absent: nothing in the current
+# workload needs them (see DECISIONS.md D-016). The event store is SQLite on a named volume.
+services:
+  api:
+    build: .
+    environment:
+      ATLAS_DATA_DIR: /data
+      ATLAS_API_KEYS: ${ATLAS_API_KEYS:-}
+      ATLAS_CORS_ORIGINS: ${ATLAS_CORS_ORIGINS:-http://localhost:3000}
+    volumes:
+      - atlas-data:/data
+    ports:
+      - "8000:8000"
+  web:
+    build:
+      context: ./frontend
+      args:
+        ATLAS_API_URL: http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+  prometheus:
+    image: prom/prometheus:v2.53.2
+    profiles: ["observability"]
+    volumes:
+      - ./deploy/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+  grafana:
+    image: grafana/grafana:11.2.2
+    profiles: ["observability"]
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+    volumes:
+      - ./deploy/grafana/provisioning:/etc/grafana/provisioning:ro
+    ports:
+      - "3001:3000"
+volumes:
+  atlas-data:
