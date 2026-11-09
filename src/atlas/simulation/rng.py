@@ -15,7 +15,7 @@ def derive_stream_seed(master_seed: int, stream_name: str) -> int:
         raise TypeError("simulation seed must be an integer")
     if not isinstance(stream_name, str) or not stream_name.strip():
         raise ValueError("random stream name is required")
-    data = f"atlas-rng-v1\0{master_seed}\0{stream_name}".encode("utf-8")
+    data = f"atlas-rng-v1\0{master_seed}\0{stream_name}".encode()
     return int.from_bytes(hashlib.sha256(data).digest()[:8], "big")
 
 

@@ -1,4 +1,4 @@
-from datetime import date, datetime, time, timedelta, timezone
+from datetime import UTC, date, datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
 import pytest
@@ -16,8 +16,7 @@ from atlas.rails import (
 )
 from atlas.rails.rules import RAIL_RULES
 
-
-NOW = datetime(2026, 1, 5, 14, 0, tzinfo=timezone.utc)
+NOW = datetime(2026, 1, 5, 14, 0, tzinfo=UTC)
 PARTICIPANTS = (RailParticipant("bank-a", "USD"), RailParticipant("bank-b", "USD"))
 
 

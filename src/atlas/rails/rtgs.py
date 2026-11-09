@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
-from datetime import datetime, timezone
-from typing import Mapping
+from datetime import UTC, datetime
 
 from atlas.domain import PaymentInstruction, SettlementAccount, SettlementResult
 
@@ -82,7 +82,7 @@ class RTGSRail(PaymentRail):
             return RTGSProcessResult((), tuple(payments), admissions)
         ordered = sorted(
             payments,
-            key=lambda item: (-item.priority, item.due_at.astimezone(timezone.utc), item.created_at.astimezone(timezone.utc), item.payment_id),
+            key=lambda item: (-item.priority, item.due_at.astimezone(UTC), item.created_at.astimezone(UTC), item.payment_id),
         )
         current_accounts = dict(accounts)
         settlements: list[SettlementResult] = []

@@ -4,7 +4,6 @@ from datetime import date
 
 from atlas.domain import FinancialRule, FinancialRuleRegistry, RuleBasis, RuleSource
 
-
 RETRIEVED_ON = date(2026, 11, 1)
 
 FEDWIRE_SOURCE = RuleSource(

@@ -1,6 +1,6 @@
-from dataclasses import FrozenInstanceError
-from datetime import datetime, timedelta, timezone
 import json
+from dataclasses import FrozenInstanceError
+from datetime import UTC, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 import pytest
@@ -21,7 +21,7 @@ from atlas.domain import (
     transition_payment,
 )
 
-NOW = datetime(2026, 1, 5, 14, 0, tzinfo=timezone.utc)
+NOW = datetime(2026, 1, 5, 14, 0, tzinfo=UTC)
 
 
 def institution(institution_id="bank-a", **changes):

@@ -1,5 +1,5 @@
-from datetime import datetime, timedelta, timezone
 import json
+from datetime import UTC, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 import pytest
@@ -12,7 +12,7 @@ from atlas.simulation import (
     SimulationExecutionError,
 )
 
-START = datetime(2026, 2, 2, 9, 0, tzinfo=timezone.utc)
+START = datetime(2026, 2, 2, 9, 0, tzinfo=UTC)
 
 
 def config(seed=31):

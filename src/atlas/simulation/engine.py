@@ -5,9 +5,10 @@ from __future__ import annotations
 import hashlib
 import heapq
 import json
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, replace
-from datetime import datetime, timezone
-from typing import Any, Callable, Mapping
+from datetime import UTC, datetime
+from typing import Any
 
 from .events import EVENT_ORDERING_VERSION, EventPhase, SimulationEvent, canonical_json_object, encode_json_object
 from .rng import DeterministicRandomStream, derive_stream_seed
@@ -184,7 +185,7 @@ Handler = Callable[[dict[str, Any], SimulationEvent, EventContext], Mapping[str,
 
 
 def _utc_instant(value: datetime) -> datetime:
-    return value.astimezone(timezone.utc)
+    return value.astimezone(UTC)
 
 
 class SimulationEngine:

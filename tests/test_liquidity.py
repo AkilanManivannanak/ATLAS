@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
@@ -13,8 +13,7 @@ from atlas.liquidity import (
     repay_funding,
 )
 
-
-NOW = datetime(2026, 3, 2, 15, 0, tzinfo=timezone.utc)
+NOW = datetime(2026, 3, 2, 15, 0, tzinfo=UTC)
 
 
 def asset(**changes):

@@ -2,20 +2,28 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
-from datetime import date, datetime, time, timedelta, timezone
+from datetime import UTC, date, datetime, time, timedelta
 from enum import StrEnum
 from types import MappingProxyType
-from typing import Iterable
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from atlas.domain import AccountStatus, FinancialEvent, PaymentInstruction, PaymentStatus, SettlementAccount, SettlementResult, settle_cash_transfer, transition_payment
+from atlas.domain import (
+    AccountStatus,
+    PaymentInstruction,
+    PaymentStatus,
+    SettlementAccount,
+    SettlementResult,
+    settle_cash_transfer,
+    transition_payment,
+)
 
 
 def _instant(value: datetime) -> datetime:
     if not isinstance(value, datetime) or value.tzinfo is None or value.utcoffset() is None:
         raise ValueError("timestamp must be timezone-aware")
-    return value.astimezone(timezone.utc)
+    return value.astimezone(UTC)
 
 
 class AdmissionStatus(StrEnum):

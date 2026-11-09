@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, replace
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from enum import StrEnum
 
 from atlas.domain import CollateralAsset, FinancialEvent, FundingFacility
@@ -13,7 +13,7 @@ from atlas.domain import CollateralAsset, FinancialEvent, FundingFacility
 def _instant(value: datetime) -> datetime:
     if not isinstance(value, datetime) or value.tzinfo is None or value.utcoffset() is None:
         raise ValueError("timestamp must be timezone-aware")
-    return value.astimezone(timezone.utc)
+    return value.astimezone(UTC)
 
 
 def _positive_minor_units(value: int, field_name: str) -> None:

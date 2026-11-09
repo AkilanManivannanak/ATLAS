@@ -8,7 +8,6 @@ from datetime import datetime
 from enum import IntEnum
 from typing import Any
 
-
 EVENT_ORDERING_VERSION = "atlas-event-order-v1"
 
 

@@ -4,13 +4,25 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "atlas-sigma"
-version = "0.1.0"
-description = "Deterministic research simulator for synthetic financial infrastructure"
+version = "0.5.0"
+description = "Deterministic multi-rail financial-infrastructure digital twin: settlement, liquidity, stress, forecasting and adaptive control (synthetic research simulator)"
+readme = "README.md"
 requires-python = ">=3.12"
+license = { text = "Proprietary - all rights reserved" }
+authors = [{ name = "Akilan Manivannan" }]
+# The financial core (domain, ledger, rails, event engine, simulator, store, ISO 20022) is standard-library only.
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0"]
+opt = ["numpy>=2.0", "scipy>=1.13"]
+ml = ["numpy>=2.0", "scikit-learn>=1.5"]
+api = ["fastapi>=0.115", "uvicorn>=0.30", "pydantic>=2.7", "numpy>=2.0", "scipy>=1.13", "scikit-learn>=1.5"]
+dev = ["pytest>=8.0", "hypothesis>=6.100", "httpx>=0.27", "networkx>=3.3", "numpy>=2.0", "scipy>=1.13", "scikit-learn>=1.5",
+       "fastapi>=0.115", "uvicorn>=0.30", "pydantic>=2.7", "ruff>=0.6"]
+all = ["atlas-sigma[api,dev]"]
+
+[project.scripts]
+atlas-bench = "atlas.benchmark.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -19,3 +31,12 @@ where = ["src"]
 pythonpath = ["src"]
 testpaths = ["tests"]
 addopts = "-ra"
+
+[tool.ruff]
+line-length = 160
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501", "E731", "B008", "B905"]

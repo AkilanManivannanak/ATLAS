@@ -12,3 +12,13 @@ venv/
 .env.*
 !.env.example
 .DS_Store
+
+# ATLAS runtime data and frontend build output
+.atlas-data/
+*.db
+*.db-wal
+*.db-shm
+frontend/node_modules/
+frontend/.next/
+frontend/tsconfig.tsbuildinfo
+*.egg-info/

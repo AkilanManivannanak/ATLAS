@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, replace
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import StrEnum
 
 from .money import CurrencySpec
@@ -17,7 +17,7 @@ def _require_aware(value: datetime, field_name: str) -> None:
 
 def _instant(value: datetime) -> datetime:
     """Normalize aware timestamps before comparing ambiguous local clock times."""
-    return value.astimezone(timezone.utc)
+    return value.astimezone(UTC)
 
 
 def _require_text(value: str, field_name: str) -> None:
