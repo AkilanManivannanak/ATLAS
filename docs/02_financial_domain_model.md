@@ -1,15 +1,46 @@
-# Financial domain model — foundation
+# Financial domain model — Phase 1
 
 ## Implemented records
 
-`Institution`, `SettlementAccount`, `PaymentInstruction`, and `FinancialEvent` are immutable typed records in `src/atlas/domain/models.py`. Identifiers are explicit. Account and payment amounts use integer minor units. Currency codes are uppercase three-letter strings. All timestamps require timezone awareness.
+The immutable domain package represents institutions, settlement accounts, payment instructions, collateral assets, funding facilities, and financial event envelopes. Monetary values are integer minor units with explicit currency codes; currency precision comes from a versioned `CurrencyRegistry` and is never inferred. Timestamps are timezone-aware.
 
-The account model distinguishes ledger balance, reserved balance, a configured intraday credit limit, and credit already used. Its current spendable-resource calculation is `ledger - reserved + credit_limit - credit_used`. It is a simplified simulator accounting convention, not a payment-system rule.
+Institution records carry institution type, jurisdiction, policy identifiers, risk-profile identifier, operational status, optional simulation-agent identifier, and creation time. Account records distinguish cash ledger, reservations, credit limit, credit used, status, reconciliation timestamp, and the rule version used for availability. Payment records retain end-to-end and instruction identifiers, participant/account/rail IDs, execution/due/settlement times, message provenance, schema version, and scenario identifier.
 
-## Payment lifecycle
+Collateral haircuts use integer basis points and mobilization delay uses seconds. Funding rates use annual basis points. Facility capacity is split into maximum, committed, drawn, repayable, and derived available amounts. Phase 4 adds explicit facility draw/repayment and collateral mobilization/allocation operations; rate accrual is calculated separately and not posted to balances.
 
-The transition registry allows only explicit transitions. Settled payments are terminal. A settlement timestamp is required exactly for a settled payment. A returned payment is terminal here; a future return flow must be modeled as a separate instruction/event rather than reversing finality.
+## Account resource convention
 
-## Current limitations and next work
+The simulator assumption `atlas.account.available_resources@1` is:
 
-No rail-specific eligibility, account-to-account settlement operation, durable event store, reconciliation, validation schemas, or currency minor-unit registry exists yet. Same currency is required for future transfers until an explicit FX model is designed. Domain records do not assert behavior of Fedwire, CHIPS, FedNow, or RTP.
+```text
+cash_available = ledger_balance - reserved_balance
+undrawn_credit = credit_limit - intraday_credit_used
+available_resources = cash_available + undrawn_credit
+```
+
+Reservations cannot exceed ledger cash. Intraday credit used cannot exceed the configured limit. Undrawn credit is not booked as cash. This is an explicit simulator convention, not a claim about a particular payment rail or actual facility.
+
+`reconcile_account` returns the components and verifies these identities. `settle_cash_transfer` implements a same-currency, same-rail, same-accounting-domain gross movement and requires a settlement-pending payment, active accounts, and matching identifiers. Cash-only is the default. A rail adapter can explicitly enable an exact intraday-credit draw; account credit usage and event payload record the draw. Rail eligibility and operating rules are implemented as synthetic reference models in `src/atlas/rails/`.
+
+## Collateral and facilities
+
+Eligible collateral value is computed with conservative integer rounding:
+
+```text
+eligible_value_minor = floor(market_value_minor × (10,000 - haircut_bps) / 10,000)
+available_eligible_value_minor = max(0, eligible_value_minor - encumbered_amount_minor)
+```
+
+Available eligible collateral subtracts encumbered eligible value and floors at zero. A revaluation or stress haircut can cause a shortfall against existing allocations; the shortfall is exposed and prevents the collateral from supporting further draws. Funding capacity available is `committed_capacity_minor - drawn_amount_minor`. An explicit facility draw increases account ledger cash and facility principal; repayment reduces both only from available unreserved cash. An undrawn facility is not settlement cash. These formulas are simulator conventions and do not specify a real facility's rules.
+
+## Payment lifecycle and events
+
+The transition registry permits explicit transitions only; settled payments are terminal. Payment returns remain separate instructions/events. Event payloads are canonical JSON-object text so the frozen envelope does not retain a mutable dictionary. Events include event and ingestion timestamps, aggregate sequence, correlation/causation metadata, schema version, and simulation ID.
+
+## Rule and source registry
+
+`FinancialRuleRegistry` is immutable and versioned. Rule versions are append-only and increase monotonically. Official-source rules require an HTTPS source reference with title and retrieval date. Simulator assumptions require a rationale and cannot carry an official-source label. The domain default registry contains the available-resource assumption; `atlas.rails.rules.RAIL_RULES` records limited public rail facts and separate simplification assumptions. No production rule set or network replica is claimed.
+
+## Remaining scope
+
+Rail-specific eligibility and configurable schedules now exist as synthetic archetypes. Durable event storage, cross-currency settlement, and external message schema validation remain future work. Expected incoming payments do not enter account resources. Reference network names are not evidence that implementation reproduces those networks.

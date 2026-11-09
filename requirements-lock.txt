@@ -1,0 +1,13 @@
+# Exact versions the test suite and published benchmark were run with (Python 3.13.18, Linux x86_64, 2026-11-09).
+# Install: pip install -r requirements-lock.txt && pip install -e . --no-deps
+fastapi==0.162.2
+httpx==0.28.1
+hypothesis==6.170.15
+networkx==3.7
+numpy==2.5.3
+pydantic==2.13.5
+pytest==9.1.1
+scikit-learn==1.9.1
+scipy==1.18.1
+starlette==1.7.0
+uvicorn==0.54.0

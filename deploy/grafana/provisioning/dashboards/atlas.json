@@ -1,0 +1,16 @@
+{
+  "title": "ATLAS-Σ service",
+  "uid": "atlas-service",
+  "schemaVersion": 39,
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    { "type": "timeseries", "title": "API requests / s", "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [{ "expr": "rate(atlas_requests_total[1m])" }] },
+    { "type": "timeseries", "title": "Simulations executed", "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "targets": [{ "expr": "atlas_simulations_total" }] },
+    { "type": "timeseries", "title": "Simulation wall time / run (s)", "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "targets": [{ "expr": "atlas_simulation_seconds_total / clamp_min(atlas_simulations_total, 1)" }] },
+    { "type": "bargauge", "title": "Large-value settlement rate by run (simulated)", "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "targets": [{ "expr": "atlas_run_settlement_rate_value", "legendFormat": "{{run}}" }] }
+  ]
+}
