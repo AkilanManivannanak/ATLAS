@@ -91,3 +91,19 @@ Acceptance: every policy and every stress scenario replays exactly; same seed gi
 ## Phase 10 — scientific validation (first results published)
 - [x] NEXUS-PAY `standard` benchmark with paired bootstrap CIs; forecasting, game and netting artifacts.
 - [ ] Extended preset, cost-weight sensitivity, 100-institution scale, E3/E4/E7.
+
+## v0.6 — realism, missing components, weak results (complete)
+- [x] Verified rail parameters from official sources (FedNow $10M, RTP $10M, Fed PSR fee) and recorded them in `RAIL_RULES` v2.
+- [x] Generator v2: balanced flows, persistent relationships, autocorrelated activity, payment types, no liquidity look-ahead.
+- [x] Simulator: PSR fee, collateralized credit, customer cutoff, LSM closing-position funding, per-bank FedNow limits.
+- [x] Exact performance work (≈3×); scaling study to 100 banks / 669k payments.
+- [x] Liquidity auction (pay-as-bid, uniform) + E4 incentive study.
+- [x] Constrained PPO (v1 failed, v2 ties MPC) + E7 held-out evaluation.
+- [x] LP-rounding netting; duplicate-selection bug fixed; MILP tolerance fix.
+- [x] Graph-conditioned and neural forecasters; adaptive conformal intervals.
+- [x] Game with 16 seeds (recycler unstable).
+- [x] camt.053 statements reconciled to the ledger; grounded analyst; Decision Center screen.
+- [x] Benchmark v2: auction arms, cost-free raw quantities, 27-model cost sensitivity, extended preset.
+- [x] Visual README (dark/light figures, Mermaid, demo GIF), GitHub Pages explorer.
+
+Acceptance: 152 tests pass; every published run replay-verified; every source-backed parameter cited; negative results (RL v1, MPC ≈ rule-based treasury, netting irrelevant at realistic liquidity) reported.

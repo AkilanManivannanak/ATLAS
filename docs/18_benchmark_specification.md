@@ -1,20 +1,23 @@
-# NEXUS-PAY benchmark specification (`nexus-pay-bench-v1`)
+# NEXUS-PAY benchmark specification (`nexus-pay-bench-v2`)
 
-**Data.** Synthetic days from `nexus-pay-gen-v1`. Nothing is observed banking data.
+**Data.** Synthetic days from `nexus-pay-gen-v2` (see `23_realism_and_calibration.md`). Nothing is observed banking data.
 
 | Parameter (standard preset) | Value |
 |---|---|
 | Institutions | 16 (25% core, 6× activity) |
 | Rails | RTGS, LSM, FedNow-style, RTP-style (RTP on ~75% of banks) |
 | Payments / day | ≈3,000 large-value + ≈2,000 instant |
-| Opening liquidity | 6% of each account's expected gross outflow (large-value); 25% for instant prefunding |
-| RTGS intraday credit | 3% of expected gross outflow |
+| Opening liquidity | 18% of each account's *expected* gross outflow (large-value); 25% for instant prefunding |
+| RTGS intraday credit | 10% of expected gross outflow, 60% collateralized |
 | Seeds | 11–15 (paired across all arms) |
 | Stress scenarios | baseline, counterparty_delay, liquidity_hoarding, combined |
-| Arms | fifo, fifo_strict, priority (reference), bilateral, multilateral, multilateral_milp, rule_rebalancer, mpc, mpc_queue_milp |
+| Arms | fifo, fifo_strict, priority (reference), bilateral, multilateral, multilateral_milp, auction_pay_as_bid, auction_uniform, rule_rebalancer, mpc, mpc_queue_milp, mpc_plus_auction |
+| Secondary reference | rule_rebalancer (the realistic treasury baseline) |
 | Bank strategy | early |
 
-The `extended` preset uses 10 seeds × 11 stress scenarios. The `smoke` preset runs in CI. The blueprint's 100-institution / 500k-payment scale is supported by the generator config but has **not** been benchmarked yet.
+The `extended` preset uses 10 seeds × 11 stress scenarios (1,320 runs); `tight` uses 10%/6% liquidity; `smoke` runs in CI. Scale (100 banks, 669k payments) is measured separately in `results/scaling.json`.
+
+**Cost sensitivity.** Rows store cost-free raw quantities (value-seconds waited, late/unsettled/rejected value, liquidity usage, overdraft minute-sum, collateral used). `cost_sensitivity` re-ranks arms under 27 cost models (delay, unsettled and liquidity weights ×0.25/×1/×4); `reweight_cost` reproduces the simulator's cost to within rounding (tested).
 
 **Validity rule.** A row is written only if the run's ledger replays exactly from its event log (`verify_replay`); otherwise the benchmark aborts.
 

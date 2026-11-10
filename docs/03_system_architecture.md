@@ -41,6 +41,10 @@ ATLAS-Σ is a typed Python modular monolith with a Next.js command center. The f
 | `atlas.optimize` | CVaR / expected-value funding LPs | NumPy, SciPy/HiGHS |
 | `atlas.forecast` | Forecasters, conformal intervals, scenario-level splits | NumPy, scikit-learn (GBM) |
 | `atlas.benchmark` | Benchmark runner, paired bootstrap statistics, reports | none |
+| `atlas.market` | Sealed-bid intraday liquidity auction (pay-as-bid, uniform) | none |
+| `atlas.control.rl` | Constrained PPO (Lagrangian), NumPy | NumPy |
+| `atlas.analyst` | Grounded Q&A over simulation results (cited, cannot execute) | none |
+| `atlas.iso20022.camt` | camt.053 statements built from events, reconciliation | none |
 | `atlas.api` | REST API, RBAC, Prometheus text metrics | FastAPI, Pydantic, Uvicorn |
 
 Infrastructure that the blueprint lists but the measured workload does not yet need (Kafka/Flink, ClickHouse, PostgreSQL, MinIO, MLflow, Kubernetes, a Rust kernel) is intentionally absent; see `DECISIONS.md` D-001 and D-016.

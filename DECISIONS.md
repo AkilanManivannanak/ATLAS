@@ -127,3 +127,33 @@
 **Decision:** PPO/MAPPO/constrained RL are not implemented in this increment. The controller protocol and safety filter they would plug into are implemented and tested.
 
 **Reason:** The blueprint requires the simulator, baselines and optimizer to be validated first. They now are; RL is the next research increment and will be reported against the MPC baseline.
+
+## D-019 — Generator v2 becomes the default; v1 kept bit-for-bit
+
+**Decision:** `nexus-pay-gen-v2` (balanced flows, persistent relationships, AR(1) activity, payment types, no liquidity look-ahead, sourced rail limits) is the default. `generator="v1"` still reproduces the original generator.
+
+**Reason:** v1 had two realism defects that shaped results: opening liquidity was sized from the realised day, and expected flows were unbalanced, creating permanent liquidity sinks. Benchmarks published at v0.5 used v1; v0.6 results are not comparable to them.
+
+## D-020 — Model the Fed PSR daylight-overdraft fee instead of a flat credit cost
+
+**Decision:** Intraday credit cost = PSR fee on the uncollateralized portion (formula from the Fed guide, tested against its worked example) + a 1 bp/day collateral opportunity cost (assumption). The old flat 15 bp/day cost is kept as `credit_bp_per_day` (default 0).
+
+## D-021 — Exact optimisations only
+
+**Decision:** Performance changes must leave final ledger hashes unchanged. The dirty-set gross pass is tested against the naive full rescan, the payment transition fast path re-validates the changed fields, and the incremental conservation total is fully recounted on replay and at close.
+
+## D-022 — Auction loans roll overnight rather than default
+
+**Decision:** Unrepaid intraday auction loans are reported as overnight exposure, not as losses. The model has no default mechanism, and inventing one would distort lender incentives.
+
+## D-023 — Safe RL in NumPy, evaluated only on held-out days and stresses
+
+**Decision:** Constrained PPO is implemented without a deep-learning framework (small network, analytic gradients checked by finite differences). It is always behind the safety controller and is reported only on held-out seeds, including stresses never seen in training. v1's failure is documented.
+
+## D-024 — Grounded analyst instead of a generative LLM
+
+**Decision:** The Decision Center answers with deterministic queries and cites every number. A generative model may later phrase the answers, but it will never produce values or trigger actions.
+
+## D-025 — Robustness of conclusions to cost weights
+
+**Decision:** Benchmark rows store cost-free raw quantities; `cost_sensitivity` re-ranks arms under 27 alternative cost models. A policy claim is made only alongside its win share across those models.
