@@ -91,3 +91,10 @@ def test_results_persist_to_event_store(scenario):
     r = run_day(scenario, SimulationSettings(), store=store)
     assert store.count(r.simulation_id) == len(r.events)
     assert store.verify_chain(r.simulation_id).valid
+
+
+def test_reweighted_cost_reproduces_simulator_cost(scenario):
+    from atlas.benchmark.runner import _run_one, reweight_cost
+    for arm in ("priority", "auction_uniform", "rule_rebalancer"):
+        row = _run_one((SMALL, 11, "combined", arm, "early"))
+        assert abs(reweight_cost(row["raw"]) - row["total_cost_minor"]) <= 10

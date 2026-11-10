@@ -404,7 +404,21 @@ def transition_payment(
     """Return a new instruction in the target state, enforcing modeled transitions."""
     if target not in _PAYMENT_TRANSITIONS[payment.status]:
         raise ValueError(f"invalid payment transition: {payment.status} -> {target}")
-    return replace(payment, status=target, settlement_at=(at if target == PaymentStatus.SETTLED else None))
+    settlement_at = at if target == PaymentStatus.SETTLED else None
+    # Fast path: every field except status/settlement_at is copied from an instance that already passed
+    # full validation, so only the changed fields' invariants are re-checked here.
+    if target == PaymentStatus.SETTLED:
+        if settlement_at is None:
+            raise ValueError("settled payment requires settlement timestamp")
+        _require_aware(settlement_at, "settlement_at")
+        if _instant(settlement_at) < _instant(payment.created_at):
+            raise ValueError("settlement timestamp cannot precede payment creation")
+    new = object.__new__(PaymentInstruction)
+    for name in PaymentInstruction.__slots__:
+        object.__setattr__(new, name, getattr(payment, name))
+    object.__setattr__(new, "status", target)
+    object.__setattr__(new, "settlement_at", settlement_at)
+    return new
 
 
 @dataclass(frozen=True, slots=True)

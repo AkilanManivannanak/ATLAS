@@ -4,7 +4,15 @@ import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from atlas.settlement import Obligation, bilateral_offsets, is_feasible, net_positions, partial_netting_heuristic, partial_netting_milp
+from atlas.settlement import (
+    Obligation,
+    bilateral_offsets,
+    is_feasible,
+    net_positions,
+    partial_netting_heuristic,
+    partial_netting_lp_round,
+    partial_netting_milp,
+)
 
 
 def ob(i, a, b, v, pr=1):
@@ -59,8 +67,10 @@ def test_property_heuristic_feasible_and_milp_optimal(edges, cash):
     h = partial_netting_heuristic(obs, avail)
     m = partial_netting_milp(obs, avail)
     b = bilateral_offsets(obs, avail)
+    lp = partial_netting_lp_round(obs, avail)
     opt = brute_force(obs, avail)
-    for sel in (h, m, b):
+    for sel in (h, m, b, lp):
         assert is_feasible(sel.selected, avail)   # never violates a hard liquidity constraint
+        assert len({o.obligation_id for o in sel.selected}) == len(sel.selected)   # never selects a payment twice
     assert m.gross_value_minor == opt             # exact program reaches the brute-force optimum
-    assert b.gross_value_minor <= h.gross_value_minor <= opt
+    assert b.gross_value_minor <= h.gross_value_minor <= lp.gross_value_minor <= opt

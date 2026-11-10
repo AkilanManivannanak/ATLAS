@@ -70,7 +70,14 @@ class CostModel:
     late_penalty_bp: int = 10           # one-off penalty for settling after due time
     unsettled_penalty_bp: int = 100     # penalty for value left unsettled at close
     liquidity_bp_per_day: int = 5       # cost of peak own-liquidity usage
-    credit_bp_per_day: int = 15         # cost of peak intraday credit usage
+    credit_bp_per_day: int = 0          # legacy flat cost on peak intraday credit (v0.5 used 15); superseded by the PSR fee below
+    # Federal Reserve PSR daylight-overdraft fee (federalreserve.gov/paymentsystems/psr_guide.htm):
+    # 50 bp annual on the *uncollateralized* portion, quoted on a 24-hour/360-day basis, applied to the
+    # minute-by-minute average over the 1,291-minute Fedwire day with a 21.5/24 effective-rate adjustment.
+    psr_fee_bp_annual: int = 50
+    psr_day_minutes: int = 1_291
+    psr_fedwire_hours_x10: int = 215
+    collateral_opportunity_bp_per_day: int = 1   # assumption: opportunity cost of collateral actually used
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -91,10 +98,18 @@ class SimulationSettings:
     snapshot_every_min: int = 15
     controller_interval_min: int = 5
     cost: CostModel = CostModel()
+    lsm_final_cycle_min_before_close: int = 15   # 0 disables closing-position funding (v0.5 behaviour)
+    auction: str | None = None                # None | "pay_as_bid" | "uniform"  (atlas.market)
+    auction_interval_min: int = 15
+    auction_lender_share_bp: int = 5_000      # lenders offer at most this share of their free cash
+    auction_min_lot_minor: int = 1_000_000_00
+    auction_shading_bp: tuple = ()            # ((institution_id, bp), ...): ask = true cost x (1 + bp/10000); experiments only
 
     def __post_init__(self) -> None:
         if self.policy not in POLICIES:
             raise ValueError(f"unknown policy {self.policy!r}; choose from {POLICIES}")
+        if self.auction not in (None, "pay_as_bid", "uniform"):
+            raise ValueError("auction must be None, 'pay_as_bid' or 'uniform'")
         if self.lsm_algorithm not in ("heuristic", "milp"):
             raise ValueError("lsm_algorithm must be 'heuristic' or 'milp'")
         for name in ("tick_min", "decision_interval_min", "rtgs_netting_every_min", "lsm_cycle_min", "snapshot_every_min", "controller_interval_min"):
@@ -206,13 +221,36 @@ class DaySimulator:
             for a in scenario.accounts
         )
         self.ledger = Ledger(self.opening)
+        self.collateralized = {a.account_id: getattr(a, "collateralized_credit_minor", 0) if settings.use_intraday_credit else 0
+                               for a in scenario.accounts if a.rail == "rtgs"}
+        self.uncollat_minute_sum = 0          # sum over minutes of uncollateralized daylight overdraft (minor units)
+        self.uncollat_by: dict[str, int] = {a: 0 for a in self.collateralized}
+        self.peak_collateralized_used = {a: 0 for a in self.collateralized}
+        self.opening_by_inst: dict[str, dict[str, int]] = {}
+        for a in self.opening:
+            self.opening_by_inst.setdefault(a.institution_id, {})[a.payment_rail_id] = a.ledger_balance_minor
+        self.queued_by: dict[tuple[str, str], int] = {}
+        self._dirty: set[str] = set()
+        self.loans: list[dict] = []
+        self.auction_log: list[dict] = []
+        self.shading = dict(settings.auction_shading_bp)     # (institution, rail) -> released-but-unsettled value
+        self.settled_value = 0
+        self.settled_count = 0
+        self.held_value = 0
+        self.customer_cutoff = None
+        if getattr(scenario.config, "generator", "v1") != "v1":
+            from zoneinfo import ZoneInfo
+            self.customer_cutoff = datetime.combine(scenario.config.business_date, scenario.config.customer_cutoff,
+                                                    ZoneInfo("America/New_York")).astimezone(self.open_at.tzinfo)
         self.inst_rails = {i.institution_id: i.rails for i in scenario.institutions}
         self.institutions = sorted(self.inst_rails)
         self.largest = max(scenario.institutions, key=lambda i: (i.size_weight, i.institution_id)).institution_id
 
         # ---- rails (reuse validated archetypes)
+        plimit = {(a.institution_id, a.rail): getattr(a, "participant_limit_minor", None) for a in scenario.accounts}
         parts = lambda rail: tuple(RailParticipant(i, "USD", transaction_limit_minor=(
-            scenario.config.fednow_limit_minor if rail == "fednow" else scenario.config.rtp_limit_minor if rail == "rtp" else None))
+            (plimit.get((i, rail)) or scenario.config.fednow_limit_minor) if rail == "fednow"
+            else (plimit.get((i, rail)) or scenario.config.rtp_limit_minor) if rail == "rtp" else None))
             for i in self.institutions if rail in self.inst_rails[i])
         self.rails: dict[str, PaymentRail] = {
             "rtgs": PaymentRail("rtgs", "USD", parts("rtgs")),
@@ -306,6 +344,9 @@ class DaySimulator:
             return [p["sender_account_id"], p["receiver_account_id"]]
         if ev.event_type == "LiquiditySavingCycleSettled":
             return sorted(json.loads(ev.payload_json)["account_deltas_minor"])
+        if ev.event_type == "InterbankLoanTransfer":
+            p = json.loads(ev.payload_json)
+            return [p["from_account_id"], p["to_account_id"]]
         if ev.event_type in ("FundingDrawn", "FundingRepaid", "LiquidityAdjusted", "CreditLimitChanged", "IntradayCreditRepaid"):
             return [json.loads(ev.payload_json)["account_id"]]
         return []
@@ -362,6 +403,14 @@ class DaySimulator:
                                          at + timedelta(seconds=j), min(self.close_at, at + timedelta(minutes=60)), 1)
                     self.extra_payments.append(sp)
                     self._push(sp.arrival_at, EventPhase.PAYMENT_ARRIVAL, "arrival", sp)
+        if self.settings.lsm_final_cycle_min_before_close > 0:
+            gap = timedelta(minutes=self.settings.lsm_final_cycle_min_before_close)
+            if self.customer_cutoff is not None and self.open_at + gap < self.customer_cutoff < self.close_at:
+                # a funding cycle ahead of the customer cutoff, so customer transfers are not stranded by it
+                self._push(self.customer_cutoff - gap, EventPhase.ELIGIBILITY_AND_QUEUE, "lsm_final", None)
+            self._push(self.close_at - gap, EventPhase.ELIGIBILITY_AND_QUEUE, "lsm_final", None)
+        if self.customer_cutoff is not None and self.open_at < self.customer_cutoff < self.close_at:
+            self._push(self.customer_cutoff, EventPhase.PARTICIPANT_DECISION, "customer_cutoff", None)
         t = self.open_at
         minute = 0
         while t <= self.close_at:
@@ -381,6 +430,8 @@ class DaySimulator:
     # ------------------------------------------------------------------- run
     def run(self) -> SimulationResult:
         started = _time.perf_counter()
+        if self.controller is not None and hasattr(self.controller, "attach"):
+            self.controller.attach(self)       # learning controllers read cost accruals (read-only) for their reward signal
         self._schedule()
         while self.heap:
             ts, phase, _, kind, data = heapq.heappop(self.heap)
@@ -461,12 +512,13 @@ class DaySimulator:
         self.seen_ids.add(p.payment_id)
         self.meta[p.payment_id] = {"rail": p.rail, "sender": p.sender, "receiver": p.receiver, "amount": p.amount_minor,
                                    "arrival": p.arrival_at, "due": p.due_at, "priority": p.priority, "status": "created",
-                                   "settled_at": None}
+                                   "settled_at": None, "kind": getattr(p, "kind", "interbank" if p.rail in LARGE_VALUE else "instant")}
         self.payments[p.payment_id] = pay
         if p.rail in INSTANT:
             self._instant(at, pay)
         else:
             self.held[p.sender][p.payment_id] = HeldPayment(p.payment_id, p.rail, p.amount_minor, p.priority, p.due_at, p.arrival_at)
+            self.held_value += p.amount_minor
 
     def _reject(self, at: datetime, pay: PaymentInstruction, reason: str, instant: bool = False) -> None:
         self.payments[pay.payment_id] = transition_payment(pay, PaymentStatus.REJECTED) if pay.status in (PaymentStatus.CREATED, PaymentStatus.VALIDATED) else pay
@@ -498,6 +550,11 @@ class DaySimulator:
         self.payments[pay.payment_id] = pay
         m = self.meta[pay.payment_id]
         m["status"], m["settled_at"] = "settled", at
+        self.settled_value += pay.amount_minor
+        self.settled_count += 1
+        if pay.payment_rail_id in LARGE_VALUE:
+            k = (pay.sender_institution_id, pay.payment_rail_id)
+            self.queued_by[k] = self.queued_by.get(k, 0) - pay.amount_minor
         self._inflow(pay.receiver_institution_id, pay.payment_rail_id, pay.amount_minor, at)
 
     def _inflow(self, inst: str, rail: str, amount: int, at: datetime) -> None:
@@ -510,11 +567,7 @@ class DaySimulator:
     def _view(self, inst: str, at: datetime) -> BankView:
         rails = [r for r in self.inst_rails[inst] if r in LARGE_VALUE]
         accts = {r: self.ledger.account(self._acct(inst, r)) for r in rails}
-        queued = {r: 0 for r in rails}
-        for r in rails:
-            for pid in self.queue[r]:
-                if self.meta[pid]["sender"] == inst:
-                    queued[r] += self.meta[pid]["amount"]
+        queued = {r: self.queued_by.get((inst, r), 0) for r in rails}
         log = self.inflow_log[inst]
         hour_ago = at - timedelta(hours=1)
         while log and log[0][0] < hour_ago:
@@ -522,7 +575,7 @@ class DaySimulator:
         inflow_hour = sum(a for t, a in log if t >= hour_ago)
         h = _minute_of(self.open_at, at) // 60
         expected = self.expected_inflow_hour[inst].get(h - 1, 0) if h >= 1 else 0
-        opening = {a.payment_rail_id: a.ledger_balance_minor for a in self.opening if a.institution_id == inst and a.payment_rail_id in rails}
+        opening = {r: self.opening_by_inst[inst][r] for r in rails}
         return BankView(inst, at, tuple(self.held[inst].values()), {r: a.cash_available_minor for r, a in accts.items()},
                         {r: a.undrawn_credit_minor for r, a in accts.items()}, opening, dict(self.inflow_since_last[inst]),
                         inflow_hour, expected, queued, inst in self.stress_signal)
@@ -542,12 +595,13 @@ class DaySimulator:
                 hp = self.held[inst].pop(pid, None)
                 if hp is None:
                     continue
+                self.held_value -= hp.amount_minor
                 self._release(at, self.payments[pid])
 
     def _maybe_draw(self, inst: str, at: datetime, release: list[str]) -> None:
         need = sum(self.held[inst][pid].amount_minor for pid in release if pid in self.held[inst] and self.held[inst][pid].rail == "rtgs")
         acct = self.ledger.account(self._acct(inst, "rtgs"))
-        queued = sum(self.meta[pid]["amount"] for pid in self.queue["rtgs"] if self.meta[pid]["sender"] == inst)
+        queued = self.queued_by.get((inst, "rtgs"), 0)
         shortfall = need + queued - acct.available_balance_minor
         fac = self.facilities[inst]
         amount = min(shortfall, fac.available_capacity_minor)
@@ -570,6 +624,8 @@ class DaySimulator:
         self.payments[pay.payment_id] = pay
         self.queue[pay.payment_rail_id][pay.payment_id] = self.submitted
         self.submitted += 1
+        k = (pay.sender_institution_id, pay.payment_rail_id)
+        self.queued_by[k] = self.queued_by.get(k, 0) + pay.amount_minor
         self.meta[pay.payment_id]["status"] = "queued"
         self.meta[pay.payment_id]["released_at"] = at
         self._emit("PaymentReleased", pay.payment_id, "payment", at,
@@ -577,27 +633,40 @@ class DaySimulator:
 
     # -- settlement
     def _gross_pass(self, at: datetime) -> int:
+        """Repeat passes over the RTGS queue in policy order until a pass settles nothing.
+
+        Only payments whose sender's resources changed since it was last found short are
+        re-tested (``self._dirty``); skipping a sender whose resources did not grow cannot
+        change the outcome, so this is an exact optimisation of the naive full rescan.
+        """
         q = self.queue["rtgs"]
         if not q or not self.rail_up["rtgs"]:
             return 0
         policy = self.settings.policy
+        use_credit = self.settings.use_intraday_credit
+        if policy in ("fifo", "fifo_strict"):
+            order = sorted(q, key=q.__getitem__)
+        else:
+            order = sorted(q, key=lambda pid: (-self.payments[pid].priority, self.payments[pid].due_at, q[pid]))
         settled_total = 0
+        first = True
         while True:
-            if policy in ("fifo", "fifo_strict"):
-                order = sorted(q, key=q.__getitem__)
-            else:
-                order = sorted(q, key=lambda pid: (-self.payments[pid].priority, self.payments[pid].due_at, q[pid]))
             blocked: set[str] = set()
             progressed = 0
+            remaining = []
             for pid in order:
                 pay = self.payments[pid]
+                acct_id = pay.sender_account_id
                 if policy == "fifo_strict" and pay.sender_institution_id in blocked:
+                    remaining.append(pid)
                     continue
-                s = self.ledger.account(pay.sender_account_id)
-                use_credit = self.settings.use_intraday_credit
-                covered = s.cash_available_minor + (s.undrawn_credit_minor if use_credit else 0) >= pay.amount_minor
-                if not covered:
+                if not first and acct_id not in self._dirty and policy != "fifo_strict":
+                    remaining.append(pid)
+                    continue
+                s = self.ledger.account(acct_id)
+                if s.cash_available_minor + (s.undrawn_credit_minor if use_credit else 0) < pay.amount_minor:
                     blocked.add(pay.sender_institution_id)
+                    remaining.append(pid)
                     continue
                 pending = PaymentRail.to_settlement_pending(pay)
                 res = settle_cash_transfer(pending, s, self.ledger.account(pay.receiver_account_id), settled_at=at,
@@ -605,11 +674,16 @@ class DaySimulator:
                                            simulation_id=self.simulation_id, correlation_id=self.simulation_id,
                                            allow_intraday_credit=use_credit)
                 del q[pid]
+                self._dirty.add(pay.receiver_account_id)
                 self._settled(at, res)
                 progressed += 1
             settled_total += progressed
             if progressed == 0:
+                self._dirty.clear()
                 return settled_total
+            # next pass: only senders that received funds can newly settle
+            order = remaining
+            first = False
 
     def _obligations(self, rail: str) -> list[Obligation]:
         return [Obligation(pid, self.payments[pid].sender_account_id, self.payments[pid].receiver_account_id,
@@ -650,11 +724,17 @@ class DaySimulator:
             self.payments[pay.payment_id] = pay
             m = self.meta[pay.payment_id]
             m["status"], m["settled_at"] = "settled", at
+            self.settled_value += pay.amount_minor
+            self.settled_count += 1
+            k = (pay.sender_institution_id, rail)
+            self.queued_by[k] = self.queued_by.get(k, 0) - pay.amount_minor
             self._inflow(pay.receiver_institution_id, rail, pay.amount_minor, at)
         return len(res.batch.payments)
 
     def _on_settle(self, at: datetime, minute: int) -> None:
         s = self.settings
+        if s.auction and minute % s.auction_interval_min == 0 and minute > 0:
+            self._run_auction(at)
         self._gross_pass(at)
         if s.policy in ("bilateral", "multilateral", "multilateral_milp") and minute % s.rtgs_netting_every_min == 0:
             algo = {"bilateral": "bilateral", "multilateral": "heuristic", "multilateral_milp": "milp"}[s.policy]
@@ -670,6 +750,123 @@ class DaySimulator:
             )
             if not coverable:
                 self.counters["gridlock_ticks"] += 1
+        self._accrue_daylight_overdraft(s.tick_min)
+
+    # -- liquidity auction (atlas.market)
+    def _run_auction(self, at: datetime) -> None:
+        from atlas.ledger import interbank_transfer_event
+        from atlas.market import Ask, Bid, clear_auction
+        if not self.queue["rtgs"] or not self.rail_up["rtgs"]:
+            return
+        c = self.settings.cost
+        use_credit = self.settings.use_intraday_credit
+        hours_left = max(0.0, (self.close_at - at).total_seconds() / 3600)
+        soon = at + timedelta(minutes=30)
+        due_soon: set[str] = {self.meta[pid]["sender"] for pid in self.queue["rtgs"] if self.payments[pid].due_at <= soon}
+        held_soon: dict[str, int] = {}
+        for inst, h in self.held.items():
+            held_soon[inst] = sum(x.amount_minor for x in h.values() if x.rail == "rtgs" and x.due_at <= at + timedelta(minutes=60))
+        bids, asks, true_cost = [], [], {}
+        for inst in self.institutions:
+            if "rtgs" not in self.inst_rails[inst] or self._blocked(inst, at):
+                continue
+            acct = self.ledger.account(self._acct(inst, "rtgs"))
+            queued = self.queued_by.get((inst, "rtgs"), 0)
+            avail = acct.cash_available_minor + (acct.undrawn_credit_minor if use_credit else 0)
+            if queued > avail:
+                # willingness to pay (flat, 0.01 bp): expected delay cost avoided (half the remaining day) + deadline penalty at risk
+                wtp = int(c.delay_bp_per_hour * 100 * hours_left / 2) + (c.late_penalty_bp * 100 if inst in due_soon else 0)
+                if wtp > 0:
+                    bids.append(Bid(inst, queued - avail, wtp))
+                continue
+            committed = queued + held_soon.get(inst, 0)
+            free = acct.cash_available_minor - committed
+            offer = free * self.settings.auction_lender_share_bp // 10_000
+            if offer >= self.settings.auction_min_lot_minor:
+                # true reservation cost (0.01 bp): 0.2 bp base + up to 2 bp as own cash gets committed + a fixed
+                # institution-specific spread of 0-0.3 bp (assumptions; gives the supply curve slope and dispersion)
+                util_bp = committed * 10_000 // max(1, acct.cash_available_minor)
+                spread = derive_stream_seed(0, f"auction-spread:{inst}") % 31
+                tc = 20 + 200 * util_bp // 10_000 + spread
+                true_cost[inst] = tc
+                ask = tc + (tc * self.shading.get(inst, 0) + 9_999) // 10_000
+                asks.append(Ask(inst, offer, ask, tc))
+        if not bids or not asks:
+            return
+        res = clear_auction(asks, bids, self.settings.auction)
+        self.auction_log.append({"at": at.isoformat(), "bids": len(bids), "asks": len(asks), "demanded_minor": res.demanded_quantity_minor,
+                                 "offered_minor": res.offered_quantity_minor, "matched_minor": res.matched_quantity_minor,
+                                 "clearing_rate_cbp": res.clearing_rate_cbp})
+        self.counters["auctions_held"] = self.counters.get("auctions_held", 0) + 1
+        wtp = {b.borrower: b.max_rate_cbp for b in bids}
+        for t in res.trades:
+            src, dst = self.ledger.account(self._acct(t.lender, "rtgs")), self.ledger.account(self._acct(t.borrower, "rtgs"))
+            amount = min(t.quantity_minor, src.cash_available_minor)
+            if amount <= 0:
+                continue
+            loan_id = f"loan-{len(self.loans):05d}"
+            _, _, ev = interbank_transfer_event(src, dst, amount, "auction loan drawdown", loan_id=loan_id, at=at,
+                                                event_id=f"{self.simulation_id}#{self.seq}", sequence_number=self.seq,
+                                                simulation_id=self.simulation_id, correlation_id=f"auction:{at.isoformat()}", causation_id=None)
+            self._commit(ev)
+            self._dirty.add(dst.account_id)
+            interest = -(-amount * t.rate_cbp // 1_000_000)
+            self.loans.append({"loan_id": loan_id, "lender": t.lender, "borrower": t.borrower, "principal_minor": amount, "rate_cbp": t.rate_cbp,
+                               "interest_minor": interest, "lender_true_cost_cbp": true_cost[t.lender], "borrower_wtp_cbp": wtp[t.borrower],
+                               "at": at.isoformat(), "repaid_minor": 0})
+            self.counters["auction_matched_minor"] = self.counters.get("auction_matched_minor", 0) + amount
+
+    def _repay_loans(self, at: datetime) -> None:
+        from atlas.ledger import interbank_transfer_event
+        for loan in self.loans:
+            owed = loan["principal_minor"] + loan["interest_minor"]
+            src = self.ledger.account(self._acct(loan["borrower"], "rtgs"))
+            dst = self.ledger.account(self._acct(loan["lender"], "rtgs"))
+            amount = min(owed, src.cash_available_minor)
+            if amount > 0:
+                _, _, ev = interbank_transfer_event(src, dst, amount, "auction loan repayment", loan_id=loan["loan_id"], at=at,
+                                                    event_id=f"{self.simulation_id}#{self.seq}", sequence_number=self.seq,
+                                                    simulation_id=self.simulation_id, correlation_id=loan["loan_id"], causation_id=None)
+                self._commit(ev)
+            loan["repaid_minor"] = amount
+
+    def _auction_metrics(self) -> dict:
+        L = self.loans
+        if not self.settings.auction:
+            return {}
+        principal = sum(x["principal_minor"] for x in L)
+        lender_profit: dict[str, int] = {}
+        for x in L:
+            # Any amount the borrower cannot repay from cash at close is rolled into an overnight obligation
+            # (a counterparty exposure), not written off: the model has no default mechanism.
+            cost = -(-x["principal_minor"] * x["lender_true_cost_cbp"] // 1_000_000)
+            lender_profit[x["lender"]] = lender_profit.get(x["lender"], 0) + x["interest_minor"] - cost
+        return {
+            "mechanism": self.settings.auction, "auctions_held": self.counters.get("auctions_held", 0), "loans": len(L),
+            "principal_minor": principal, "interest_minor": sum(x["interest_minor"] for x in L),
+            "rolled_overnight_minor": sum(max(0, x["principal_minor"] + x["interest_minor"] - x["repaid_minor"]) for x in L),
+            "avg_rate_cbp": (sum(x["rate_cbp"] * x["principal_minor"] for x in L) / principal) if principal else None,
+            "lender_surplus_minor": sum(lender_profit.values()),
+            "borrower_surplus_minor": sum((x["principal_minor"] * (x["borrower_wtp_cbp"] - x["rate_cbp"])) // 1_000_000 for x in L),
+            "lender_principal_minor": {k: sum(x["principal_minor"] for x in L if x["lender"] == k) for k in {x["lender"] for x in L}},
+            "lender_profit_minor": lender_profit, "rounds": self.auction_log,
+        }
+
+    def _psr_fee(self, minute_sum: int) -> int:
+        c = self.settings.cost
+        num = minute_sum * c.psr_fee_bp_annual * c.psr_fedwire_hours_x10
+        return -(-num // (c.psr_day_minutes * 10_000 * 240 * 360))
+
+    def _accrue_daylight_overdraft(self, minutes: int) -> None:
+        """End-of-minute uncollateralized overdraft, per the PSR minute-by-minute method."""
+        for acct_id, collat in self.collateralized.items():
+            used = self.ledger.account(acct_id).intraday_credit_used_minor
+            if used:
+                u = max(0, used - collat) * minutes
+                self.uncollat_minute_sum += u
+                self.uncollat_by[acct_id] += u
+                if min(used, collat) > self.peak_collateralized_used[acct_id]:
+                    self.peak_collateralized_used[acct_id] = min(used, collat)
 
     # -- control
     def _on_control(self, at: datetime, minute: int) -> None:
@@ -686,6 +883,8 @@ class DaySimulator:
                      "institution": action.institution, "from_rail": action.from_rail, "to_rail": action.to_rail}
             self.controller_log.append(entry)
             self.counters["controller_actions"] += 1
+            if hasattr(self.controller, "on_verdict"):
+                self.controller.on_verdict(action, verdict)
             if not verdict.approved:
                 self.counters["controller_rejected"] += 1
                 self._emit("ControlActionRejected", action.institution or "system", "control", at,
@@ -717,11 +916,11 @@ class DaySimulator:
             row[f"{rail}_cash_minor"] = sum(a.ledger_balance_minor for a in accts)
             row[f"{rail}_credit_used_minor"] = sum(a.intraday_credit_used_minor for a in accts)
         for rail in LARGE_VALUE:
-            row[f"{rail}_queued_value_minor"] = sum(self.meta[p]["amount"] for p in self.queue[rail])
+            row[f"{rail}_queued_value_minor"] = sum(v for (_, r), v in self.queued_by.items() if r == rail)
             row[f"{rail}_queued_count"] = len(self.queue[rail])
-        row["held_value_minor"] = sum(h.amount_minor for d in self.held.values() for h in d.values())
-        row["settled_value_minor"] = sum(m["amount"] for m in self.meta.values() if m["status"] == "settled")
-        row["settled_count"] = sum(1 for m in self.meta.values() if m["status"] == "settled")
+        row["held_value_minor"] = self.held_value
+        row["settled_value_minor"] = self.settled_value
+        row["settled_count"] = self.settled_count
         return row
 
     def _on_snapshot(self, at: datetime, minute: int) -> None:
@@ -729,16 +928,11 @@ class DaySimulator:
 
     def _on_close(self, at: datetime, _: Any) -> None:
         # Final settlement attempt already ran at this timestamp (SETTLEMENT phase precedes MONITORING).
-        for inst in self.institutions:
-            for pid in list(self.held[inst]):
-                self.held[inst].pop(pid)
-                self._expire(at, pid, "held by sender at close")
-        for rail in LARGE_VALUE:
-            for pid in list(self.queue[rail]):
-                del self.queue[rail][pid]
-                self._expire(at, pid, "unsettled in central queue at close")
+        self._expire_where(at, lambda pid: True, "held by sender at close", "unsettled in central queue at close")
         meta = lambda: dict(at=at, event_id=f"{self.simulation_id}#{self.seq}", sequence_number=self.seq,
                             simulation_id=self.simulation_id, correlation_id=self.simulation_id, causation_id=None)
+        if self.loans:
+            self._repay_loans(at)
         for inst in self.institutions:
             fac = self.facilities[inst]
             if fac.drawn_amount_minor:
@@ -759,7 +953,63 @@ class DaySimulator:
                 if rep:
                     self._commit(rep[1])
         self.timeseries.append(self._sample(at))
+        self.ledger.verify_totals()
+        if self.controller is not None and hasattr(self.controller, "on_close"):
+            self.controller.on_close(self)
         self._emit("BusinessDayClosed", "system", "simulation", at, {"state_hash": self.ledger.state_hash()})
+
+    def _expire_where(self, at: datetime, pred, held_reason: str, queued_reason: str) -> None:
+        for inst in self.institutions:
+            for pid in [p for p in self.held[inst] if pred(p)]:
+                self.held_value -= self.held[inst].pop(pid).amount_minor
+                self._expire(at, pid, held_reason)
+        for rail in LARGE_VALUE:
+            for pid in [p for p in self.queue[rail] if pred(p)]:
+                del self.queue[rail][pid]
+                k = (self.meta[pid]["sender"], rail)
+                self.queued_by[k] = self.queued_by.get(k, 0) - self.meta[pid]["amount"]
+                self._expire(at, pid, queued_reason)
+
+    def _on_lsm_final(self, at: datetime, _: Any) -> None:
+        """Final LSM cycle with closing-position funding.
+
+        Every LSM payment still held is released; each participant whose multilateral net
+        debit exceeds its LSM cash funds the difference from its own RTGS cash (an own-account
+        transfer recorded as a pair of LiquidityAdjusted events); then the queue is netted.
+        Payments of participants that cannot fund are left out by the netting step and expire.
+        Modeled on the closing-position funding of liquidity-saving systems; timings are assumptions.
+        """
+        if not self.rail_up["lsm"]:
+            return
+        for inst in self.institutions:
+            for pid in [p for p, h in self.held[inst].items() if h.rail == "lsm" and not self._blocked(inst, at)]:
+                self.held_value -= self.held[inst].pop(pid).amount_minor
+                self._release(at, self.payments[pid])
+        if not self.queue["lsm"]:
+            return
+        net: dict[str, int] = {}
+        for pid in self.queue["lsm"]:
+            pay = self.payments[pid]
+            net[pay.sender_account_id] = net.get(pay.sender_account_id, 0) - pay.amount_minor
+            net[pay.receiver_account_id] = net.get(pay.receiver_account_id, 0) + pay.amount_minor
+        for acct_id, pos in sorted(net.items()):
+            acct = self.ledger.account(acct_id)
+            deficit = -pos - acct.cash_available_minor
+            if deficit <= 0 or not self.rail_up["rtgs"]:
+                continue
+            inst = acct.institution_id
+            src = self.ledger.account(self._acct(inst, "rtgs"))
+            amount = min(deficit, src.cash_available_minor)
+            if amount > 0:
+                self._transfer(at, Action("transfer", institution=inst, from_rail="rtgs", to_rail="lsm", amount_minor=amount,
+                                          rationale="LSM closing-position funding"))
+                self.counters["lsm_closing_funding_minor"] = self.counters.get("lsm_closing_funding_minor", 0) + amount
+        self._net(at, "lsm", "heuristic", self.rails["lsm"])  # type: ignore[arg-type]
+
+    def _on_customer_cutoff(self, at: datetime, _: Any) -> None:
+        """Customer transfers cannot be sent after the customer cutoff (modeled on Fedwire's earlier customer-transfer cutoff)."""
+        self._expire_where(at, lambda pid: self.meta[pid].get("kind") == "customer",
+                           "customer transfer cutoff passed (held)", "customer transfer cutoff passed (queued)")
 
     def _expire(self, at: datetime, pid: str, reason: str) -> None:
         pay = self.payments[pid]
@@ -825,12 +1075,23 @@ class DaySimulator:
         unsettled_v = sum(m["amount"] for m in lv if m["status"] != "settled")
         unsettled_cost = unsettled_v * cost.unsettled_penalty_bp // 10_000
         liq_cost = sys_lu * cost.liquidity_bp_per_day // 10_000
-        credit_cost = peak_credit * cost.credit_bp_per_day // 10_000
+        # PSR fee: average uncollateralized overdraft over the 1,291-minute day x (50bp * 21.5/24) / 360, rounded up.
+        psr_fee = self._psr_fee(self.uncollat_minute_sum)
+        collateral_cost = sum(self.peak_collateralized_used.values()) * cost.collateral_opportunity_bp_per_day // 10_000
+        credit_cost = peak_credit * cost.credit_bp_per_day // 10_000 + psr_fee + collateral_cost
         instant_cost = self.counters["instant_rejected_value_minor"] * cost.unsettled_penalty_bp // 10_000
         total_cost = delay_cost + late_cost + unsettled_cost + liq_cost + credit_cost + instant_cost + self.counters["facility_interest_minor"]
 
         metrics = {
             "large_value": summarize(lv), "instant": summarize(inst_m), "by_rail": by_rail,
+            "by_kind": {k: summarize([m for m in lv if m.get("kind") == k]) for k in sorted({m.get("kind", "interbank") for m in lv})},
+            "raw": {  # cost-model-free quantities, so any cost weighting can be recomputed post hoc
+                "settled_value_seconds": sum(m["amount"] * int((m["settled_at"] - m["arrival"]).total_seconds()) for m in lv if m["status"] == "settled"),
+                "late_settled_value_minor": sum(m["amount"] for m in lv if m["status"] == "settled" and m["settled_at"] > m["due"]),
+                "unsettled_value_minor": unsettled_v, "instant_rejected_value_minor": self.counters["instant_rejected_value_minor"],
+                "uncollateralized_overdraft_minute_sum": self.uncollat_minute_sum,
+                "peak_collateralized_credit_minor": sum(self.peak_collateralized_used.values()),
+            },
             "liquidity": {
                 "system_liquidity_usage_minor": sys_lu, "upper_bound_minor": sys_ub, "lower_bound_minor": sys_lb,
                 # Bounds-based efficiency (Leinonen & Soramaki) is only meaningful when every payment settled.
@@ -840,9 +1101,11 @@ class DaySimulator:
                 "opening_large_value_liquidity_minor": sum(a.ledger_balance_minor for a in self.opening if a.payment_rail_id in LARGE_VALUE),
             },
             "costs_minor": {"delay": delay_cost, "late_penalty": late_cost, "unsettled_penalty": unsettled_cost,
-                            "liquidity": liq_cost, "intraday_credit": credit_cost, "instant_rejections": instant_cost,
+                            "liquidity": liq_cost, "intraday_credit": credit_cost, "daylight_overdraft_fee": psr_fee,
+                            "collateral_opportunity": collateral_cost, "instant_rejections": instant_cost,
                             "facility_interest": self.counters["facility_interest_minor"], "total": total_cost},
             "counters": dict(self.counters),
+            "auction": self._auction_metrics(),
             "events": len(self.events), "runtime_s": runtime_s,
             "events_per_second": len(self.events) / runtime_s if runtime_s > 0 else 0.0,
             "replay_contract": {"ledger_events": self.ledger.applied_count, "final_state_hash": self.ledger.state_hash()},
@@ -859,6 +1122,7 @@ class DaySimulator:
                 "value_weighted_delay_s": sm["value_weighted_delay_s"],
                 "liquidity_usage_minor": sum(lu[a.account_id] for a in accts if a.payment_rail_id in LARGE_VALUE),
                 "peak_credit_minor": sum(self.peak_credit[a.account_id] for a in accts),
+                "daylight_overdraft_fee_minor": self._psr_fee(sum(self.uncollat_by.get(a.account_id, 0) for a in accts)),
                 "opening_minor": {a.payment_rail_id: a.ledger_balance_minor for a in accts},
                 "closing_minor": {a.payment_rail_id: self.ledger.account(a.account_id).ledger_balance_minor for a in accts},
                 "received_value_minor": sum(m["amount"] for m in lv if m["receiver"] == inst and m["status"] == "settled"),

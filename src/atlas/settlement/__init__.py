@@ -7,6 +7,7 @@ from .netting import (
     is_feasible,
     net_positions,
     partial_netting_heuristic,
+    partial_netting_lp_round,
     partial_netting_milp,
 )
 
@@ -17,5 +18,6 @@ __all__ = [
     "is_feasible",
     "net_positions",
     "partial_netting_heuristic",
+    "partial_netting_lp_round",
     "partial_netting_milp",
 ]

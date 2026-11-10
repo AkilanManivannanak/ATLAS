@@ -1,6 +1,14 @@
 """Event-sourced settlement ledger: state is a pure fold over financial events."""
 
-from .book import LEDGER_EVENT_TYPES, Ledger, LedgerReplayError, adjustment_event, credit_limit_event, credit_repayment_event
+from .book import (
+    LEDGER_EVENT_TYPES,
+    Ledger,
+    LedgerReplayError,
+    adjustment_event,
+    credit_limit_event,
+    credit_repayment_event,
+    interbank_transfer_event,
+)
 
 __all__ = [
     "LEDGER_EVENT_TYPES",
@@ -9,4 +17,5 @@ __all__ = [
     "adjustment_event",
     "credit_limit_event",
     "credit_repayment_event",
+    "interbank_transfer_event",
 ]

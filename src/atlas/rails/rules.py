@@ -37,8 +37,28 @@ RTP_SOURCE = RuleSource(
     RETRIEVED_ON,
 )
 
+RETRIEVED_V2 = date(2026, 11, 10)
+FEDNOW_LIMIT_SOURCE = RuleSource(
+    "fednow-limit-increase-2025",
+    "FedNow Service customer credit transfer and liquidity management transfer network limit increases",
+    "https://www.frbservices.org/news/communications/111225-fednow-transaction-limit-increase",
+    RETRIEVED_V2,
+)
+RTP_LIMIT_SOURCE = RuleSource(
+    "rtp-limit-10m",
+    "Higher $10 million RTP network transaction limit (The Clearing House press release)",
+    "https://prnewswire.com/news-releases/higher-10-million-rtp-network-transaction-limit-empowers-new-uses-302321724.html",
+    RETRIEVED_V2,
+)
+PSR_SOURCE = RuleSource(
+    "fed-psr-guide",
+    "Guide to the Federal Reserve's Payment System Risk Policy on Intraday Credit",
+    "https://www.federalreserve.gov/paymentsystems/psr_guide.htm",
+    RETRIEVED_V2,
+)
+
 RAIL_RULES = FinancialRuleRegistry(
-    "atlas-rail-rules-v1",
+    "atlas-rail-rules-v2",
     (
         FinancialRule(
             "atlas.rail.rtgs.public_window_source", 1,
@@ -98,8 +118,33 @@ RAIL_RULES = FinancialRuleRegistry(
             RuleBasis.SIMULATOR_ASSUMPTION,
             assumption_rationale="Versioned local inputs keep the model reproducible and distinguish configurable constraints from sourced facts.",
         ),
+        FinancialRule(
+            "atlas.rail.fednow.network_limit", 1,
+            "Effective 2025-11-12 the FedNow network limit for customer credit transfers and returns rose from $1 million to $10 million; participants may set lower limits.",
+            "Generator v2 caps FedNow amounts at $10M and draws each participant's own limit from {$0.5M, $1M, $5M, $10M} (the menu is an assumption).",
+            RuleBasis.OFFICIAL_SOURCE, source=FEDNOW_LIMIT_SOURCE,
+        ),
+        FinancialRule(
+            "atlas.rail.rtp.network_limit", 1,
+            "The RTP network individual transaction limit is $10 million.",
+            "Generator v2 caps RTP amounts at $10M; participant-specific lower limits are not modeled for RTP.",
+            RuleBasis.OFFICIAL_SOURCE, source=RTP_LIMIT_SOURCE,
+        ),
+        FinancialRule(
+            "atlas.rail.rtgs.psr_daylight_overdraft_fee", 1,
+            "Uncollateralized daylight overdrafts are charged 50 bp (annual, 24-hour/360-day basis), applied to the minute-by-minute average over the 1,291-minute Fedwire day with a 21.5/24 adjustment; collateralized overdrafts carry a zero fee for eligible institutions.",
+            "ATLAS applies the formula daily with the unrounded effective rate (the guide's example rounds the daily rate to 0.0000124); the $150 per-maintenance-period waiver, net debit caps and penalty rates are not modeled.",
+            RuleBasis.OFFICIAL_SOURCE, source=PSR_SOURCE,
+        ),
+        FinancialRule(
+            "atlas.rail.lsm.closing_position_funding", 1,
+            "Before the customer cutoff and before close, participants fund any LSM net-debit shortfall from their own RTGS cash; the remaining queue is then netted.",
+            "Timing (15 minutes before each cutoff) and cash-only funding are assumptions modeled on liquidity-saving systems' end-of-day funding; payments that still cannot settle expire.",
+            RuleBasis.SIMULATOR_ASSUMPTION,
+            assumption_rationale="Without closing funding, late LSM payments expired mechanically, which no real liquidity-saving system does.",
+        ),
     ),
 )
 
 
-__all__ = ["FEDNOW_SOURCE", "FEDWIRE_EXPANSION_SOURCE", "FEDWIRE_SOURCE", "CHIPS_SOURCE", "RAIL_RULES", "RETRIEVED_ON", "RTP_SOURCE"]
+__all__ = ["FEDNOW_LIMIT_SOURCE", "PSR_SOURCE", "RTP_LIMIT_SOURCE", "FEDNOW_SOURCE", "FEDWIRE_EXPANSION_SOURCE", "FEDWIRE_SOURCE", "CHIPS_SOURCE", "RAIL_RULES", "RETRIEVED_ON", "RTP_SOURCE"]

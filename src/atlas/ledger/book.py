@@ -33,6 +33,7 @@ LEDGER_EVENT_TYPES = frozenset(
         "LiquidityAdjusted",
         "CreditLimitChanged",
         "IntradayCreditRepaid",
+        "InterbankLoanTransfer",
     }
 )
 
@@ -54,6 +55,7 @@ class Ledger:
             reconcile_account(account)
             self._accounts[account.account_id] = account
         self.opening_total_minor = sum(a.ledger_balance_minor for a in self._accounts.values())
+        self._running_total = self.opening_total_minor   # updated by exact deltas; full recount in verify_totals()
         self.external_net_flow_minor = 0
         self.applied_count = 0
         self.ignored_count = 0
@@ -72,6 +74,12 @@ class Ledger:
 
     def total_ledger_minor(self) -> int:
         return sum(a.ledger_balance_minor for a in self._accounts.values())
+
+    def verify_totals(self) -> None:
+        """Full O(accounts) recount; the per-event check uses the incrementally maintained total."""
+        if self.total_ledger_minor() != self._running_total:
+            raise LedgerReplayError("running ledger total diverged from the account recount")
+        self.check_conservation()
 
     def snapshot_dict(self) -> dict[str, dict[str, int | str]]:
         return {
@@ -95,12 +103,14 @@ class Ledger:
         if account.account_id not in self._accounts:
             raise KeyError(f"unknown account {account.account_id!r}")
         reconcile_account(account)
+        self._running_total += account.ledger_balance_minor - self._accounts[account.account_id].ledger_balance_minor
         self._accounts[account.account_id] = account
 
     def _set(self, account_id: str, **changes: int) -> None:
         current = self.account(account_id)
         updated = replace(current, **changes)
         reconcile_account(updated)
+        self._running_total += updated.ledger_balance_minor - current.ledger_balance_minor
         self._accounts[account_id] = updated
 
     def _expect(self, account_id: str, field: str, expected: int, event: FinancialEvent) -> None:
@@ -150,6 +160,16 @@ class Ledger:
             account_id = p["account_id"]
             self._expect(account_id, "credit_limit_minor", p["credit_limit_before_minor"], event)
             self._set(account_id, credit_limit_minor=p["credit_limit_after_minor"])
+        elif kind == "InterbankLoanTransfer":
+            src, dst, amount = p["from_account_id"], p["to_account_id"], p["amount_minor"]
+            if src == dst or amount <= 0:
+                raise LedgerReplayError(f"event {event.event_id!r} is not a valid interbank transfer")
+            self._expect(src, "ledger_balance_minor", p["from_ledger_before_minor"], event)
+            self._expect(dst, "ledger_balance_minor", p["to_ledger_before_minor"], event)
+            if self.account(src).cash_available_minor < amount:
+                raise LedgerReplayError(f"event {event.event_id!r} transfers more than the sender's unreserved cash")
+            self._set(src, ledger_balance_minor=p["from_ledger_before_minor"] - amount)
+            self._set(dst, ledger_balance_minor=p["to_ledger_before_minor"] + amount)
         elif kind == "IntradayCreditRepaid":
             account_id = p["account_id"]
             self._expect(account_id, "ledger_balance_minor", p["account_ledger_before_minor"], event)
@@ -174,14 +194,16 @@ class Ledger:
         self.external_net_flow_minor += delta_minor
 
     def check_conservation(self) -> None:
-        total = self.total_ledger_minor()
+        total = self._running_total
         expected = self.opening_total_minor + self.external_net_flow_minor
         if total != expected:
             raise LedgerReplayError(f"cash conservation violated: ledger total {total} != expected {expected}")
 
     @classmethod
     def replay(cls, opening_accounts: Iterable[SettlementAccount], events: Iterable[FinancialEvent]) -> Ledger:
-        return cls(opening_accounts).apply_all(events)
+        ledger = cls(opening_accounts).apply_all(events)
+        ledger.verify_totals()
+        return ledger
 
 
 # ---------------------------------------------------------------- event makers
@@ -237,3 +259,20 @@ def credit_repayment_event(account: SettlementAccount, **meta) -> tuple[Settleme
         "credit_used_before_minor": account.intraday_credit_used_minor, "credit_used_after_minor": updated.intraday_credit_used_minor,
     }
     return updated, _event("IntradayCreditRepaid", account.account_id, payload, **meta)
+
+
+def interbank_transfer_event(src: SettlementAccount, dst: SettlementAccount, amount_minor: int, purpose: str, *, loan_id: str,
+                             **meta) -> tuple[SettlementAccount, SettlementAccount, FinancialEvent]:
+    """Cash-only transfer between two institutions' accounts on the same rail (loan drawdown or repayment)."""
+    if src.account_id == dst.account_id or src.payment_rail_id != dst.payment_rail_id or src.currency != dst.currency:
+        raise ValueError("interbank transfer requires distinct accounts on the same rail and currency")
+    if not isinstance(amount_minor, int) or amount_minor <= 0:
+        raise ValueError("transfer amount must be positive integer minor units")
+    if src.cash_available_minor < amount_minor:
+        raise ValueError("insufficient unreserved cash for interbank transfer")
+    new_src = replace(src, ledger_balance_minor=src.ledger_balance_minor - amount_minor)
+    new_dst = replace(dst, ledger_balance_minor=dst.ledger_balance_minor + amount_minor)
+    payload = {"loan_id": loan_id, "purpose": purpose, "amount_minor": amount_minor, "from_account_id": src.account_id,
+               "to_account_id": dst.account_id, "from_ledger_before_minor": src.ledger_balance_minor,
+               "to_ledger_before_minor": dst.ledger_balance_minor}
+    return new_src, new_dst, _event("InterbankLoanTransfer", loan_id, payload, **meta)

@@ -83,6 +83,8 @@ def is_feasible(obligations: Iterable[Obligation], available: Mapping[str, int])
 
 
 def _selection(selected: Sequence[Obligation], algorithm: str, status: str, started: float, **extra) -> NettingSelection:
+    if len({o.obligation_id for o in selected}) != len(selected):
+        raise AssertionError(f"{algorithm} selected an obligation more than once")
     net = net_positions(selected)
     return NettingSelection(
         tuple(sorted(selected, key=lambda o: o.obligation_id)), algorithm, status if selected else "empty",
@@ -161,14 +163,17 @@ def _extend(seed: list[Obligation], obligations: Sequence[Obligation], available
     changed = True
     while changed and rest:
         changed = False
-        for o in list(rest):
+        keep = []
+        for o in rest:
             # adding o only lowers the payer's position, so only the payer must be re-checked
             if available.get(o.payer, 0) + net.get(o.payer, 0) - o.amount_minor >= 0:
                 out.append(o)
                 net[o.payer] = net.get(o.payer, 0) - o.amount_minor
                 net[o.payee] = net.get(o.payee, 0) + o.amount_minor
-                rest.remove(o)
                 changed = True
+            else:
+                keep.append(o)
+        rest = keep
     return out
 
 
@@ -178,6 +183,7 @@ def partial_netting_milp(
     *,
     weights: Mapping[str, float] | None = None,
     time_limit_s: float = 5.0,
+    mip_rel_gap: float = 0.0,
 ) -> NettingSelection:
     """Exact 0-1 program via HiGHS. Raises ImportError if SciPy is not installed."""
     import numpy as np
@@ -197,9 +203,11 @@ def partial_netting_milp(
         a_mat[idx[o.payee], j] -= o.amount_minor / scale
     ub = np.array([available.get(a, 0) / scale for a in accounts])
     w = np.array([(weights or {}).get(o.obligation_id, 1.0) * o.amount_minor / scale for o in obligations])
+    # Data are integer minor units, so any integer-infeasible selection violates a row by >= 1 minor unit.
+    # Relaxing each row by half a minor unit admits exactly the integer-feasible selections (robust to float noise).
     res = milp(
-        c=-w, constraints=LinearConstraint(a_mat.tocsr(), -np.inf, ub + 1e-9), integrality=np.ones(n),
-        bounds=Bounds(0, 1), options={"time_limit": time_limit_s, "disp": False},
+        c=-w, constraints=LinearConstraint(a_mat.tocsr(), -np.inf, ub + 0.5 / scale), integrality=np.ones(n),
+        bounds=Bounds(0, 1), options={"time_limit": time_limit_s, "disp": False, "mip_rel_gap": mip_rel_gap},
     )
     if res.x is None:
         return _selection([], "netting-milp-highs-v1", "infeasible" if res.status == 2 else "timeout", started)
@@ -246,3 +254,91 @@ def bilateral_offsets(obligations: Sequence[Obligation], available: Mapping[str,
         selected.extend(chosen)
     assert is_feasible(selected, available)
     return _selection(selected, "bilateral-offset-v1", "feasible", started)
+
+
+def partial_netting_lp_round(obligations: Sequence[Obligation], available: Mapping[str, int], *, swap_rounds: int = 2) -> NettingSelection:
+    """LP-relaxation rounding + greedy repair + 1-swap local search (``netting-lpround-v1``).
+
+    1. Solve the LP relaxation of the netting 0-1 program (HiGHS, polynomial time).
+    2. Keep obligations with x >= 0.999 (feasible by the relaxation's constraints, re-verified in integers),
+       then grow greedily by descending fractional value x_p * v_p.
+    3. Local search: for each unselected obligation, try adding it and dropping the cheapest
+       conflicting obligations of its payer; accept if settled value increases and feasibility holds.
+    Falls back to the v3 heuristic result when that is better. Always feasible.
+    """
+    import numpy as np
+    from scipy.optimize import linprog
+    from scipy.sparse import lil_matrix
+
+    started = time.perf_counter()
+    if not obligations:
+        return _selection([], "netting-lpround-v1", "empty", started)
+    accounts = sorted({o.payer for o in obligations} | {o.payee for o in obligations})
+    idx = {a: i for i, a in enumerate(accounts)}
+    scale = max(o.amount_minor for o in obligations)
+    a_mat = lil_matrix((len(accounts), len(obligations)))
+    for j, o in enumerate(obligations):
+        a_mat[idx[o.payer], j] += o.amount_minor / scale
+        a_mat[idx[o.payee], j] -= o.amount_minor / scale
+    ub = np.array([available.get(a, 0) / scale for a in accounts])
+    res = linprog(-np.array([o.amount_minor / scale for o in obligations]), A_ub=a_mat.tocsr(), b_ub=ub + 0.5 / scale, bounds=(0, 1), method="highs")
+    x = res.x if res.x is not None else np.zeros(len(obligations))
+    order = sorted(range(len(obligations)), key=lambda j: (-x[j] * obligations[j].amount_minor, obligations[j].obligation_id))
+    seed = [obligations[j] for j in order if x[j] >= 0.999]
+    if not is_feasible(seed, available):
+        seed = []
+    rank = {obligations[j].obligation_id: k for k, j in enumerate(order)}
+    chosen = _extend_ranked(seed, obligations, available, rank)
+    chosen = _swap_search(chosen, obligations, available, swap_rounds)
+    heur = partial_netting_heuristic(obligations, available)
+    if heur.gross_value_minor > sum(o.amount_minor for o in chosen):
+        chosen = list(heur.selected)
+    assert is_feasible(chosen, available)
+    return _selection(chosen, "netting-lpround-v1", "feasible", started)
+
+
+def _extend_ranked(seed, obligations, available, rank) -> list[Obligation]:
+    chosen = {o.obligation_id for o in seed}
+    net = net_positions(seed)
+    out = list(seed)
+    rest = sorted((o for o in obligations if o.obligation_id not in chosen), key=lambda o: rank[o.obligation_id])
+    changed = True
+    while changed and rest:
+        changed = False
+        keep = []
+        for o in rest:
+            if available.get(o.payer, 0) + net.get(o.payer, 0) - o.amount_minor >= 0:
+                out.append(o)
+                net[o.payer] = net.get(o.payer, 0) - o.amount_minor
+                net[o.payee] = net.get(o.payee, 0) + o.amount_minor
+                changed = True
+            else:
+                keep.append(o)
+        rest = keep
+    return out
+
+
+def _swap_search(chosen: list[Obligation], obligations: Sequence[Obligation], available: Mapping[str, int], rounds: int) -> list[Obligation]:
+    current = list(chosen)
+    value = sum(o.amount_minor for o in current)
+    for _ in range(rounds):
+        improved = False
+        ids = {o.obligation_id for o in current}
+        for cand in sorted((o for o in obligations if o.obligation_id not in ids), key=lambda o: -o.amount_minor):
+            if cand.obligation_id in ids:      # may have entered the selection through an earlier accepted swap
+                continue
+            # drop the payer's smallest selected outgoing obligations until the candidate fits, then regrow
+            trial = [o for o in current] + [cand]
+            outs = sorted((o for o in current if o.payer == cand.payer), key=lambda o: o.amount_minor)
+            while not is_feasible(trial, available) and outs:
+                trial.remove(outs.pop(0))
+            if not is_feasible(trial, available):
+                continue
+            trial = _extend(trial, obligations, available)
+            v = sum(o.amount_minor for o in trial)
+            if v > value:
+                current, value, improved = trial, v, True
+                ids = {o.obligation_id for o in current}
+        if not improved:
+            break
+    return current

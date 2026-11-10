@@ -193,7 +193,10 @@ def test_rtp_uses_its_own_configured_participant_limits_and_immediate_settlement
 
 
 def test_rail_rules_registry_distinguishes_official_facts_from_model_assumptions():
-    assert len(RAIL_RULES.rules) == 9
+    assert len(RAIL_RULES.rules) == 13
+    assert all(r.source is not None for r in RAIL_RULES.rules if r.basis.value == "official_source")
+    assert "$10 million" in RAIL_RULES.get("atlas.rail.fednow.network_limit").summary
+    assert "50 bp" in RAIL_RULES.get("atlas.rail.rtgs.psr_daylight_overdraft_fee").summary
     assert RAIL_RULES.get("atlas.rail.lsm.atomic_net_cycle").basis.value == "simulator_assumption"
     assert RAIL_RULES.get("atlas.rail.fednow.continuous_cycle_source").source.url.startswith("https://www.frbservices.org/")
     expansion = RAIL_RULES.get("atlas.rail.rtgs.announced_operating_day_expansion")
