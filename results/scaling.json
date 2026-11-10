@@ -1,0 +1,97 @@
+{
+ "experiment": "single-day scaling, policy=multilateral, generator v2",
+ "rows": [
+  {
+   "institutions": 16,
+   "accounts": 60,
+   "payments": 6645,
+   "events": 9266,
+   "generate_s": 0.08164834899980633,
+   "simulate_s": 1.451997960999961,
+   "replay_s": 0.12033758300003683,
+   "replay_verified": true,
+   "events_per_s": 6381.551661146065,
+   "payments_per_s": 4576.452707566977,
+   "lv_settlement_rate_value": 0.8828858984055945,
+   "peak_rss_mb": 40.16015625
+  },
+  {
+   "institutions": 32,
+   "accounts": 119,
+   "payments": 26362,
+   "events": 36772,
+   "generate_s": 0.31947342900002695,
+   "simulate_s": 4.677816599999915,
+   "replay_s": 0.4833698579996053,
+   "replay_verified": true,
+   "events_per_s": 7860.932384566054,
+   "payments_per_s": 5635.535176817424,
+   "lv_settlement_rate_value": 0.9245547497067892,
+   "peak_rss_mb": 94.6171875
+  },
+  {
+   "institutions": 64,
+   "accounts": 239,
+   "payments": 66418,
+   "events": 92820,
+   "generate_s": 0.9354919919996973,
+   "simulate_s": 12.528108439999869,
+   "replay_s": 1.2282484829997884,
+   "replay_verified": true,
+   "events_per_s": 7408.939701036063,
+   "payments_per_s": 5301.518606587085,
+   "lv_settlement_rate_value": 0.9259398932762585,
+   "peak_rss_mb": 201.85546875
+  },
+  {
+   "institutions": 100,
+   "accounts": 381,
+   "payments": 133875,
+   "events": 187213,
+   "generate_s": 2.020889088000331,
+   "simulate_s": 27.58268138800031,
+   "replay_s": 2.3965379490000487,
+   "replay_verified": true,
+   "events_per_s": 6787.3386697439055,
+   "payments_per_s": 4853.589037150013,
+   "lv_settlement_rate_value": 0.9147317383586728,
+   "peak_rss_mb": 384.89453125
+  },
+  {
+   "institutions": 100,
+   "accounts": 381,
+   "payments": 334697,
+   "events": 466905,
+   "generate_s": 4.378165575999901,
+   "simulate_s": 79.0323410760002,
+   "replay_s": 6.070447279999826,
+   "replay_verified": true,
+   "events_per_s": 5907.771345796377,
+   "payments_per_s": 4234.937184489372,
+   "lv_settlement_rate_value": 0.9349598072275537,
+   "peak_rss_mb": 929.234375
+  },
+  {
+   "institutions": 100,
+   "accounts": 381,
+   "payments": 669397,
+   "events": 933104,
+   "generate_s": 7.801505057000213,
+   "simulate_s": 164.60732766399997,
+   "replay_s": 12.346250345000044,
+   "replay_verified": true,
+   "events_per_s": 5668.666232797801,
+   "payments_per_s": 4066.6294113369463,
+   "lv_settlement_rate_value": 0.9416678164492287,
+   "peak_rss_mb": 1836.5859375
+  }
+ ],
+ "manifest": {
+  "python": "3.13.18",
+  "platform": "Linux-6.18.44-fc-v338-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "cpu_count": 2,
+  "single_process": true,
+  "note": "pure Python, one core; each row is a fresh subprocess so peak RSS is per row"
+ }
+}

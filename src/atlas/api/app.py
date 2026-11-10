@@ -91,18 +91,28 @@ class SimulationRequest(BaseModel):
     n_institutions: int = Field(16, ge=2, le=120)
     payments_per_day: int = Field(3000, ge=10, le=60000)
     instant_payments_per_day: int = Field(2000, ge=0, le=60000)
-    opening_liquidity_bp: int = Field(600, ge=50, le=20000)
-    credit_limit_bp: int = Field(300, ge=0, le=20000)
+    opening_liquidity_bp: int = Field(1800, ge=50, le=20000)
+    credit_limit_bp: int = Field(1000, ge=0, le=20000)
     policy: Literal["fifo", "fifo_strict", "priority", "bilateral", "multilateral", "multilateral_milp"] = "multilateral"
     strategy: str | dict[str, int] = "early"
     stress: str = "baseline"
-    controller: Literal["none", "mpc", "mpc_full", "rule"] = "none"
+    controller: Literal["none", "mpc", "mpc_full", "rule", "safe_rl"] = "none"
+    auction: Literal["none", "pay_as_bid", "uniform"] = "none"
     label: str | None = None
+
+
+def _safe_rl():
+    from atlas.control.rl import RLController, load_policy
+    path = RESULTS_DIR / "policies" / "safe_ppo_constrained.json"
+    if not path.exists():
+        raise HTTPException(409, "no trained safe-RL policy artifact; run scripts/train_safe_rl.py")
+    return RLController(load_policy(path), deterministic=True)
 
 
 def _controller(kind: str):
     return {"none": lambda: None, "mpc": lambda: MPCController(MPCConfig(enable_queue_milp=False)),
-            "mpc_full": lambda: MPCController(MPCConfig(enable_queue_milp=True)), "rule": lambda: RuleBasedRebalancer()}[kind]()
+            "mpc_full": lambda: MPCController(MPCConfig(enable_queue_milp=True)), "rule": lambda: RuleBasedRebalancer(),
+            "safe_rl": _safe_rl}[kind]()
 
 
 def _run(req: SimulationRequest) -> SimulationResult:
@@ -116,9 +126,10 @@ def _run(req: SimulationRequest) -> SimulationResult:
                          instant_payments_per_day=req.instant_payments_per_day, opening_liquidity_bp=req.opening_liquidity_bp,
                          credit_limit_bp=req.credit_limit_bp)
     sc = generate_scenario(cfg, seed=req.seed)
-    run_id = f"sim-{int(time.time() * 1000):x}-{req.seed}-{req.policy}-{req.controller}-{req.stress}"
+    run_id = f"sim-{int(time.time() * 1000):x}-{req.seed}-{req.policy}-{req.controller}-{req.auction}-{req.stress}"
     t = time.perf_counter()
-    result = run_day(sc, SimulationSettings(policy=req.policy, strategy=req.strategy), build_scenario(req.stress),
+    result = run_day(sc, SimulationSettings(policy=req.policy, strategy=req.strategy, auction=None if req.auction == "none" else req.auction),
+                     build_scenario(req.stress),
                      simulation_id=run_id, controller=_controller(req.controller), store=REG.store)
     REG.counters["simulations_total"] += 1
     REG.counters["simulation_seconds_total"] += time.perf_counter() - t
@@ -160,9 +171,11 @@ async def _http_error(_: Request, exc: HTTPException):
 
 def _demo() -> None:
     if DEMO and not REG.runs:
-        for req in (SimulationRequest(label="Baseline · multilateral LSM"), SimulationRequest(controller="mpc", label="Adaptive · MPC rebalancing"),
-                    SimulationRequest(stress="combined", label="Stress · combined shock"),
-                    SimulationRequest(stress="combined", controller="mpc", label="Stress · combined + MPC")):
+        for req in (SimulationRequest(policy="priority", label="Baseline · priority queue"),
+                    SimulationRequest(controller="mpc", label="Adaptive · MPC rebalancing"),
+                    SimulationRequest(controller="mpc", auction="uniform", label="Adaptive · MPC + liquidity auction"),
+                    SimulationRequest(policy="priority", stress="combined", label="Stress · combined shock"),
+                    SimulationRequest(stress="combined", controller="mpc", auction="uniform", label="Stress · combined + MPC + auction")):
             _run(req)
 
 
@@ -175,7 +188,8 @@ def health() -> dict:
 
 @app.get("/api/v1/meta")
 def meta(_=Depends(require("read"))) -> dict:
-    return {"policies": list(POLICIES), "strategies": sorted(STRATEGY_REGISTRY), "controllers": ["none", "rule", "mpc", "mpc_full"],
+    return {"policies": list(POLICIES), "strategies": sorted(STRATEGY_REGISTRY), "controllers": ["none", "rule", "mpc", "mpc_full", "safe_rl"],
+            "auctions": ["none", "pay_as_bid", "uniform"],
             "stress_scenarios": {k: v().to_dict() for k, v in SCENARIO_LIBRARY.items()}, "benchmark_arms": {k: list(v) for k, v in POLICY_ARMS.items()},
             "disclaimer": "Synthetic research simulator. Rail models are archetypes, not replicas of Fedwire, CHIPS, FedNow or RTP."}
 
@@ -293,7 +307,8 @@ class CounterfactualRequest(BaseModel):
     policy: str | None = None
     strategy: str | dict[str, int] | None = None
     stress: str | None = None
-    controller: Literal["none", "mpc", "mpc_full", "rule"] | None = None
+    controller: Literal["none", "mpc", "mpc_full", "rule", "safe_rl"] | None = None
+    auction: Literal["none", "pay_as_bid", "uniform"] | None = None
     opening_liquidity_bp: int | None = Field(None, ge=50, le=20000)
     credit_limit_bp: int | None = Field(None, ge=0, le=20000)
 
@@ -315,6 +330,35 @@ def counterfactual(run_id: str, change: CounterfactualRequest, _=Depends(require
     return {"base_id": run_id, "counterfactual_id": new.simulation_id, "changed_assumptions": changes, "paired_seed": base_req.seed,
             "same_scenario_fingerprint": new.scenario_summary["fingerprint"] == base_item["result"].scenario_summary["fingerprint"],
             "diff": {k: {"base": f(b), "counterfactual": f(n), "delta": f(n) - f(b)} for k, f in keys.items()}}
+
+
+class Question(BaseModel):
+    question: str = Field(..., min_length=3, max_length=500)
+
+
+@app.post("/api/v1/simulations/{run_id}/ask")
+def ask(run_id: str, q: Question, _=Depends(require("read"))) -> dict:
+    """Grounded analyst: deterministic retrieval over this run; every number is cited; cannot execute anything."""
+    from atlas.analyst import answer
+    r: SimulationResult = REG.get(run_id)["result"]
+    bench_path = RESULTS_DIR / "benchmarks" / "standard.json"
+    bench = json.loads(bench_path.read_text()) if bench_path.exists() else None
+    return answer(q.question, r.to_dict(include_payments=True) | {"simulation_id": run_id}, bench)
+
+
+@app.get("/api/v1/simulations/{run_id}/statements/{account_id}")
+def statement(run_id: str, account_id: str, _=Depends(require("read"))) -> dict:
+    """ISO 20022 camt.053 end-of-day statement for one account, built from the hash-chained events, with reconciliation."""
+    from atlas.iso20022 import build_camt053, reconcile_statement
+    r: SimulationResult = REG.get(run_id)["result"]
+    acct = next((a for a in r.opening_accounts if a.account_id == account_id), None)
+    if acct is None:
+        raise HTTPException(404, f"account {account_id!r} not in simulation")
+    events = REG.store.events(run_id)
+    xml = build_camt053(acct, acct.ledger_balance_minor, events, statement_id=f"STMT-{account_id}", created_at=events[-1].event_at)
+    closing = Ledger.replay(r.opening_accounts, events).account(account_id).ledger_balance_minor
+    rec = reconcile_statement(xml, closing)
+    return {"account_id": account_id, "message_definition": "camt.053.001.08", "reconciliation": rec.__dict__, "xml": xml}
 
 
 @app.delete("/api/v1/simulations/{run_id}")
@@ -404,7 +448,8 @@ def get_benchmark(name: str, _=Depends(require("read"))) -> dict:
 
 
 @app.get("/api/v1/research/{artifact}")
-def research_artifact(artifact: Literal["forecasting", "game", "netting_optimality"], _=Depends(require("read"))) -> dict:
+def research_artifact(artifact: Literal["forecasting", "game", "netting_optimality", "auction", "safe_rl", "scaling"],
+                      _=Depends(require("read"))) -> dict:
     return _artifact(RESULTS_DIR / f"{artifact}.json")
 
 

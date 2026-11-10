@@ -68,3 +68,21 @@ def test_rejects_entity_expansion_and_xxe():
 def test_same_agent_rejected():
     with pytest.raises(MessageValidationError, match="must differ"):
         normalize(build_pacs008("M", T, [tx(cdtr="ALPHUS33XXX")]))
+
+
+def test_camt053_statements_reconcile_with_the_ledger_for_every_account():
+    from atlas.iso20022 import build_camt053, reconcile_statement
+    from atlas.ledger import Ledger
+    from atlas.scenario import NexusPayConfig, generate_scenario
+    from atlas.sim import SimulationSettings, run_day
+    from atlas.stress import build_scenario
+    sc = generate_scenario(NexusPayConfig(n_institutions=6, payments_per_day=300, instant_payments_per_day=150,
+                                          opening_liquidity_bp=500, credit_limit_bp=500), seed=3)
+    r = run_day(sc, SimulationSettings(policy="multilateral", auction="uniform"), build_scenario("combined"))
+    ledger = Ledger.replay(r.opening_accounts, r.events)
+    for acct in r.opening_accounts:
+        xml = build_camt053(acct, acct.ledger_balance_minor, r.events, statement_id=f"STMT-{acct.account_id}", created_at=r.events[-1].event_at)
+        rec = reconcile_statement(xml, ledger.account(acct.account_id).ledger_balance_minor)
+        assert rec.balanced and rec.matches_ledger, acct.account_id
+    with pytest.raises(ValueError):
+        reconcile_statement('<!DOCTYPE x [<!ENTITY a "b">]><x/>')

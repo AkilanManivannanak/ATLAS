@@ -90,3 +90,15 @@ def test_metrics_endpoint(client):
 def test_vertical_slice_endpoint(client):
     vs = client.get("/api/v1/vertical-slice").json()
     assert vs["replay_matches"] and vs["payment"]["status"] == "settled"
+
+
+def test_analyst_statements_and_auction(client):
+    run_id = client.post("/api/v1/simulations", json={**SMALL, "auction": "uniform"}).json()["id"]
+    a = client.post(f"/api/v1/simulations/{run_id}/ask", json={"question": "Which institutions are most exposed?"}).json()
+    assert a["intent"] == "most_exposed" and a["evidence"] and a["can_execute"] is False
+    assert client.post(f"/api/v1/simulations/{run_id}/ask", json={"question": "why is liquidity declining"}).json()["intent"] == "liquidity_decline"
+    inst = client.get(f"/api/v1/simulations/{run_id}/institutions").json()[0]["institution_id"]
+    st = client.get(f"/api/v1/simulations/{run_id}/statements/{inst}:rtgs").json()
+    assert st["reconciliation"]["balanced"] and st["reconciliation"]["matches_ledger"] and st["xml"].startswith("<?xml")
+    detail = client.get(f"/api/v1/simulations/{run_id}").json()
+    assert detail["metrics"]["auction"]["mechanism"] == "uniform"
