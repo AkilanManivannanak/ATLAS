@@ -1,0 +1,3095 @@
+{
+ "experiment": "E7 safe RL vs MPC",
+ "config": {
+  "n_institutions": 10,
+  "core_fraction_bp": 2500,
+  "core_size_multiplier": 6,
+  "payments_per_day": 1500,
+  "instant_payments_per_day": 1000,
+  "lsm_share_bp": 3500,
+  "rtp_share_bp": 4500,
+  "rtp_participation_bp": 7500,
+  "business_date": "2026-03-10",
+  "day_open": "08:00:00",
+  "day_close": "18:30:00",
+  "large_value_median_minor": 250000000,
+  "large_value_sigma_milli": 1100,
+  "instant_median_minor": 1500000,
+  "instant_sigma_milli": 1000,
+  "opening_liquidity_bp": 1200,
+  "instant_prefunding_bp": 2500,
+  "credit_limit_bp": 800,
+  "urgent_share_bp": 1200,
+  "fednow_limit_minor": 1000000000,
+  "rtp_limit_minor": 1000000000,
+  "generator": "v2",
+  "day_volume_sigma_milli": 150,
+  "intraday_phi_milli": 800,
+  "market_sigma_milli": 300,
+  "bank_sigma_milli": 200,
+  "relationship_sigma_milli": 1000,
+  "customer_share_bp": 5500,
+  "customer_cutoff": "18:00:00",
+  "timed_share_bp": 800,
+  "round_amount_share_bp": 1500,
+  "collateralized_credit_bp": 6000,
+  "flow_imbalance_milli": 100
+ },
+ "train_stresses": [
+  "baseline",
+  "counterparty_delay",
+  "liquidity_withdrawal",
+  "rtgs_outage",
+  "haircut_shock"
+ ],
+ "eval_stresses": [
+  "baseline",
+  "combined",
+  "liquidity_hoarding"
+ ],
+ "eval_seeds": [
+  9000,
+  9001,
+  9002,
+  9003,
+  9004,
+  9005,
+  9006,
+  9007,
+  9008,
+  9009
+ ],
+ "training": {
+  "constrained": [
+   {
+    "iteration": 0,
+    "mean_return": -0.40889122490487506,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.6199596774193549,
+    "lambda": 0.030997983870967746,
+    "clip_frac": 0.014046223958333333
+   },
+   {
+    "iteration": 1,
+    "mean_return": -0.41238341149587493,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.7106854838709677,
+    "lambda": 0.06653225806451614,
+    "clip_frac": 0.004074435763888889
+   },
+   {
+    "iteration": 2,
+    "mean_return": -0.3848886877208958,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.5181451612903225,
+    "lambda": 0.09243951612903227,
+    "clip_frac": 0.007839626736111112
+   },
+   {
+    "iteration": 3,
+    "mean_return": -0.5424576600300625,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.7016129032258065,
+    "lambda": 0.1275201612903226,
+    "clip_frac": 0.019845920138888886
+   },
+   {
+    "iteration": 4,
+    "mean_return": -0.4241967403351875,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.6733870967741935,
+    "lambda": 0.16118951612903226,
+    "clip_frac": 0.021506076388888892
+   },
+   {
+    "iteration": 5,
+    "mean_return": -0.47492589238624994,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.59375,
+    "lambda": 0.19087701612903227,
+    "clip_frac": 0.018299696180555554
+   },
+   {
+    "iteration": 6,
+    "mean_return": -0.4544094927275833,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.7116935483870968,
+    "lambda": 0.2264616935483871,
+    "clip_frac": 0.026784939236111107
+   },
+   {
+    "iteration": 7,
+    "mean_return": -0.6341166727822708,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.7399193548387096,
+    "lambda": 0.2634576612903226,
+    "clip_frac": 0.023909505208333334
+   },
+   {
+    "iteration": 8,
+    "mean_return": -0.49898353124695827,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.7237903225806452,
+    "lambda": 0.29964717741935487,
+    "clip_frac": 0.023882378472222222
+   },
+   {
+    "iteration": 9,
+    "mean_return": -0.4873620949110209,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.653225806451613,
+    "lambda": 0.3323084677419355,
+    "clip_frac": 0.026806640625
+   },
+   {
+    "iteration": 10,
+    "mean_return": -0.4784781473007501,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.6108870967741935,
+    "lambda": 0.36285282258064516,
+    "clip_frac": 0.028119574652777778
+   },
+   {
+    "iteration": 11,
+    "mean_return": -0.5995590632958749,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.5463709677419355,
+    "lambda": 0.39017137096774196,
+    "clip_frac": 0.012027994791666666
+   },
+   {
+    "iteration": 12,
+    "mean_return": -0.5298078542269584,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.719758064516129,
+    "lambda": 0.42615927419354843,
+    "clip_frac": 0.022292751736111113
+   },
+   {
+    "iteration": 13,
+    "mean_return": -0.32748569000575,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.47681451612903225,
+    "lambda": 0.45000000000000007,
+    "clip_frac": 0.03874782986111111
+   },
+   {
+    "iteration": 14,
+    "mean_return": -0.5654306021249792,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.5554435483870968,
+    "lambda": 0.4777721774193549,
+    "clip_frac": 0.02066514756944444
+   },
+   {
+    "iteration": 15,
+    "mean_return": -0.5057087838606875,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.5211693548387096,
+    "lambda": 0.5038306451612904,
+    "clip_frac": 0.025135633680555557
+   },
+   {
+    "iteration": 16,
+    "mean_return": -0.5109452016112916,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.4747983870967742,
+    "lambda": 0.527570564516129,
+    "clip_frac": 0.021120876736111113
+   },
+   {
+    "iteration": 17,
+    "mean_return": -0.3997542061664791,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.41330645161290325,
+    "lambda": 0.5482358870967742,
+    "clip_frac": 0.034868706597222215
+   },
+   {
+    "iteration": 18,
+    "mean_return": -0.5549708287625625,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.33870967741935487,
+    "lambda": 0.565171370967742,
+    "clip_frac": 0.020681423611111107
+   },
+   {
+    "iteration": 19,
+    "mean_return": -0.4141610852296875,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.3588709677419355,
+    "lambda": 0.5831149193548387,
+    "clip_frac": 0.022254774305555558
+   },
+   {
+    "iteration": 20,
+    "mean_return": -0.4533214620028958,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.2923387096774194,
+    "lambda": 0.5977318548387097,
+    "clip_frac": 0.017881944444444443
+   },
+   {
+    "iteration": 21,
+    "mean_return": -0.5130973029722082,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.25201612903225806,
+    "lambda": 0.6103326612903226,
+    "clip_frac": 0.016715494791666667
+   },
+   {
+    "iteration": 22,
+    "mean_return": -0.4307257084953542,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.2348790322580645,
+    "lambda": 0.6220766129032258,
+    "clip_frac": 0.01591796875
+   },
+   {
+    "iteration": 23,
+    "mean_return": -0.38395975800075,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.26008064516129037,
+    "lambda": 0.6350806451612904,
+    "clip_frac": 0.013536241319444446
+   },
+   {
+    "iteration": 24,
+    "mean_return": -0.38246497359858334,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.22076612903225806,
+    "lambda": 0.6461189516129032,
+    "clip_frac": 0.023323567708333333
+   },
+   {
+    "iteration": 25,
+    "mean_return": -0.46502381140849997,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.251008064516129,
+    "lambda": 0.6586693548387097,
+    "clip_frac": 0.022466362847222223
+   },
+   {
+    "iteration": 26,
+    "mean_return": -0.4741147587231457,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.16431451612903225,
+    "lambda": 0.6668850806451613,
+    "clip_frac": 0.017768012152777776
+   },
+   {
+    "iteration": 27,
+    "mean_return": -0.46936816604256265,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.20665322580645162,
+    "lambda": 0.6772177419354839,
+    "clip_frac": 0.01909722222222222
+   },
+   {
+    "iteration": 28,
+    "mean_return": -0.6019081796481667,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.2006048387096774,
+    "lambda": 0.6872479838709677,
+    "clip_frac": 0.013368055555555555
+   },
+   {
+    "iteration": 29,
+    "mean_return": -0.40158573042481255,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.1713709677419355,
+    "lambda": 0.6958165322580645,
+    "clip_frac": 0.016720920138888887
+   },
+   {
+    "iteration": 30,
+    "mean_return": -0.35612048158275,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.15826612903225806,
+    "lambda": 0.7037298387096774,
+    "clip_frac": 0.019504123263888888
+   },
+   {
+    "iteration": 31,
+    "mean_return": -0.4878850290208125,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.10080645161290322,
+    "lambda": 0.7087701612903226,
+    "clip_frac": 0.014643012152777779
+   },
+   {
+    "iteration": 32,
+    "mean_return": -0.4650677196705834,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.10987903225806452,
+    "lambda": 0.7142641129032258,
+    "clip_frac": 0.011338975694444446
+   },
+   {
+    "iteration": 33,
+    "mean_return": -0.43245632493299996,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.15625,
+    "lambda": 0.7220766129032258,
+    "clip_frac": 0.01686740451388889
+   },
+   {
+    "iteration": 34,
+    "mean_return": -0.5188675493502709,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.13608870967741937,
+    "lambda": 0.7288810483870968,
+    "clip_frac": 0.011404079861111112
+   },
+   {
+    "iteration": 35,
+    "mean_return": -0.5251282270046459,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.10584677419354839,
+    "lambda": 0.7341733870967742,
+    "clip_frac": 0.016102430555555554
+   },
+   {
+    "iteration": 36,
+    "mean_return": -0.41812169607893745,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.07358870967741934,
+    "lambda": 0.7378528225806451,
+    "clip_frac": 0.013753255208333334
+   },
+   {
+    "iteration": 37,
+    "mean_return": -0.4201704391537708,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.09173387096774194,
+    "lambda": 0.7424395161290323,
+    "clip_frac": 0.012928602430555556
+   },
+   {
+    "iteration": 38,
+    "mean_return": -0.5233384402805625,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.07056451612903225,
+    "lambda": 0.7459677419354839,
+    "clip_frac": 0.02080078125
+   },
+   {
+    "iteration": 39,
+    "mean_return": -0.4300168754699375,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.08165322580645161,
+    "lambda": 0.7500504032258064,
+    "clip_frac": 0.012386067708333334
+   },
+   {
+    "iteration": 40,
+    "mean_return": -0.49097722317720827,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.06350806451612903,
+    "lambda": 0.7532258064516129,
+    "clip_frac": 0.024647352430555557
+   },
+   {
+    "iteration": 41,
+    "mean_return": -0.49660391834356254,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.08770161290322581,
+    "lambda": 0.7576108870967742,
+    "clip_frac": 0.019590928819444443
+   },
+   {
+    "iteration": 42,
+    "mean_return": -0.447849724154125,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.0967741935483871,
+    "lambda": 0.7624495967741935,
+    "clip_frac": 0.015787760416666668
+   },
+   {
+    "iteration": 43,
+    "mean_return": -0.4105617969029583,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.07258064516129033,
+    "lambda": 0.7660786290322581,
+    "clip_frac": 0.0197265625
+   },
+   {
+    "iteration": 44,
+    "mean_return": -0.41787444152708336,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.08266129032258064,
+    "lambda": 0.7702116935483871,
+    "clip_frac": 0.02023654513888889
+   },
+   {
+    "iteration": 45,
+    "mean_return": -0.40233062953283333,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.06451612903225806,
+    "lambda": 0.7734375,
+    "clip_frac": 0.01853298611111111
+   },
+   {
+    "iteration": 46,
+    "mean_return": -0.4375465482734166,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.06149193548387097,
+    "lambda": 0.7765120967741935,
+    "clip_frac": 0.017822265625
+   },
+   {
+    "iteration": 47,
+    "mean_return": -0.6490620650491459,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.0625,
+    "lambda": 0.7796370967741936,
+    "clip_frac": 0.0181640625
+   },
+   {
+    "iteration": 48,
+    "mean_return": -0.5339774130723541,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.06249999999999999,
+    "lambda": 0.7827620967741936,
+    "clip_frac": 0.022466362847222223
+   },
+   {
+    "iteration": 49,
+    "mean_return": -0.5172185717427917,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.08971774193548387,
+    "lambda": 0.7872479838709678,
+    "clip_frac": 0.012939453125
+   },
+   {
+    "iteration": 50,
+    "mean_return": -0.4223511793058333,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.05141129032258064,
+    "lambda": 0.7898185483870969,
+    "clip_frac": 0.01635199652777778
+   },
+   {
+    "iteration": 51,
+    "mean_return": -0.47774583463214587,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.07258064516129031,
+    "lambda": 0.7934475806451614,
+    "clip_frac": 0.018576388888888892
+   },
+   {
+    "iteration": 52,
+    "mean_return": -0.473670697863625,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.0655241935483871,
+    "lambda": 0.7967237903225808,
+    "clip_frac": 0.012158203125
+   },
+   {
+    "iteration": 53,
+    "mean_return": -0.57061803813325,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.09375,
+    "lambda": 0.8014112903225807,
+    "clip_frac": 0.010443793402777778
+   },
+   {
+    "iteration": 54,
+    "mean_return": -0.47636671162099997,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.06955645161290322,
+    "lambda": 0.8048891129032258,
+    "clip_frac": 0.02297634548611111
+   },
+   {
+    "iteration": 55,
+    "mean_return": -0.5786749887355626,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.06854838709677419,
+    "lambda": 0.8083165322580645,
+    "clip_frac": 0.012641059027777775
+   },
+   {
+    "iteration": 56,
+    "mean_return": -0.32086190256770836,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.0594758064516129,
+    "lambda": 0.8112903225806452,
+    "clip_frac": 0.014898003472222221
+   },
+   {
+    "iteration": 57,
+    "mean_return": -0.46721362071597916,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.05241935483870967,
+    "lambda": 0.8139112903225806,
+    "clip_frac": 0.0158203125
+   },
+   {
+    "iteration": 58,
+    "mean_return": -0.456742515991125,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.07459677419354839,
+    "lambda": 0.817641129032258,
+    "clip_frac": 0.019080946180555555
+   },
+   {
+    "iteration": 59,
+    "mean_return": -0.5879613158596458,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.07661290322580645,
+    "lambda": 0.8214717741935483,
+    "clip_frac": 0.014274088541666667
+   }
+  ],
+  "unconstrained": [
+   {
+    "iteration": 0,
+    "mean_return": -0.437703438892375,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.6723790322580645,
+    "lambda": 0.0,
+    "clip_frac": 0.028607855902777778
+   },
+   {
+    "iteration": 1,
+    "mean_return": -0.5292161961346875,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.6290322580645161,
+    "lambda": 0.0,
+    "clip_frac": 0.01572808159722222
+   },
+   {
+    "iteration": 2,
+    "mean_return": -0.37813939797687507,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.5473790322580645,
+    "lambda": 0.0,
+    "clip_frac": 0.023046875
+   },
+   {
+    "iteration": 3,
+    "mean_return": -0.4349133405756666,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.6129032258064516,
+    "lambda": 0.0,
+    "clip_frac": 0.012689887152777779
+   },
+   {
+    "iteration": 4,
+    "mean_return": -0.4063469571968542,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.5383064516129032,
+    "lambda": 0.0,
+    "clip_frac": 0.009602864583333334
+   },
+   {
+    "iteration": 5,
+    "mean_return": -0.46138374474364585,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.561491935483871,
+    "lambda": 0.0,
+    "clip_frac": 0.015190972222222222
+   },
+   {
+    "iteration": 6,
+    "mean_return": -0.35104049906866663,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.5504032258064515,
+    "lambda": 0.0,
+    "clip_frac": 0.01501193576388889
+   },
+   {
+    "iteration": 7,
+    "mean_return": -0.5261838393796876,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.5584677419354839,
+    "lambda": 0.0,
+    "clip_frac": 0.00895724826388889
+   },
+   {
+    "iteration": 8,
+    "mean_return": -0.5098585765797083,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.4576612903225806,
+    "lambda": 0.0,
+    "clip_frac": 0.016666666666666666
+   },
+   {
+    "iteration": 9,
+    "mean_return": -0.4142674209007501,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.5796370967741935,
+    "lambda": 0.0,
+    "clip_frac": 0.0189453125
+   },
+   {
+    "iteration": 10,
+    "mean_return": -0.54416719930075,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.5372983870967741,
+    "lambda": 0.0,
+    "clip_frac": 0.026584201388888888
+   },
+   {
+    "iteration": 11,
+    "mean_return": -0.5349900783450208,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.41935483870967744,
+    "lambda": 0.0,
+    "clip_frac": 0.017442491319444444
+   },
+   {
+    "iteration": 12,
+    "mean_return": -0.5258398922790208,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.49798387096774194,
+    "lambda": 0.0,
+    "clip_frac": 0.018359375
+   },
+   {
+    "iteration": 13,
+    "mean_return": -0.4343584030746459,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.5372983870967742,
+    "lambda": 0.0,
+    "clip_frac": 0.024717881944444447
+   },
+   {
+    "iteration": 14,
+    "mean_return": -0.40099136290037507,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.43951612903225806,
+    "lambda": 0.0,
+    "clip_frac": 0.02258572048611111
+   },
+   {
+    "iteration": 15,
+    "mean_return": -0.5399924670659166,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.3608870967741935,
+    "lambda": 0.0,
+    "clip_frac": 0.019303385416666666
+   },
+   {
+    "iteration": 16,
+    "mean_return": -0.5957541872122709,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.344758064516129,
+    "lambda": 0.0,
+    "clip_frac": 0.014295789930555554
+   },
+   {
+    "iteration": 17,
+    "mean_return": -0.5525611500252082,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.34576612903225806,
+    "lambda": 0.0,
+    "clip_frac": 0.02204861111111111
+   },
+   {
+    "iteration": 18,
+    "mean_return": -0.3903000069031875,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.31955645161290325,
+    "lambda": 0.0,
+    "clip_frac": 0.023838975694444445
+   },
+   {
+    "iteration": 19,
+    "mean_return": -0.4814139984302709,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.31451612903225806,
+    "lambda": 0.0,
+    "clip_frac": 0.018972439236111114
+   },
+   {
+    "iteration": 20,
+    "mean_return": -0.5123366769293959,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.3346774193548387,
+    "lambda": 0.0,
+    "clip_frac": 0.028477647569444445
+   },
+   {
+    "iteration": 21,
+    "mean_return": -0.4194471375937708,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.34576612903225806,
+    "lambda": 0.0,
+    "clip_frac": 0.019905598958333333
+   },
+   {
+    "iteration": 22,
+    "mean_return": -0.4651559353272082,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.35786290322580644,
+    "lambda": 0.0,
+    "clip_frac": 0.025358072916666665
+   },
+   {
+    "iteration": 23,
+    "mean_return": -0.35363081384131245,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.35080645161290325,
+    "lambda": 0.0,
+    "clip_frac": 0.023046875
+   },
+   {
+    "iteration": 24,
+    "mean_return": -0.40775256469793747,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.31451612903225806,
+    "lambda": 0.0,
+    "clip_frac": 0.017860243055555555
+   },
+   {
+    "iteration": 25,
+    "mean_return": -0.4863876354589793,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.30241935483870963,
+    "lambda": 0.0,
+    "clip_frac": 0.021826171875
+   },
+   {
+    "iteration": 26,
+    "mean_return": -0.41970468090247914,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.3125,
+    "lambda": 0.0,
+    "clip_frac": 0.018771701388888888
+   },
+   {
+    "iteration": 27,
+    "mean_return": -0.48485244716745834,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.3165322580645161,
+    "lambda": 0.0,
+    "clip_frac": 0.021337890625
+   },
+   {
+    "iteration": 28,
+    "mean_return": -0.5332216169648958,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.36995967741935487,
+    "lambda": 0.0,
+    "clip_frac": 0.025889756944444443
+   },
+   {
+    "iteration": 29,
+    "mean_return": -0.47506189175493746,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.23689516129032256,
+    "lambda": 0.0,
+    "clip_frac": 0.029964192708333334
+   },
+   {
+    "iteration": 30,
+    "mean_return": -0.5763080234406874,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.25201612903225806,
+    "lambda": 0.0,
+    "clip_frac": 0.030110677083333332
+   },
+   {
+    "iteration": 31,
+    "mean_return": -0.49071510522620837,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.2620967741935484,
+    "lambda": 0.0,
+    "clip_frac": 0.0259765625
+   },
+   {
+    "iteration": 32,
+    "mean_return": -0.5158614605067501,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.25201612903225806,
+    "lambda": 0.0,
+    "clip_frac": 0.024549696180555556
+   },
+   {
+    "iteration": 33,
+    "mean_return": -0.4003114208090417,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.1935483870967742,
+    "lambda": 0.0,
+    "clip_frac": 0.023464626736111112
+   },
+   {
+    "iteration": 34,
+    "mean_return": -0.6100430303335626,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.21471774193548387,
+    "lambda": 0.0,
+    "clip_frac": 0.020741102430555554
+   },
+   {
+    "iteration": 35,
+    "mean_return": -0.5749056983457708,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.19153225806451613,
+    "lambda": 0.0,
+    "clip_frac": 0.023768446180555555
+   },
+   {
+    "iteration": 36,
+    "mean_return": -0.44146074373956246,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.16733870967741934,
+    "lambda": 0.0,
+    "clip_frac": 0.023779296875
+   },
+   {
+    "iteration": 37,
+    "mean_return": -0.5180423094898332,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.19858870967741937,
+    "lambda": 0.0,
+    "clip_frac": 0.02310655381944444
+   },
+   {
+    "iteration": 38,
+    "mean_return": -0.5414703965746459,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.16330645161290322,
+    "lambda": 0.0,
+    "clip_frac": 0.030740017361111108
+   },
+   {
+    "iteration": 39,
+    "mean_return": -0.4238585509858333,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.14818548387096772,
+    "lambda": 0.0,
+    "clip_frac": 0.03259548611111111
+   },
+   {
+    "iteration": 40,
+    "mean_return": -0.5305257668870833,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.15524193548387097,
+    "lambda": 0.0,
+    "clip_frac": 0.026285807291666668
+   },
+   {
+    "iteration": 41,
+    "mean_return": -0.3299337055916042,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.10080645161290322,
+    "lambda": 0.0,
+    "clip_frac": 0.01700303819444444
+   },
+   {
+    "iteration": 42,
+    "mean_return": -0.49640795399579174,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.14818548387096775,
+    "lambda": 0.0,
+    "clip_frac": 0.020990668402777777
+   },
+   {
+    "iteration": 43,
+    "mean_return": -0.45958827109800005,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.15524193548387097,
+    "lambda": 0.0,
+    "clip_frac": 0.02617730034722222
+   },
+   {
+    "iteration": 44,
+    "mean_return": -0.5178955004850416,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.1401209677419355,
+    "lambda": 0.0,
+    "clip_frac": 0.02308485243055556
+   },
+   {
+    "iteration": 45,
+    "mean_return": -0.4356726595833958,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.11794354838709678,
+    "lambda": 0.0,
+    "clip_frac": 0.019482421875
+   },
+   {
+    "iteration": 46,
+    "mean_return": -0.46755489554029167,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.10483870967741934,
+    "lambda": 0.0,
+    "clip_frac": 0.013297526041666667
+   },
+   {
+    "iteration": 47,
+    "mean_return": -0.3987965331887083,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.0877016129032258,
+    "lambda": 0.0,
+    "clip_frac": 0.027305772569444442
+   },
+   {
+    "iteration": 48,
+    "mean_return": -0.42465372030797915,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.08870967741935484,
+    "lambda": 0.0,
+    "clip_frac": 0.015104166666666667
+   },
+   {
+    "iteration": 49,
+    "mean_return": -0.45572261021587496,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.11995967741935484,
+    "lambda": 0.0,
+    "clip_frac": 0.018793402777777777
+   },
+   {
+    "iteration": 50,
+    "mean_return": -0.35266725684931255,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.10584677419354838,
+    "lambda": 0.0,
+    "clip_frac": 0.019395616319444444
+   },
+   {
+    "iteration": 51,
+    "mean_return": -0.5681321844148958,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.10181451612903225,
+    "lambda": 0.0,
+    "clip_frac": 0.024473741319444447
+   },
+   {
+    "iteration": 52,
+    "mean_return": -0.45032143592047924,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.07157258064516128,
+    "lambda": 0.0,
+    "clip_frac": 0.017361111111111112
+   },
+   {
+    "iteration": 53,
+    "mean_return": -0.5454082057048543,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.10181451612903225,
+    "lambda": 0.0,
+    "clip_frac": 0.02412109375
+   },
+   {
+    "iteration": 54,
+    "mean_return": -0.43763232032120836,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.10483870967741936,
+    "lambda": 0.0,
+    "clip_frac": 0.020632595486111113
+   },
+   {
+    "iteration": 55,
+    "mean_return": -0.568536378146125,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.09475806451612903,
+    "lambda": 0.0,
+    "clip_frac": 0.015907118055555555
+   },
+   {
+    "iteration": 56,
+    "mean_return": -0.6452638505580001,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.11189516129032258,
+    "lambda": 0.0,
+    "clip_frac": 0.029193793402777776
+   },
+   {
+    "iteration": 57,
+    "mean_return": -0.4881928142208126,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.08165322580645162,
+    "lambda": 0.0,
+    "clip_frac": 0.029361979166666666
+   },
+   {
+    "iteration": 58,
+    "mean_return": -0.5296707794108959,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.07862903225806452,
+    "lambda": 0.0,
+    "clip_frac": 0.026573350694444445
+   },
+   {
+    "iteration": 59,
+    "mean_return": -0.3963042436324583,
+    "samples": 9920,
+    "mean_rejections_per_step": 0.06249999999999999,
+    "lambda": 0.0,
+    "clip_frac": 0.02405056423611111
+   }
+  ]
+ },
+ "rows": [
+  {
+   "arm": "none",
+   "seed": 9000,
+   "stress": "baseline",
+   "cost": 721841709,
+   "settled": 0.9120325299259027,
+   "instant_rejected": 40,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.5498115610000696
+  },
+  {
+   "arm": "none",
+   "seed": 9000,
+   "stress": "combined",
+   "cost": 972555909,
+   "settled": 0.8902282706039841,
+   "instant_rejected": 146,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.44396153100001357
+  },
+  {
+   "arm": "none",
+   "seed": 9000,
+   "stress": "liquidity_hoarding",
+   "cost": 830242475,
+   "settled": 0.904538032936617,
+   "instant_rejected": 40,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.4650701800001116
+  },
+  {
+   "arm": "none",
+   "seed": 9001,
+   "stress": "baseline",
+   "cost": 392253829,
+   "settled": 0.9717350046316736,
+   "instant_rejected": 70,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.5194869219999418
+  },
+  {
+   "arm": "none",
+   "seed": 9001,
+   "stress": "combined",
+   "cost": 669701478,
+   "settled": 0.9563979464905961,
+   "instant_rejected": 285,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.5190298310001253
+  },
+  {
+   "arm": "none",
+   "seed": 9001,
+   "stress": "liquidity_hoarding",
+   "cost": 457605705,
+   "settled": 0.9666086235450004,
+   "instant_rejected": 70,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.546260668000059
+  },
+  {
+   "arm": "none",
+   "seed": 9002,
+   "stress": "baseline",
+   "cost": 268147355,
+   "settled": 0.9724018259111945,
+   "instant_rejected": 31,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.3337618289999682
+  },
+  {
+   "arm": "none",
+   "seed": 9002,
+   "stress": "combined",
+   "cost": 384658247,
+   "settled": 0.956174428387345,
+   "instant_rejected": 95,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.36424474000000373
+  },
+  {
+   "arm": "none",
+   "seed": 9002,
+   "stress": "liquidity_hoarding",
+   "cost": 348099144,
+   "settled": 0.9583114327645642,
+   "instant_rejected": 31,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.3672321249998731
+  },
+  {
+   "arm": "none",
+   "seed": 9003,
+   "stress": "baseline",
+   "cost": 527767433,
+   "settled": 0.9479975872064512,
+   "instant_rejected": 53,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.46034357999997155
+  },
+  {
+   "arm": "none",
+   "seed": 9003,
+   "stress": "combined",
+   "cost": 696196786,
+   "settled": 0.9402847479890525,
+   "instant_rejected": 182,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.507492233999983
+  },
+  {
+   "arm": "none",
+   "seed": 9003,
+   "stress": "liquidity_hoarding",
+   "cost": 557880044,
+   "settled": 0.9502768446892371,
+   "instant_rejected": 53,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.4473636840000381
+  },
+  {
+   "arm": "none",
+   "seed": 9004,
+   "stress": "baseline",
+   "cost": 806743609,
+   "settled": 0.9087424118003868,
+   "instant_rejected": 93,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.4381480280001142
+  },
+  {
+   "arm": "none",
+   "seed": 9004,
+   "stress": "combined",
+   "cost": 1161615565,
+   "settled": 0.8657928689088966,
+   "instant_rejected": 140,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.5079731660000562
+  },
+  {
+   "arm": "none",
+   "seed": 9004,
+   "stress": "liquidity_hoarding",
+   "cost": 998525936,
+   "settled": 0.88406835219802,
+   "instant_rejected": 93,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.5573331699999926
+  },
+  {
+   "arm": "none",
+   "seed": 9005,
+   "stress": "baseline",
+   "cost": 535419848,
+   "settled": 0.9323605746081173,
+   "instant_rejected": 78,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.36385629899996275
+  },
+  {
+   "arm": "none",
+   "seed": 9005,
+   "stress": "combined",
+   "cost": 626541621,
+   "settled": 0.9271864965475541,
+   "instant_rejected": 144,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.37068510900007823
+  },
+  {
+   "arm": "none",
+   "seed": 9005,
+   "stress": "liquidity_hoarding",
+   "cost": 573070962,
+   "settled": 0.9315053442061945,
+   "instant_rejected": 78,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.43137642499982576
+  },
+  {
+   "arm": "none",
+   "seed": 9006,
+   "stress": "baseline",
+   "cost": 1099212237,
+   "settled": 0.8717098514402795,
+   "instant_rejected": 65,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.4419729629998983
+  },
+  {
+   "arm": "none",
+   "seed": 9006,
+   "stress": "combined",
+   "cost": 1219533831,
+   "settled": 0.8700809596433423,
+   "instant_rejected": 184,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.5141953849999936
+  },
+  {
+   "arm": "none",
+   "seed": 9006,
+   "stress": "liquidity_hoarding",
+   "cost": 1082016449,
+   "settled": 0.8803388773418342,
+   "instant_rejected": 65,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.45955839699990975
+  },
+  {
+   "arm": "none",
+   "seed": 9007,
+   "stress": "baseline",
+   "cost": 264268923,
+   "settled": 0.9736307959268526,
+   "instant_rejected": 44,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.37314949200003866
+  },
+  {
+   "arm": "none",
+   "seed": 9007,
+   "stress": "combined",
+   "cost": 385027805,
+   "settled": 0.9591864974466721,
+   "instant_rejected": 110,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.33598816000016996
+  },
+  {
+   "arm": "none",
+   "seed": 9007,
+   "stress": "liquidity_hoarding",
+   "cost": 275991019,
+   "settled": 0.9736307959268526,
+   "instant_rejected": 44,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.38630281200016725
+  },
+  {
+   "arm": "none",
+   "seed": 9008,
+   "stress": "baseline",
+   "cost": 552911555,
+   "settled": 0.9420423326851763,
+   "instant_rejected": 25,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.4052365269999427
+  },
+  {
+   "arm": "none",
+   "seed": 9008,
+   "stress": "combined",
+   "cost": 662694403,
+   "settled": 0.9336122751968614,
+   "instant_rejected": 102,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.48317001500004153
+  },
+  {
+   "arm": "none",
+   "seed": 9008,
+   "stress": "liquidity_hoarding",
+   "cost": 561946373,
+   "settled": 0.9421133994193052,
+   "instant_rejected": 25,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.43314857899986237
+  },
+  {
+   "arm": "none",
+   "seed": 9009,
+   "stress": "baseline",
+   "cost": 522367698,
+   "settled": 0.9169062494199395,
+   "instant_rejected": 32,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.47400078999999096
+  },
+  {
+   "arm": "none",
+   "seed": 9009,
+   "stress": "combined",
+   "cost": 758112353,
+   "settled": 0.8881166099385033,
+   "instant_rejected": 145,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.3351008989998263
+  },
+  {
+   "arm": "none",
+   "seed": 9009,
+   "stress": "liquidity_hoarding",
+   "cost": 536928334,
+   "settled": 0.9172655394241839,
+   "instant_rejected": 32,
+   "proposals": 0,
+   "safety_rejections": 0,
+   "runtime_s": 0.46240541099996335
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9000,
+   "stress": "baseline",
+   "cost": 541970689,
+   "settled": 0.9348939388729959,
+   "instant_rejected": 15,
+   "proposals": 295,
+   "safety_rejections": 1,
+   "runtime_s": 0.5144986390000668
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9000,
+   "stress": "combined",
+   "cost": 689981211,
+   "settled": 0.9270321433122373,
+   "instant_rejected": 103,
+   "proposals": 264,
+   "safety_rejections": 1,
+   "runtime_s": 0.5388106750001498
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9000,
+   "stress": "liquidity_hoarding",
+   "cost": 564435943,
+   "settled": 0.938524280997285,
+   "instant_rejected": 18,
+   "proposals": 262,
+   "safety_rejections": 2,
+   "runtime_s": 0.47310903499987944
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9001,
+   "stress": "baseline",
+   "cost": 379730936,
+   "settled": 0.9666668708013181,
+   "instant_rejected": 16,
+   "proposals": 231,
+   "safety_rejections": 0,
+   "runtime_s": 0.5596075830001155
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9001,
+   "stress": "combined",
+   "cost": 661904923,
+   "settled": 0.9535314099241424,
+   "instant_rejected": 191,
+   "proposals": 307,
+   "safety_rejections": 0,
+   "runtime_s": 0.5458082939999258
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9001,
+   "stress": "liquidity_hoarding",
+   "cost": 446082190,
+   "settled": 0.9660614867023546,
+   "instant_rejected": 5,
+   "proposals": 261,
+   "safety_rejections": 0,
+   "runtime_s": 0.5986724930000946
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9002,
+   "stress": "baseline",
+   "cost": 177204895,
+   "settled": 0.9821338416882623,
+   "instant_rejected": 6,
+   "proposals": 199,
+   "safety_rejections": 1,
+   "runtime_s": 0.4039082330000383
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9002,
+   "stress": "combined",
+   "cost": 226775855,
+   "settled": 0.9831141949795289,
+   "instant_rejected": 59,
+   "proposals": 195,
+   "safety_rejections": 0,
+   "runtime_s": 0.46742384000003767
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9002,
+   "stress": "liquidity_hoarding",
+   "cost": 189203461,
+   "settled": 0.9858400045818979,
+   "instant_rejected": 4,
+   "proposals": 166,
+   "safety_rejections": 0,
+   "runtime_s": 0.4134719399999085
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9003,
+   "stress": "baseline",
+   "cost": 540447647,
+   "settled": 0.9409863986592807,
+   "instant_rejected": 20,
+   "proposals": 299,
+   "safety_rejections": 2,
+   "runtime_s": 0.4753480209999452
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9003,
+   "stress": "combined",
+   "cost": 691580216,
+   "settled": 0.9368239503588179,
+   "instant_rejected": 111,
+   "proposals": 258,
+   "safety_rejections": 1,
+   "runtime_s": 0.5562197869999181
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9003,
+   "stress": "liquidity_hoarding",
+   "cost": 531821176,
+   "settled": 0.9512349858670383,
+   "instant_rejected": 22,
+   "proposals": 312,
+   "safety_rejections": 1,
+   "runtime_s": 0.5408132879999812
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9004,
+   "stress": "baseline",
+   "cost": 786808891,
+   "settled": 0.9047448182473457,
+   "instant_rejected": 0,
+   "proposals": 288,
+   "safety_rejections": 0,
+   "runtime_s": 0.5742080649999934
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9004,
+   "stress": "combined",
+   "cost": 886073832,
+   "settled": 0.8997406595899695,
+   "instant_rejected": 53,
+   "proposals": 255,
+   "safety_rejections": 1,
+   "runtime_s": 0.5049285650000002
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9004,
+   "stress": "liquidity_hoarding",
+   "cost": 956191276,
+   "settled": 0.88392740854711,
+   "instant_rejected": 7,
+   "proposals": 262,
+   "safety_rejections": 0,
+   "runtime_s": 0.48599218999993354
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9005,
+   "stress": "baseline",
+   "cost": 412700228,
+   "settled": 0.9477007507186599,
+   "instant_rejected": 10,
+   "proposals": 213,
+   "safety_rejections": 1,
+   "runtime_s": 0.43441814999982853
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9005,
+   "stress": "combined",
+   "cost": 498654734,
+   "settled": 0.9419570070867784,
+   "instant_rejected": 55,
+   "proposals": 209,
+   "safety_rejections": 0,
+   "runtime_s": 0.42111267199993563
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9005,
+   "stress": "liquidity_hoarding",
+   "cost": 435566725,
+   "settled": 0.9470897577669267,
+   "instant_rejected": 10,
+   "proposals": 222,
+   "safety_rejections": 0,
+   "runtime_s": 0.5221496649999153
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9006,
+   "stress": "baseline",
+   "cost": 1017269111,
+   "settled": 0.8807730516411252,
+   "instant_rejected": 36,
+   "proposals": 205,
+   "safety_rejections": 4,
+   "runtime_s": 0.4839068710000447
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9006,
+   "stress": "combined",
+   "cost": 1232757052,
+   "settled": 0.8655892767905221,
+   "instant_rejected": 112,
+   "proposals": 235,
+   "safety_rejections": 3,
+   "runtime_s": 0.5217998740001804
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9006,
+   "stress": "liquidity_hoarding",
+   "cost": 1086757239,
+   "settled": 0.8788724654128292,
+   "instant_rejected": 29,
+   "proposals": 192,
+   "safety_rejections": 4,
+   "runtime_s": 0.5115034469999955
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9007,
+   "stress": "baseline",
+   "cost": 164337572,
+   "settled": 0.9865366046108442,
+   "instant_rejected": 2,
+   "proposals": 238,
+   "safety_rejections": 1,
+   "runtime_s": 0.3825671559998227
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9007,
+   "stress": "combined",
+   "cost": 227813462,
+   "settled": 0.9844439876251576,
+   "instant_rejected": 51,
+   "proposals": 211,
+   "safety_rejections": 0,
+   "runtime_s": 0.3821993509998265
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9007,
+   "stress": "liquidity_hoarding",
+   "cost": 178792292,
+   "settled": 0.9873253044996816,
+   "instant_rejected": 4,
+   "proposals": 210,
+   "safety_rejections": 0,
+   "runtime_s": 0.4036934849998488
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9008,
+   "stress": "baseline",
+   "cost": 450584169,
+   "settled": 0.9529942698717281,
+   "instant_rejected": 3,
+   "proposals": 188,
+   "safety_rejections": 0,
+   "runtime_s": 0.4554990980000184
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9008,
+   "stress": "combined",
+   "cost": 577089584,
+   "settled": 0.9436458778253731,
+   "instant_rejected": 65,
+   "proposals": 160,
+   "safety_rejections": 0,
+   "runtime_s": 0.46502485099995283
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9008,
+   "stress": "liquidity_hoarding",
+   "cost": 473935639,
+   "settled": 0.9522764682872874,
+   "instant_rejected": 3,
+   "proposals": 162,
+   "safety_rejections": 0,
+   "runtime_s": 0.4675790750000033
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9009,
+   "stress": "baseline",
+   "cost": 474232935,
+   "settled": 0.9252880963534807,
+   "instant_rejected": 6,
+   "proposals": 197,
+   "safety_rejections": 0,
+   "runtime_s": 0.39050466300000153
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9009,
+   "stress": "combined",
+   "cost": 590492934,
+   "settled": 0.9189588494651842,
+   "instant_rejected": 94,
+   "proposals": 280,
+   "safety_rejections": 2,
+   "runtime_s": 0.38169012600019414
+  },
+  {
+   "arm": "rule_rebalancer",
+   "seed": 9009,
+   "stress": "liquidity_hoarding",
+   "cost": 500430379,
+   "settled": 0.9237259274611554,
+   "instant_rejected": 3,
+   "proposals": 190,
+   "safety_rejections": 2,
+   "runtime_s": 0.4092628999999306
+  },
+  {
+   "arm": "mpc",
+   "seed": 9000,
+   "stress": "baseline",
+   "cost": 541005762,
+   "settled": 0.9352902308836094,
+   "instant_rejected": 18,
+   "proposals": 351,
+   "safety_rejections": 0,
+   "runtime_s": 1.7019904369999495
+  },
+  {
+   "arm": "mpc",
+   "seed": 9000,
+   "stress": "combined",
+   "cost": 687750295,
+   "settled": 0.9277366897732274,
+   "instant_rejected": 102,
+   "proposals": 290,
+   "safety_rejections": 0,
+   "runtime_s": 1.8020687929999895
+  },
+  {
+   "arm": "mpc",
+   "seed": 9000,
+   "stress": "liquidity_hoarding",
+   "cost": 604106508,
+   "settled": 0.9335258912627163,
+   "instant_rejected": 20,
+   "proposals": 260,
+   "safety_rejections": 0,
+   "runtime_s": 2.1889229409998734
+  },
+  {
+   "arm": "mpc",
+   "seed": 9001,
+   "stress": "baseline",
+   "cost": 380311714,
+   "settled": 0.9665715210141518,
+   "instant_rejected": 7,
+   "proposals": 269,
+   "safety_rejections": 0,
+   "runtime_s": 2.708697518000008
+  },
+  {
+   "arm": "mpc",
+   "seed": 9001,
+   "stress": "combined",
+   "cost": 667101841,
+   "settled": 0.9533159940713047,
+   "instant_rejected": 189,
+   "proposals": 338,
+   "safety_rejections": 0,
+   "runtime_s": 3.3468968879999466
+  },
+  {
+   "arm": "mpc",
+   "seed": 9001,
+   "stress": "liquidity_hoarding",
+   "cost": 422155346,
+   "settled": 0.9681105913242962,
+   "instant_rejected": 4,
+   "proposals": 297,
+   "safety_rejections": 0,
+   "runtime_s": 2.783920291999948
+  },
+  {
+   "arm": "mpc",
+   "seed": 9002,
+   "stress": "baseline",
+   "cost": 177212572,
+   "settled": 0.9821338416882623,
+   "instant_rejected": 6,
+   "proposals": 212,
+   "safety_rejections": 0,
+   "runtime_s": 2.4813904939999247
+  },
+  {
+   "arm": "mpc",
+   "seed": 9002,
+   "stress": "combined",
+   "cost": 226971594,
+   "settled": 0.9831141949795289,
+   "instant_rejected": 59,
+   "proposals": 228,
+   "safety_rejections": 0,
+   "runtime_s": 2.032481528000062
+  },
+  {
+   "arm": "mpc",
+   "seed": 9002,
+   "stress": "liquidity_hoarding",
+   "cost": 191516447,
+   "settled": 0.9858400045818979,
+   "instant_rejected": 4,
+   "proposals": 196,
+   "safety_rejections": 0,
+   "runtime_s": 2.160442206000198
+  },
+  {
+   "arm": "mpc",
+   "seed": 9003,
+   "stress": "baseline",
+   "cost": 542414249,
+   "settled": 0.9404325377641932,
+   "instant_rejected": 7,
+   "proposals": 387,
+   "safety_rejections": 0,
+   "runtime_s": 3.157739750000019
+  },
+  {
+   "arm": "mpc",
+   "seed": 9003,
+   "stress": "combined",
+   "cost": 640386556,
+   "settled": 0.9469510006492539,
+   "instant_rejected": 97,
+   "proposals": 292,
+   "safety_rejections": 0,
+   "runtime_s": 2.5587990890001038
+  },
+  {
+   "arm": "mpc",
+   "seed": 9003,
+   "stress": "liquidity_hoarding",
+   "cost": 526310496,
+   "settled": 0.9516321197074731,
+   "instant_rejected": 13,
+   "proposals": 345,
+   "safety_rejections": 0,
+   "runtime_s": 1.7290621769998324
+  },
+  {
+   "arm": "mpc",
+   "seed": 9004,
+   "stress": "baseline",
+   "cost": 789536798,
+   "settled": 0.9045011242624754,
+   "instant_rejected": 1,
+   "proposals": 305,
+   "safety_rejections": 0,
+   "runtime_s": 1.331103285999916
+  },
+  {
+   "arm": "mpc",
+   "seed": 9004,
+   "stress": "combined",
+   "cost": 903614366,
+   "settled": 0.8972501708014409,
+   "instant_rejected": 43,
+   "proposals": 267,
+   "safety_rejections": 0,
+   "runtime_s": 1.6221019080001042
+  },
+  {
+   "arm": "mpc",
+   "seed": 9004,
+   "stress": "liquidity_hoarding",
+   "cost": 791789575,
+   "settled": 0.9076907248341815,
+   "instant_rejected": 1,
+   "proposals": 305,
+   "safety_rejections": 0,
+   "runtime_s": 1.4678930919999402
+  },
+  {
+   "arm": "mpc",
+   "seed": 9005,
+   "stress": "baseline",
+   "cost": 422543563,
+   "settled": 0.9460102080107397,
+   "instant_rejected": 7,
+   "proposals": 247,
+   "safety_rejections": 0,
+   "runtime_s": 1.3575759539999126
+  },
+  {
+   "arm": "mpc",
+   "seed": 9005,
+   "stress": "combined",
+   "cost": 512872025,
+   "settled": 0.9397835807788447,
+   "instant_rejected": 51,
+   "proposals": 224,
+   "safety_rejections": 0,
+   "runtime_s": 1.397918362999917
+  },
+  {
+   "arm": "mpc",
+   "seed": 9005,
+   "stress": "liquidity_hoarding",
+   "cost": 406681581,
+   "settled": 0.951960998013358,
+   "instant_rejected": 6,
+   "proposals": 241,
+   "safety_rejections": 0,
+   "runtime_s": 1.1810216280000532
+  },
+  {
+   "arm": "mpc",
+   "seed": 9006,
+   "stress": "baseline",
+   "cost": 1045602079,
+   "settled": 0.8780016028977523,
+   "instant_rejected": 23,
+   "proposals": 209,
+   "safety_rejections": 0,
+   "runtime_s": 1.6398863100000654
+  },
+  {
+   "arm": "mpc",
+   "seed": 9006,
+   "stress": "combined",
+   "cost": 1206849493,
+   "settled": 0.8711474670287186,
+   "instant_rejected": 100,
+   "proposals": 250,
+   "safety_rejections": 0,
+   "runtime_s": 1.7530303860000913
+  },
+  {
+   "arm": "mpc",
+   "seed": 9006,
+   "stress": "liquidity_hoarding",
+   "cost": 1090312015,
+   "settled": 0.8784059301660727,
+   "instant_rejected": 11,
+   "proposals": 204,
+   "safety_rejections": 0,
+   "runtime_s": 1.443290179999849
+  },
+  {
+   "arm": "mpc",
+   "seed": 9007,
+   "stress": "baseline",
+   "cost": 164278256,
+   "settled": 0.9865366046108442,
+   "instant_rejected": 2,
+   "proposals": 277,
+   "safety_rejections": 0,
+   "runtime_s": 1.1266333820001364
+  },
+  {
+   "arm": "mpc",
+   "seed": 9007,
+   "stress": "combined",
+   "cost": 226091889,
+   "settled": 0.9844439876251576,
+   "instant_rejected": 50,
+   "proposals": 236,
+   "safety_rejections": 0,
+   "runtime_s": 1.2719973329999448
+  },
+  {
+   "arm": "mpc",
+   "seed": 9007,
+   "stress": "liquidity_hoarding",
+   "cost": 188882744,
+   "settled": 0.985470386576729,
+   "instant_rejected": 3,
+   "proposals": 226,
+   "safety_rejections": 0,
+   "runtime_s": 1.1649299529999553
+  },
+  {
+   "arm": "mpc",
+   "seed": 9008,
+   "stress": "baseline",
+   "cost": 432610519,
+   "settled": 0.9549170221183588,
+   "instant_rejected": 4,
+   "proposals": 212,
+   "safety_rejections": 0,
+   "runtime_s": 1.1443246730000283
+  },
+  {
+   "arm": "mpc",
+   "seed": 9008,
+   "stress": "combined",
+   "cost": 566622234,
+   "settled": 0.9451583215967845,
+   "instant_rejected": 64,
+   "proposals": 181,
+   "safety_rejections": 0,
+   "runtime_s": 1.2810469149999335
+  },
+  {
+   "arm": "mpc",
+   "seed": 9008,
+   "stress": "liquidity_hoarding",
+   "cost": 449704508,
+   "settled": 0.9549170221183588,
+   "instant_rejected": 4,
+   "proposals": 168,
+   "safety_rejections": 0,
+   "runtime_s": 1.252326389000018
+  },
+  {
+   "arm": "mpc",
+   "seed": 9009,
+   "stress": "baseline",
+   "cost": 493175963,
+   "settled": 0.922076217250632,
+   "instant_rejected": 6,
+   "proposals": 229,
+   "safety_rejections": 0,
+   "runtime_s": 1.1865113030000884
+  },
+  {
+   "arm": "mpc",
+   "seed": 9009,
+   "stress": "combined",
+   "cost": 591737500,
+   "settled": 0.9189174365844683,
+   "instant_rejected": 93,
+   "proposals": 323,
+   "safety_rejections": 0,
+   "runtime_s": 1.2913458769999124
+  },
+  {
+   "arm": "mpc",
+   "seed": 9009,
+   "stress": "liquidity_hoarding",
+   "cost": 502832280,
+   "settled": 0.9232505052578928,
+   "instant_rejected": 1,
+   "proposals": 201,
+   "safety_rejections": 0,
+   "runtime_s": 0.9842173330000605
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9000,
+   "stress": "baseline",
+   "cost": 544549158,
+   "settled": 0.934513656975837,
+   "instant_rejected": 13,
+   "proposals": 317,
+   "safety_rejections": 0,
+   "runtime_s": 0.532631777000006
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9000,
+   "stress": "combined",
+   "cost": 691832304,
+   "settled": 0.9253410791794439,
+   "instant_rejected": 97,
+   "proposals": 294,
+   "safety_rejections": 0,
+   "runtime_s": 0.5383363400001144
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9000,
+   "stress": "liquidity_hoarding",
+   "cost": 600185953,
+   "settled": 0.9336143779358651,
+   "instant_rejected": 10,
+   "proposals": 286,
+   "safety_rejections": 0,
+   "runtime_s": 0.5267495069999768
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9001,
+   "stress": "baseline",
+   "cost": 379158602,
+   "settled": 0.9667103246070151,
+   "instant_rejected": 5,
+   "proposals": 237,
+   "safety_rejections": 0,
+   "runtime_s": 0.5658587560001251
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9001,
+   "stress": "combined",
+   "cost": 637781615,
+   "settled": 0.9560769296734495,
+   "instant_rejected": 186,
+   "proposals": 317,
+   "safety_rejections": 0,
+   "runtime_s": 0.6101967380000133
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9001,
+   "stress": "liquidity_hoarding",
+   "cost": 446016028,
+   "settled": 0.9662624780500878,
+   "instant_rejected": 4,
+   "proposals": 283,
+   "safety_rejections": 0,
+   "runtime_s": 0.7002664879998974
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9002,
+   "stress": "baseline",
+   "cost": 176962001,
+   "settled": 0.9820639718186834,
+   "instant_rejected": 4,
+   "proposals": 201,
+   "safety_rejections": 0,
+   "runtime_s": 0.5176541700000143
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9002,
+   "stress": "combined",
+   "cost": 226446725,
+   "settled": 0.9831141949795289,
+   "instant_rejected": 57,
+   "proposals": 208,
+   "safety_rejections": 0,
+   "runtime_s": 0.507927317000167
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9002,
+   "stress": "liquidity_hoarding",
+   "cost": 190582701,
+   "settled": 0.9858400045818979,
+   "instant_rejected": 2,
+   "proposals": 173,
+   "safety_rejections": 0,
+   "runtime_s": 0.5913973829999577
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9003,
+   "stress": "baseline",
+   "cost": 539561714,
+   "settled": 0.9404838194975115,
+   "instant_rejected": 11,
+   "proposals": 367,
+   "safety_rejections": 0,
+   "runtime_s": 0.6028305140000612
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9003,
+   "stress": "combined",
+   "cost": 687503430,
+   "settled": 0.9365605234241392,
+   "instant_rejected": 106,
+   "proposals": 326,
+   "safety_rejections": 0,
+   "runtime_s": 0.5740933769998264
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9003,
+   "stress": "liquidity_hoarding",
+   "cost": 536969424,
+   "settled": 0.9498844042148978,
+   "instant_rejected": 17,
+   "proposals": 359,
+   "safety_rejections": 0,
+   "runtime_s": 0.5954102069999863
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9004,
+   "stress": "baseline",
+   "cost": 787860583,
+   "settled": 0.9047456304663082,
+   "instant_rejected": 7,
+   "proposals": 299,
+   "safety_rejections": 0,
+   "runtime_s": 0.5957772209999348
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9004,
+   "stress": "combined",
+   "cost": 927663165,
+   "settled": 0.8942733087481574,
+   "instant_rejected": 60,
+   "proposals": 278,
+   "safety_rejections": 0,
+   "runtime_s": 0.5545802259998709
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9004,
+   "stress": "liquidity_hoarding",
+   "cost": 941548284,
+   "settled": 0.8861996123218777,
+   "instant_rejected": 18,
+   "proposals": 278,
+   "safety_rejections": 0,
+   "runtime_s": 0.6437057900000127
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9005,
+   "stress": "baseline",
+   "cost": 423642025,
+   "settled": 0.9460102080107397,
+   "instant_rejected": 5,
+   "proposals": 225,
+   "safety_rejections": 0,
+   "runtime_s": 0.5491951589999644
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9005,
+   "stress": "combined",
+   "cost": 467890323,
+   "settled": 0.9465494831944518,
+   "instant_rejected": 50,
+   "proposals": 240,
+   "safety_rejections": 0,
+   "runtime_s": 0.5663696799999798
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9005,
+   "stress": "liquidity_hoarding",
+   "cost": 408452502,
+   "settled": 0.9512847669274489,
+   "instant_rejected": 5,
+   "proposals": 230,
+   "safety_rejections": 0,
+   "runtime_s": 0.5037330000000111
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9006,
+   "stress": "baseline",
+   "cost": 1038844349,
+   "settled": 0.8785632973675656,
+   "instant_rejected": 22,
+   "proposals": 218,
+   "safety_rejections": 0,
+   "runtime_s": 0.5522613370001181
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9006,
+   "stress": "combined",
+   "cost": 1197850694,
+   "settled": 0.8710976058631866,
+   "instant_rejected": 98,
+   "proposals": 259,
+   "safety_rejections": 0,
+   "runtime_s": 0.6067984679998517
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9006,
+   "stress": "liquidity_hoarding",
+   "cost": 1107871005,
+   "settled": 0.877514766008064,
+   "instant_rejected": 16,
+   "proposals": 220,
+   "safety_rejections": 0,
+   "runtime_s": 0.6322762440001952
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9007,
+   "stress": "baseline",
+   "cost": 164795199,
+   "settled": 0.9865366046108442,
+   "instant_rejected": 3,
+   "proposals": 253,
+   "safety_rejections": 0,
+   "runtime_s": 0.5137645209999846
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9007,
+   "stress": "combined",
+   "cost": 267355791,
+   "settled": 0.9768293144380904,
+   "instant_rejected": 50,
+   "proposals": 214,
+   "safety_rejections": 0,
+   "runtime_s": 0.47351487599985376
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9007,
+   "stress": "liquidity_hoarding",
+   "cost": 195322167,
+   "settled": 0.9846561775146718,
+   "instant_rejected": 3,
+   "proposals": 243,
+   "safety_rejections": 0,
+   "runtime_s": 0.5233579480000117
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9008,
+   "stress": "baseline",
+   "cost": 451009618,
+   "settled": 0.9529942698717281,
+   "instant_rejected": 1,
+   "proposals": 201,
+   "safety_rejections": 0,
+   "runtime_s": 0.5316895539999678
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9008,
+   "stress": "combined",
+   "cost": 575327153,
+   "settled": 0.9435153392862103,
+   "instant_rejected": 63,
+   "proposals": 186,
+   "safety_rejections": 0,
+   "runtime_s": 0.5024279689998821
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9008,
+   "stress": "liquidity_hoarding",
+   "cost": 473345335,
+   "settled": 0.9517875754209058,
+   "instant_rejected": 2,
+   "proposals": 160,
+   "safety_rejections": 0,
+   "runtime_s": 0.5242302799999834
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9009,
+   "stress": "baseline",
+   "cost": 481263772,
+   "settled": 0.924107871905503,
+   "instant_rejected": 5,
+   "proposals": 216,
+   "safety_rejections": 0,
+   "runtime_s": 0.42274638300000333
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9009,
+   "stress": "combined",
+   "cost": 593458089,
+   "settled": 0.9187968096544266,
+   "instant_rejected": 94,
+   "proposals": 285,
+   "safety_rejections": 0,
+   "runtime_s": 0.45797737700013386
+  },
+  {
+   "arm": "ppo_constrained",
+   "seed": 9009,
+   "stress": "liquidity_hoarding",
+   "cost": 512237517,
+   "settled": 0.9218610672864145,
+   "instant_rejected": 1,
+   "proposals": 211,
+   "safety_rejections": 0,
+   "runtime_s": 0.41876560100013194
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9000,
+   "stress": "baseline",
+   "cost": 546779134,
+   "settled": 0.9349019499764183,
+   "instant_rejected": 16,
+   "proposals": 353,
+   "safety_rejections": 1,
+   "runtime_s": 0.5074526490000153
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9000,
+   "stress": "combined",
+   "cost": 662736631,
+   "settled": 0.9320578872973322,
+   "instant_rejected": 99,
+   "proposals": 329,
+   "safety_rejections": 1,
+   "runtime_s": 0.49636241999996855
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9000,
+   "stress": "liquidity_hoarding",
+   "cost": 577224616,
+   "settled": 0.93787722958455,
+   "instant_rejected": 18,
+   "proposals": 320,
+   "safety_rejections": 0,
+   "runtime_s": 0.5354521720000776
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9001,
+   "stress": "baseline",
+   "cost": 380441587,
+   "settled": 0.9666668708013181,
+   "instant_rejected": 14,
+   "proposals": 270,
+   "safety_rejections": 0,
+   "runtime_s": 0.6068759869999667
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9001,
+   "stress": "combined",
+   "cost": 667729954,
+   "settled": 0.9533882203629005,
+   "instant_rejected": 188,
+   "proposals": 360,
+   "safety_rejections": 0,
+   "runtime_s": 0.6057045719999223
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9001,
+   "stress": "liquidity_hoarding",
+   "cost": 412734489,
+   "settled": 0.9696768339572269,
+   "instant_rejected": 3,
+   "proposals": 328,
+   "safety_rejections": 0,
+   "runtime_s": 0.6170976590001374
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9002,
+   "stress": "baseline",
+   "cost": 182181858,
+   "settled": 0.9813514755791339,
+   "instant_rejected": 7,
+   "proposals": 220,
+   "safety_rejections": 0,
+   "runtime_s": 0.41629563300011796
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9002,
+   "stress": "combined",
+   "cost": 227377478,
+   "settled": 0.9830301788596436,
+   "instant_rejected": 59,
+   "proposals": 251,
+   "safety_rejections": 0,
+   "runtime_s": 0.4655908660001842
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9002,
+   "stress": "liquidity_hoarding",
+   "cost": 193872866,
+   "settled": 0.9851275083423484,
+   "instant_rejected": 3,
+   "proposals": 196,
+   "safety_rejections": 0,
+   "runtime_s": 0.4832515230000354
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9003,
+   "stress": "baseline",
+   "cost": 541385885,
+   "settled": 0.9409747951556227,
+   "instant_rejected": 16,
+   "proposals": 345,
+   "safety_rejections": 0,
+   "runtime_s": 0.5621589049999329
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9003,
+   "stress": "combined",
+   "cost": 649330644,
+   "settled": 0.9449198265243006,
+   "instant_rejected": 106,
+   "proposals": 296,
+   "safety_rejections": 0,
+   "runtime_s": 0.5080365270000584
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9003,
+   "stress": "liquidity_hoarding",
+   "cost": 537856192,
+   "settled": 0.9535943275144061,
+   "instant_rejected": 22,
+   "proposals": 350,
+   "safety_rejections": 1,
+   "runtime_s": 0.7176646000000346
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9004,
+   "stress": "baseline",
+   "cost": 826426842,
+   "settled": 0.9002749024650429,
+   "instant_rejected": 4,
+   "proposals": 324,
+   "safety_rejections": 0,
+   "runtime_s": 0.5140592700001889
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9004,
+   "stress": "combined",
+   "cost": 948989183,
+   "settled": 0.8912230686087168,
+   "instant_rejected": 44,
+   "proposals": 291,
+   "safety_rejections": 1,
+   "runtime_s": 0.5922093549997953
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9004,
+   "stress": "liquidity_hoarding",
+   "cost": 942034764,
+   "settled": 0.8865893586284777,
+   "instant_rejected": 2,
+   "proposals": 299,
+   "safety_rejections": 0,
+   "runtime_s": 0.5383637689999432
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9005,
+   "stress": "baseline",
+   "cost": 421336559,
+   "settled": 0.9460102080107397,
+   "instant_rejected": 14,
+   "proposals": 259,
+   "safety_rejections": 1,
+   "runtime_s": 0.4602056599999287
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9005,
+   "stress": "combined",
+   "cost": 506860514,
+   "settled": 0.94045405821233,
+   "instant_rejected": 59,
+   "proposals": 257,
+   "safety_rejections": 0,
+   "runtime_s": 0.46518661100003555
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9005,
+   "stress": "liquidity_hoarding",
+   "cost": 414698756,
+   "settled": 0.9510065455844897,
+   "instant_rejected": 15,
+   "proposals": 285,
+   "safety_rejections": 2,
+   "runtime_s": 0.5020526830001018
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9006,
+   "stress": "baseline",
+   "cost": 1016168398,
+   "settled": 0.8806002682800884,
+   "instant_rejected": 33,
+   "proposals": 255,
+   "safety_rejections": 7,
+   "runtime_s": 0.5173861550001675
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9006,
+   "stress": "combined",
+   "cost": 1221283999,
+   "settled": 0.8667211459220334,
+   "instant_rejected": 110,
+   "proposals": 286,
+   "safety_rejections": 4,
+   "runtime_s": 0.5836949730000924
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9006,
+   "stress": "liquidity_hoarding",
+   "cost": 1077712068,
+   "settled": 0.8797599226909114,
+   "instant_rejected": 24,
+   "proposals": 244,
+   "safety_rejections": 8,
+   "runtime_s": 0.5925667040000917
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9007,
+   "stress": "baseline",
+   "cost": 165851229,
+   "settled": 0.9865366046108442,
+   "instant_rejected": 2,
+   "proposals": 287,
+   "safety_rejections": 0,
+   "runtime_s": 0.40586012400012805
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9007,
+   "stress": "combined",
+   "cost": 228264473,
+   "settled": 0.9846561775146718,
+   "instant_rejected": 52,
+   "proposals": 260,
+   "safety_rejections": 0,
+   "runtime_s": 0.4178625380000085
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9007,
+   "stress": "liquidity_hoarding",
+   "cost": 187004912,
+   "settled": 0.9856825764662432,
+   "instant_rejected": 4,
+   "proposals": 267,
+   "safety_rejections": 0,
+   "runtime_s": 0.42297523000002
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9008,
+   "stress": "baseline",
+   "cost": 448867232,
+   "settled": 0.9536417470346644,
+   "instant_rejected": 4,
+   "proposals": 238,
+   "safety_rejections": 4,
+   "runtime_s": 0.49176293099981194
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9008,
+   "stress": "combined",
+   "cost": 565526554,
+   "settled": 0.9448679368423981,
+   "instant_rejected": 63,
+   "proposals": 243,
+   "safety_rejections": 0,
+   "runtime_s": 0.48371603499981575
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9008,
+   "stress": "liquidity_hoarding",
+   "cost": 476242984,
+   "settled": 0.950912613476487,
+   "instant_rejected": 3,
+   "proposals": 230,
+   "safety_rejections": 0,
+   "runtime_s": 0.5115418729999419
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9009,
+   "stress": "baseline",
+   "cost": 495126085,
+   "settled": 0.9215978240217516,
+   "instant_rejected": 9,
+   "proposals": 211,
+   "safety_rejections": 0,
+   "runtime_s": 0.39866402999996353
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9009,
+   "stress": "combined",
+   "cost": 592831106,
+   "settled": 0.9188037097654923,
+   "instant_rejected": 92,
+   "proposals": 289,
+   "safety_rejections": 0,
+   "runtime_s": 0.40970043900006203
+  },
+  {
+   "arm": "ppo_unconstrained",
+   "seed": 9009,
+   "stress": "liquidity_hoarding",
+   "cost": 489521551,
+   "settled": 0.9260140740469717,
+   "instant_rejected": 0,
+   "proposals": 226,
+   "safety_rejections": 0,
+   "runtime_s": 0.41621798400001353
+  }
+ ],
+ "summary": [
+  {
+   "stress": "baseline",
+   "arm": "none",
+   "held_out_stress": false,
+   "cost": [
+    569093419.6,
+    387368273.61286074,
+    750818565.5871394
+   ],
+   "cost_diff_vs_mpc": [
+    70224272.1,
+    26748313.593330704,
+    113700230.60666928
+   ],
+   "settled": [
+    0.9349559163555974,
+    0.9110930769497809,
+    0.9588187557614138
+   ],
+   "instant_rejected": [
+    53.1,
+    36.89882251069386,
+    69.30117748930614
+   ],
+   "safety_rejection_rate": 0.0,
+   "wins_vs_mpc": 1
+  },
+  {
+   "stress": "baseline",
+   "arm": "rule_rebalancer",
+   "held_out_stress": false,
+   "cost": [
+    494528707.3,
+    310611030.577464,
+    678446384.022536
+   ],
+   "cost_diff_vs_mpc": [
+    -4340440.2,
+    -13280112.594893523,
+    4599232.194893521
+   ],
+   "settled": [
+    0.9422718641465041,
+    0.9186404632327934,
+    0.9659032650602148
+   ],
+   "instant_rejected": [
+    11.4,
+    3.6283116480394053,
+    19.171688351960597
+   ],
+   "safety_rejection_rate": 0.004249893752656183,
+   "wins_vs_mpc": 7
+  },
+  {
+   "stress": "baseline",
+   "arm": "mpc",
+   "held_out_stress": false,
+   "cost": [
+    498869147.5,
+    310098753.9195986,
+    687639541.0804014
+   ],
+   "cost_diff_vs_mpc": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "settled": [
+    0.9416470910501019,
+    0.9174178956849667,
+    0.9658762864152372
+   ],
+   "instant_rejected": [
+    8.1,
+    3.1161797745103197,
+    13.08382022548968
+   ],
+   "safety_rejection_rate": 0.0,
+   "wins_vs_mpc": 0
+  },
+  {
+   "stress": "baseline",
+   "arm": "ppo_constrained",
+   "held_out_stress": false,
+   "cost": [
+    498764702.1,
+    311527882.32713985,
+    686001521.8728602
+   ],
+   "cost_diff_vs_mpc": [
+    -104445.4,
+    -5708210.605677344,
+    5499319.805677343
+   ],
+   "settled": [
+    0.9416729655131736,
+    0.9176800113463515,
+    0.9656659196799957
+   ],
+   "instant_rejected": [
+    7.6,
+    3.1622760067800524,
+    12.037723993219947
+   ],
+   "safety_rejection_rate": 0.0,
+   "wins_vs_mpc": 6
+  },
+  {
+   "stress": "baseline",
+   "arm": "ppo_unconstrained",
+   "held_out_stress": false,
+   "cost": [
+    502456480.9,
+    315834356.45681477,
+    689078605.3431852
+   ],
+   "cost_diff_vs_mpc": [
+    3587333.4,
+    -8165497.873566264,
+    15340164.673566265
+   ],
+   "settled": [
+    0.9412556645935624,
+    0.9170980329767027,
+    0.965413296210422
+   ],
+   "instant_rejected": [
+    11.9,
+    5.401149821699227,
+    18.398850178300773
+   ],
+   "safety_rejection_rate": 0.004706734250543085,
+   "wins_vs_mpc": 3
+  },
+  {
+   "stress": "combined",
+   "arm": "none",
+   "held_out_stress": true,
+   "cost": [
+    753663799.8,
+    548797923.5909436,
+    958529676.0090563
+   ],
+   "cost_diff_vs_mpc": [
+    130664020.5,
+    63145283.37625924,
+    198182757.62374076
+   ],
+   "settled": [
+    0.9187061101152807,
+    0.892441485004491,
+    0.9449707352260703
+   ],
+   "instant_rejected": [
+    153.3,
+    113.83035054171371,
+    192.76964945828632
+   ],
+   "safety_rejection_rate": 0.0,
+   "wins_vs_mpc": 0
+  },
+  {
+   "stress": "combined",
+   "arm": "rule_rebalancer",
+   "held_out_stress": true,
+   "cost": [
+    628312380.3,
+    417296780.56937945,
+    839327980.0306205
+   ],
+   "cost_diff_vs_mpc": [
+    5312601.0,
+    -9123414.300348924,
+    19748616.300348923
+   ],
+   "settled": [
+    0.9354837356957711,
+    0.9097933395247865,
+    0.9611741318667558
+   ],
+   "instant_rejected": [
+    89.4,
+    58.304103913217105,
+    120.4958960867829
+   ],
+   "safety_rejection_rate": 0.003369839932603201,
+   "wins_vs_mpc": 5
+  },
+  {
+   "stress": "combined",
+   "arm": "mpc",
+   "held_out_stress": true,
+   "cost": [
+    622999779.3,
+    415584940.9802772,
+    830414617.6197227
+   ],
+   "cost_diff_vs_mpc": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "settled": [
+    0.9367818843888729,
+    0.9116092255877187,
+    0.961954543190027
+   ],
+   "instant_rejected": [
+    84.8,
+    53.89556440638334,
+    115.70443559361665
+   ],
+   "safety_rejection_rate": 0.0,
+   "wins_vs_mpc": 0
+  },
+  {
+   "stress": "combined",
+   "arm": "ppo_constrained",
+   "held_out_stress": true,
+   "cost": [
+    627310928.9,
+    421765226.88074845,
+    832856630.9192514
+   ],
+   "cost_diff_vs_mpc": [
+    4311149.6,
+    -16165019.38181646,
+    24787318.581816457
+   ],
+   "settled": [
+    0.9352154588441085,
+    0.9104195244750235,
+    0.9600113932131935
+   ],
+   "instant_rejected": [
+    86.1,
+    56.54271913656467,
+    115.65728086343532
+   ],
+   "safety_rejection_rate": 0.0,
+   "wins_vs_mpc": 4
+  },
+  {
+   "stress": "combined",
+   "arm": "ppo_unconstrained",
+   "held_out_stress": true,
+   "cost": [
+    627093053.6,
+    414049251.2211627,
+    840136855.9788374
+   ],
+   "cost_diff_vs_mpc": [
+    4093274.3,
+    -8633866.62934595,
+    16820415.22934595
+   ],
+   "settled": [
+    0.936012220990982,
+    0.9097026573406767,
+    0.9623217846412874
+   ],
+   "instant_rejected": [
+    87.2,
+    56.59317193566116,
+    117.80682806433884
+   ],
+   "safety_rejection_rate": 0.0020964360587002098,
+   "wins_vs_mpc": 3
+  },
+  {
+   "stress": "liquidity_hoarding",
+   "arm": "none",
+   "held_out_stress": true,
+   "cost": [
+    622230644.1,
+    432098553.7312012,
+    812362734.4687989
+   ],
+   "cost_diff_vs_mpc": [
+    104801494.1,
+    46436710.12047752,
+    163166278.07952246
+   ],
+   "settled": [
+    0.930865724245181,
+    0.9070406930866093,
+    0.9546907554037527
+   ],
+   "instant_rejected": [
+    53.1,
+    36.89882251069386,
+    69.30117748930614
+   ],
+   "safety_rejection_rate": 0.0,
+   "wins_vs_mpc": 1
+  },
+  {
+   "stress": "liquidity_hoarding",
+   "arm": "rule_rebalancer",
+   "held_out_stress": true,
+   "cost": [
+    536321632.0,
+    329572453.4304699,
+    743070810.5695301
+   ],
+   "cost_diff_vs_mpc": [
+    18892482.0,
+    -20418584.58424004,
+    58203548.58424004
+   ],
+   "settled": [
+    0.9414878090123565,
+    0.9148586988516934,
+    0.9681169191730197
+   ],
+   "instant_rejected": [
+    10.5,
+    3.8815290436536634,
+    17.118470956346336
+   ],
+   "safety_rejection_rate": 0.00401965163019205,
+   "wins_vs_mpc": 5
+  },
+  {
+   "stress": "liquidity_hoarding",
+   "arm": "mpc",
+   "held_out_stress": true,
+   "cost": [
+    517429150.0,
+    324994536.38537085,
+    709863763.6146291
+   ],
+   "cost_diff_vs_mpc": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "settled": [
+    0.9440804173842976,
+    0.9197020255915362,
+    0.968458809177059
+   ],
+   "instant_rejected": [
+    6.7,
+    2.3287504349442596,
+    11.07124956505574
+   ],
+   "safety_rejection_rate": 0.0,
+   "wins_vs_mpc": 0
+  },
+  {
+   "stress": "liquidity_hoarding",
+   "arm": "ppo_constrained",
+   "held_out_stress": true,
+   "cost": [
+    541253091.6,
+    333446954.17647123,
+    749059229.0235288
+   ],
+   "cost_diff_vs_mpc": [
+    23823941.6,
+    -8564131.828422975,
+    56212015.02842298
+   ],
+   "settled": [
+    0.9408905230262132,
+    0.9144360322529539,
+    0.9673450137994726
+   ],
+   "instant_rejected": [
+    7.8,
+    2.9158489622043833,
+    12.684151037795615
+   ],
+   "safety_rejection_rate": 0.0,
+   "wins_vs_mpc": 2
+  },
+  {
+   "stress": "liquidity_hoarding",
+   "arm": "ppo_unconstrained",
+   "held_out_stress": true,
+   "cost": [
+    530890319.8,
+    326579122.93149626,
+    735201516.6685038
+   ],
+   "cost_diff_vs_mpc": [
+    13461169.8,
+    -22557510.89513171,
+    49479850.495131716
+   ],
+   "settled": [
+    0.9426240990292112,
+    0.916459151711429,
+    0.9687890463469934
+   ],
+   "instant_rejected": [
+    9.4,
+    2.7733737211157,
+    16.0266262788843
+   ],
+   "safety_rejection_rate": 0.004007285974499089,
+   "wins_vs_mpc": 5
+  }
+ ],
+ "manifest": {
+  "iterations": 60,
+  "episodes_per_iteration": 8,
+  "runtime_s": 399.308989699,
+  "python": "3.13.18",
+  "platform": "Linux-6.18.44-fc-v338-x86_64-with-glibc2.39",
+  "data_origin": "synthetic"
+ }
+}

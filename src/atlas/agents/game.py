@@ -33,7 +33,7 @@ def institution_cost(stats: dict, cost: CostModel) -> int:
     delay = int(settled * stats["value_weighted_delay_s"]) * cost.delay_bp_per_hour // (3600 * 10_000)
     unsettled = (sent - settled) * cost.unsettled_penalty_bp // 10_000
     liquidity = stats["liquidity_usage_minor"] * cost.liquidity_bp_per_day // 10_000
-    credit = stats["peak_credit_minor"] * cost.credit_bp_per_day // 10_000
+    credit = stats["peak_credit_minor"] * cost.credit_bp_per_day // 10_000 + stats.get("daylight_overdraft_fee_minor", 0)
     return delay + unsettled + liquidity + credit
 
 
@@ -43,7 +43,11 @@ def _mean_ci(xs: Sequence[float]) -> tuple[float, float, float]:
     if n < 2:
         return mean, mean, mean
     sd = math.sqrt(sum((x - mean) ** 2 for x in xs) / (n - 1))
-    t = {2: 12.706, 3: 4.303, 4: 3.182, 5: 2.776, 6: 2.571, 7: 2.447, 8: 2.365, 9: 2.306, 10: 2.262}.get(n, 1.96)
+    try:
+        from scipy.stats import t as student_t
+        t = float(student_t.ppf(0.975, n - 1))
+    except ImportError:  # pragma: no cover
+        t = {2: 12.706, 3: 4.303, 4: 3.182, 5: 2.776, 6: 2.571, 7: 2.447, 8: 2.365, 9: 2.306, 10: 2.262}.get(n, 2.0)
     half = t * sd / math.sqrt(n)
     return mean, mean - half, mean + half
 
@@ -69,7 +73,7 @@ def deviation_analysis(
     strategies: Sequence[str] = ("early", "conservative"),
     *,
     config: NexusPayConfig = NexusPayConfig(n_institutions=10, payments_per_day=900, instant_payments_per_day=300,
-                                            opening_liquidity_bp=600, credit_limit_bp=300),
+                                            opening_liquidity_bp=1_200, credit_limit_bp=800),
     seeds: Sequence[int] = (101, 102, 103),
     focal: Sequence[str] = ("@largest", "@median"),
     policy: str = "priority",
