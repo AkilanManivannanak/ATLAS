@@ -10,6 +10,7 @@ const ITEMS = [
   ["/stress", "Stress & Agent Lab"],
   ["/optimization", "Settlement Optimization"],
   ["/control", "Adaptive Control"],
+  ["/decision", "Decision Center"],
   ["/research", "Research Studio"],
   ["/audit", "Audit & Governance"],
 ] as const;

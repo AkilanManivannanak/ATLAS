@@ -17,6 +17,7 @@ const METRICS: Record<string, { label: string; fmt: (v: number) => string }> = {
   liquidity_usage_minor: { label: "Liquidity used", fmt: (v) => usd(v) },
   peak_credit_minor: { label: "Peak intraday credit", fmt: (v) => usd(v) },
   runtime_s: { label: "Simulation runtime", fmt: (v) => `${v.toFixed(2)}s` },
+  timed_deadline_misses: { label: "Timed-obligation deadline misses", fmt: (v) => v.toFixed(1) },
 };
 
 const ARM_NOTE: Record<string, string> = {
@@ -29,6 +30,9 @@ const ARM_NOTE: Record<string, string> = {
   rule_rebalancer: "greedy cross-rail liquidity moves",
   mpc: "MPC: forecast + LP rebalancing (HiGHS)",
   mpc_queue_milp: "MPC + urgency-weighted queue MILP",
+  auction_pay_as_bid: "priority + intraday liquidity auction, pay-as-bid",
+  auction_uniform: "priority + intraday liquidity auction, uniform price",
+  mpc_plus_auction: "MPC rebalancing + uniform-price auction",
 };
 
 type FundingPlan = { allocations_minor: Record<string, number>; objective_minor: number; expected_shortfall_minor: number; cvar_shortfall_cost_minor: number | null; status: string; runtime_ms: number; formulation: string };

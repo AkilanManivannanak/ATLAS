@@ -6,11 +6,11 @@ import { ErrorBox, Header, Panel, SyntheticBadge, useAsync } from "@/components/
 import { api, RunDetail, RunSummary } from "@/lib/api";
 import { mins, num, pct, usd } from "@/lib/format";
 
-type Meta = { policies: string[]; strategies: string[]; controllers: string[]; stress_scenarios: Record<string, { name: string; description: string; shocks: Record<string, unknown>[] }> };
+type Meta = { policies: string[]; strategies: string[]; controllers: string[]; auctions: string[]; stress_scenarios: Record<string, { name: string; description: string; shocks: Record<string, unknown>[] }> };
 
 export default function StressLab() {
   const meta = useAsync(() => api<Meta>("/meta"), []);
-  const [form, setForm] = useState({ stress: "combined", policy: "multilateral", strategy: "early", controller: "none", seed: 7, opening_liquidity_bp: 600, credit_limit_bp: 300 });
+  const [form, setForm] = useState({ stress: "combined", policy: "multilateral", strategy: "early", controller: "none", auction: "none", seed: 7, opening_liquidity_bp: 1800, credit_limit_bp: 1000 });
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<unknown>(null);
   const [pair, setPair] = useState<{ base: RunDetail; stressed: RunDetail } | null>(null);
@@ -19,7 +19,7 @@ export default function StressLab() {
     setBusy(true);
     setErr(null);
     try {
-      const common = { seed: form.seed, policy: form.policy, strategy: form.strategy, controller: form.controller, opening_liquidity_bp: form.opening_liquidity_bp, credit_limit_bp: form.credit_limit_bp };
+      const common = { seed: form.seed, policy: form.policy, strategy: form.strategy, controller: form.controller, auction: form.auction, opening_liquidity_bp: form.opening_liquidity_bp, credit_limit_bp: form.credit_limit_bp };
       const base = await api<RunSummary>("/simulations", { method: "POST", body: JSON.stringify({ ...common, stress: "baseline", label: `Paired baseline · seed ${form.seed}` }) });
       const stressed = await api<RunSummary>("/simulations", { method: "POST", body: JSON.stringify({ ...common, stress: form.stress, label: `Stress lab · ${form.stress} · seed ${form.seed}` }) });
       const [b, s] = await Promise.all([api<RunDetail>(`/simulations/${encodeURIComponent(base.id)}`), api<RunDetail>(`/simulations/${encodeURIComponent(stressed.id)}`)]);
@@ -63,6 +63,9 @@ export default function StressLab() {
           </label>
           <label>Controller
             <select value={form.controller} onChange={(e) => set("controller", e.target.value)}>{meta.data?.controllers.map((p) => <option key={p}>{p}</option>)}</select>
+          </label>
+          <label>Liquidity auction
+            <select value={form.auction} onChange={(e) => set("auction", e.target.value)}>{(meta.data?.auctions ?? ["none"]).map((p) => <option key={p}>{p}</option>)}</select>
           </label>
           <label>Seed<input type="number" value={form.seed} onChange={(e) => set("seed", Number(e.target.value))} style={{ width: 90, minWidth: 0 }} /></label>
           <label>Opening liquidity (bp)<input type="number" value={form.opening_liquidity_bp} onChange={(e) => set("opening_liquidity_bp", Number(e.target.value))} style={{ width: 110, minWidth: 0 }} /></label>
