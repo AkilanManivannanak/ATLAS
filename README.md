@@ -317,3 +317,7 @@ Full register: [`docs/20_known_limitations.md`](docs/20_known_limitations.md).
 <sub>Engineering rules: financial correctness before visuals · integer money · every state change is an event · every run reproducible from (config, seed, versions) · every automated action passes the safety controller · every claim compared to a baseline with paired statistics · nothing synthetic presented as real. Decisions D-001 to D-025 in [`DECISIONS.md`](DECISIONS.md).</sub>
 
 <sub>© Akilan Manivannan. All rights reserved.</sub>
+
+## Citing
+
+If ATLAS-Σ or the NEXUS-PAY benchmark is useful in your work, use GitHub's **Cite this repository** button (generated from [`CITATION.cff`](CITATION.cff)).
