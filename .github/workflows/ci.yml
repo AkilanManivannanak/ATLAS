@@ -3,14 +3,28 @@ on:
   push:
   pull_request:
 jobs:
+  workflows:
+    # Guard: exactly one Pages deployment workflow (pages.yml). GitHub's starter
+    # "Deploy Next.js site to Pages" workflow cannot build this repo (the app lives in frontend/
+    # and needs the API), so fail loudly with instructions if it is ever re-added.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Only pages.yml may deploy to GitHub Pages
+        run: |
+          bad=$(grep -lE "uses: *actions/deploy-pages" .github/workflows/*.y*ml | grep -v "/pages.yml$" || true)
+          if [ -n "$bad" ]; then
+            echo "::error::Extra Pages workflow(s): $bad. Delete them; pages.yml already deploys the results explorer."
+            exit 1
+          fi
   python:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.12", "3.13"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install -r requirements-lock.txt ruff && pip install --no-deps -e .
@@ -24,10 +38,10 @@ jobs:
       run:
         working-directory: frontend
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "22"
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
@@ -36,7 +50,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Build API image
         run: docker build -t atlas-sigma-api:ci .
       - name: Build web image

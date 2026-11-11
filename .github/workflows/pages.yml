@@ -1,3 +1,7 @@
+# The ONLY GitHub Pages workflow for this repo. It publishes the static results
+# explorer (site/) built from results/. The Command Center (frontend/) is not a
+# static site: it needs the FastAPI backend, so it must not be deployed to Pages.
+# Do not add GitHub's suggested "Next.js" Pages workflow; the guard job in ci.yml fails if one appears.
 name: results-explorer
 on:
   push:
@@ -17,14 +21,14 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - run: python scripts/build_site.py
       - run: cp -r docs/assets site/assets
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: site
       - id: deployment
