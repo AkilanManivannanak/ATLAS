@@ -5,7 +5,7 @@
 | Synthetic data only | Results describe the model, not real payment systems | Every artifact and UI screen is labeled synthetic; no real data is ingested. |
 | Rail archetypes are not replicas | Readers may over-interpret rail names | Archetypes plus a separate evidence/assumption registry (`RAIL_RULES`); no live connectivity. |
 | Cost model weights are assumptions | Policy rankings can depend on weights | Documented `CostModel`; next: a sensitivity study across weights. |
-| FedNow has its own liquidity pool | Real FedNow settles in the shared Fed master account; cross-rail fragmentation is overstated for FedNow | Documented in docs/23; next: shared-account option and re-test. |
+| FedNow pool is separate by default | Real FedNow settles in the shared Fed master account | Shared-account option (`fednow_shared_master`) implemented and tested; the headline results hold under it (`results/shared_master.md`). Controllers are not yet aware of the shared account. |
 | Instant rails only inside the business day | No weekend/overnight instant liquidity dynamics | Documented; next: 24/7 days. |
 | Netting heuristic gap on adversarial queues | Up to ~40% value left vs optimal (LP rounding ~30%) | Exact MILP is fast enough for operational queue sizes (<1 s at 200); a 50 ms anytime MILP is exact to 50 obligations. Gaps published. |
 | Seed counts | Standard preset 5 seeds; extended 10 | Both published; claims cite CIs. |

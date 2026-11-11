@@ -157,3 +157,7 @@
 ## D-025 — Robustness of conclusions to cost weights
 
 **Decision:** Benchmark rows store cost-free raw quantities; `cost_sensitivity` re-ranks arms under 27 alternative cost models. A policy claim is made only alongside its win share across those models.
+
+## D-026 — FedNow shared master account as an option, not the default
+
+**Decision:** `fednow_shared_master=True` settles FedNow in the RTGS (master-account) balance, including intraday credit, through an explicit `MasterAccountTransfer` ledger event, so replay still verifies every cent. The default stays a separate pool so published v0.6 results remain comparable; `results/shared_master.md` reports both models on the same seeds. RTP and the LSM remain prefunded pools.

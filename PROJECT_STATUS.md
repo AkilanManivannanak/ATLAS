@@ -18,7 +18,7 @@
 | 10. Validation | Done: standard (240 runs) and extended (1,320 runs, 11 stresses) benchmarks; headline result replicates in 11/11 stresses and 297/297 stress × cost-model cells; scaling to 669k payments |
 
 ## Verification (2026-11-10, Python 3.13.18, Linux x86_64, 2 vCPUs)
-- `pytest -q`: **152 passed**. `ruff check src tests scripts`: clean. Frontend `tsc --noEmit` and `next build`: pass.
+- `pytest -q`: **156 passed**. `ruff check src tests scripts`: clean. Frontend `tsc --noEmit` and `next build`: pass.
 - All benchmark, auction, RL, game and scaling runs replay-verified.
 - Not verified here: Docker image builds (no Docker daemon); CI builds them on push.
 
@@ -26,10 +26,10 @@
 Generator v2 (realism fixes, D-019), PSR fee (D-020), LSM closing funding, customer cutoff, exact performance work (D-021: ≈3× faster), new arms (auction, MPC + auction), benchmark v2 with cost sensitivity.
 
 ## Known gaps
-FedNow modeled with its own pool (in reality it shares the Fed master account); instant rails only inside the business day; no defaults, net debit caps or PSR waiver; LSTM/TFT absent; analyst is deterministic (no generative model); no PostgreSQL/ClickHouse/MLflow (deferred, D-016).
+FedNow on its own pool by default (shared-master-account option available; controllers not yet aware of it); instant rails only inside the business day; no defaults, net debit caps or PSR waiver; LSTM/TFT absent; analyst is deterministic (no generative model); no PostgreSQL/ClickHouse/MLflow (deferred, D-016).
 
 ## Next tasks
-1. Shared master-account option for FedNow, and re-test the cross-rail rebalancing result under it.
+1. Make MPC and the safe-RL controller aware of the shared FedNow master account (done: the option itself and the re-test, `results/shared_master.md`).
 2. 24/7 instant-rail days and weekend liquidity.
 3. Auction with collateralized loans and counterparty limits; incentive study for borrowers.
 4. Multi-day panels with overnight funding and carry-over positions.
