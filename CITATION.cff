@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use ATLAS-Σ or its NEXUS-PAY benchmark, please cite it as below."
+title: "ATLAS-Σ: a multi-rail settlement and liquidity digital twin"
+abstract: >-
+  Deterministic, event-sourced simulator of large-value (RTGS/LSM) and instant
+  (FedNow-style, RTP-style) payment rails with a hash-chained ledger, liquidity
+  auction, MPC and constrained-RL treasury controllers, and the NEXUS-PAY
+  benchmark. All data is synthetic.
+type: software
+authors:
+  - family-names: Manivannan
+    given-names: Akilan
+repository-code: "https://github.com/AkilanManivannanak/ATLAS"
+version: 0.6.0
+date-released: 2026-11-10
+keywords: [payments, RTGS, liquidity, settlement, digital twin, market design, safe reinforcement learning]
