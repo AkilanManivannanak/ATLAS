@@ -1,0 +1,32 @@
+name: Bug report
+description: Something in the simulator, ledger, API or Command Center behaves incorrectly
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Include the command or request, and the output you got.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: input
+    id: repro
+    attributes:
+      label: Seed, preset and settings
+      description: ATLAS runs are deterministic, so seed + settings should reproduce it (e.g. seed=11, policy=multilateral, auction=uniform, stress=combined).
+  - type: dropdown
+    id: replay
+    attributes:
+      label: Does the ledger still replay to the same state hash?
+      options: ["Yes", "No (critical)", "Not checked"]
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: Python 3.13, macOS 15, commit SHA
