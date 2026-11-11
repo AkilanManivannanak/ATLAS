@@ -8,6 +8,7 @@ from .book import (
     credit_limit_event,
     credit_repayment_event,
     interbank_transfer_event,
+    master_account_transfer_event,
 )
 
 __all__ = [
@@ -18,4 +19,5 @@ __all__ = [
     "credit_limit_event",
     "credit_repayment_event",
     "interbank_transfer_event",
+    "master_account_transfer_event",
 ]

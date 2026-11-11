@@ -104,6 +104,11 @@ class SimulationSettings:
     auction_lender_share_bp: int = 5_000      # lenders offer at most this share of their free cash
     auction_min_lot_minor: int = 1_000_000_00
     auction_shading_bp: tuple = ()            # ((institution_id, bp), ...): ask = true cost x (1 + bp/10000); experiments only
+    # FedNow settles in the participant's Fed master account, the same balance Fedwire uses. True = model that:
+    # FedNow opens with no separate pool, a FedNow debit draws any shortfall from the RTGS balance at the moment of
+    # payment, and every FedNow balance is swept back to RTGS right after each FedNow event. False = v0.6 behaviour
+    # (separate FedNow pool, a deliberate simplification documented in docs/23).
+    fednow_shared_master: bool = False
 
     def __post_init__(self) -> None:
         if self.policy not in POLICIES:
@@ -215,8 +220,15 @@ class DaySimulator:
         self.open_at, self.close_at = scenario.open_at, scenario.close_at
 
         # ---- accounts / ledger
+        opening_bal = {a.account_id: a.opening_balance_minor for a in scenario.accounts}
+        if settings.fednow_shared_master:
+            # one master account: the FedNow "pool" is just a view of the RTGS balance
+            for a in scenario.accounts:
+                if a.rail == "fednow" and f"{a.institution_id}:rtgs" in opening_bal:
+                    opening_bal[f"{a.institution_id}:rtgs"] += opening_bal[a.account_id]
+                    opening_bal[a.account_id] = 0
         self.opening = tuple(
-            SettlementAccount(a.account_id, a.institution_id, a.rail, "USD", a.opening_balance_minor,
+            SettlementAccount(a.account_id, a.institution_id, a.rail, "USD", opening_bal[a.account_id],
                               credit_limit_minor=a.credit_limit_minor if settings.use_intraday_credit else 0)
             for a in scenario.accounts
         )
@@ -344,7 +356,7 @@ class DaySimulator:
             return [p["sender_account_id"], p["receiver_account_id"]]
         if ev.event_type == "LiquiditySavingCycleSettled":
             return sorted(json.loads(ev.payload_json)["account_deltas_minor"])
-        if ev.event_type == "InterbankLoanTransfer":
+        if ev.event_type in ("InterbankLoanTransfer", "MasterAccountTransfer"):
             p = json.loads(ev.payload_json)
             return [p["from_account_id"], p["to_account_id"]]
         if ev.event_type in ("FundingDrawn", "FundingRepaid", "LiquidityAdjusted", "CreditLimitChanged", "IntradayCreditRepaid"):
@@ -532,6 +544,44 @@ class DaySimulator:
                                                                      "amount_minor": pay.amount_minor, "reason": reason})
 
     def _instant(self, at: datetime, pay: PaymentInstruction) -> None:
+        shared = self.settings.fednow_shared_master and pay.payment_rail_id == "fednow"
+        if shared and not self._blocked(pay.sender_institution_id, at):
+            self._master_fund(at, pay.sender_institution_id, pay.amount_minor)
+        self._instant_inner(at, pay)
+        if shared:
+            for inst in (pay.sender_institution_id, pay.receiver_institution_id):
+                self._master_sweep(at, inst)
+
+    def _master_move(self, at: datetime, inst: str, from_rail: str, to_rail: str, amount: int, why: str, *, credit: bool = False) -> None:
+        from atlas.ledger import master_account_transfer_event
+        _, _, ev = master_account_transfer_event(
+            self.ledger.account(self._acct(inst, from_rail)), self.ledger.account(self._acct(inst, to_rail)), amount, why,
+            allow_intraday_credit=credit, at=at, event_id=f"{self.simulation_id}#{self.seq}", sequence_number=self.seq,
+            simulation_id=self.simulation_id, correlation_id=f"master:{inst}", causation_id=None)
+        self._commit(ev)
+        self._dirty.add(self._acct(inst, to_rail))
+        self.counters["master_account_moves_minor"] = self.counters.get("master_account_moves_minor", 0) + amount
+
+    def _master_fund(self, at: datetime, inst: str, amount: int) -> None:
+        """Shared master account: a FedNow debit can use the RTGS balance and the same intraday credit (PSR policy)."""
+        fed = self.ledger.accounts.get(self._acct(inst, "fednow"))
+        rtgs = self.ledger.accounts.get(self._acct(inst, "rtgs"))
+        if fed is None or rtgs is None:
+            return
+        shortfall = amount - fed.cash_available_minor
+        if shortfall <= 0:
+            return
+        credit = self.settings.use_intraday_credit
+        capacity = rtgs.cash_available_minor + (rtgs.undrawn_credit_minor if credit else 0)
+        if shortfall <= capacity:  # all-or-nothing: never strand a partial draw in the FedNow view
+            self._master_move(at, inst, "rtgs", "fednow", shortfall, "shared master account: fund FedNow debit", credit=credit)
+
+    def _master_sweep(self, at: datetime, inst: str) -> None:
+        fed = self.ledger.accounts.get(self._acct(inst, "fednow"))
+        if fed is not None and self.ledger.accounts.get(self._acct(inst, "rtgs")) is not None and fed.cash_available_minor > 0:
+            self._master_move(at, inst, "fednow", "rtgs", fed.cash_available_minor, "shared master account: sweep FedNow balance")
+
+    def _instant_inner(self, at: datetime, pay: PaymentInstruction) -> None:
         rail = self.rails[pay.payment_rail_id]
         if self._blocked(pay.sender_institution_id, at):
             return self._reject(at, pay, "sender operational outage", instant=True)

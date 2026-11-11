@@ -71,6 +71,7 @@ class BenchmarkConfig:
     reference_arm: str = "priority"
     strategy: str = "early"
     workers: int = max(1, (os.cpu_count() or 1))
+    fednow_shared_master: bool = False                   # FedNow on the Fed master account shared with RTGS (see SimulationSettings)
 
     def to_dict(self) -> dict:
         d = asdict(self)
@@ -101,10 +102,11 @@ def _controller(kind: str | None):
 
 def _run_one(args: tuple) -> dict:
     from atlas.sim import SimulationSettings, run_day
-    scenario_cfg, seed, stress, arm, strategy = args
+    scenario_cfg, seed, stress, arm, strategy, *rest = args
+    shared = bool(rest[0]) if rest else False
     policy, ctrl, auction = POLICY_ARMS[arm]
     sc = generate_scenario(scenario_cfg, seed=seed)
-    r = run_day(sc, SimulationSettings(policy=policy, strategy=strategy, auction=auction), build_scenario(stress), controller=_controller(ctrl))
+    r = run_day(sc, SimulationSettings(policy=policy, strategy=strategy, auction=auction, fednow_shared_master=shared), build_scenario(stress), controller=_controller(ctrl))
     if not r.verify_replay():  # a benchmark row is only valid if its ledger replays exactly
         raise RuntimeError(f"replay mismatch for seed={seed} stress={stress} arm={arm}")
     return {"seed": seed, "stress": stress, "arm": arm, "policy": policy, "controller": ctrl,
@@ -158,7 +160,7 @@ def paired_comparison(rows: list[dict], reference: str, *, seed: int = 0) -> lis
 
 def run_benchmark(cfg: BenchmarkConfig = BenchmarkConfig(), *, progress: bool = False) -> dict:
     started = time.perf_counter()
-    jobs = [(cfg.scenario, seed, stress, arm, cfg.strategy) for seed in cfg.seeds for stress in cfg.stresses for arm in cfg.arms]
+    jobs = [(cfg.scenario, seed, stress, arm, cfg.strategy, cfg.fednow_shared_master) for seed in cfg.seeds for stress in cfg.stresses for arm in cfg.arms]
     rows: list[dict] = []
     if cfg.workers > 1:
         with ProcessPoolExecutor(max_workers=cfg.workers) as pool:
