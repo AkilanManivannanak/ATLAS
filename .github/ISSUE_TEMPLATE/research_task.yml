@@ -1,0 +1,22 @@
+name: Research or modeling task
+description: A new experiment, realism improvement or model change
+labels: [research]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question or gap
+      description: What do we want to learn or make more realistic? Link the relevant doc (e.g. docs/20_known_limitations.md).
+    validations:
+      required: true
+  - type: textarea
+    id: method
+    attributes:
+      label: Proposed method
+  - type: textarea
+    id: done
+    attributes:
+      label: Definition of done
+      description: Results artifact, test, and doc update that close this task. Results must be replay-verified and include confidence intervals.
+    validations:
+      required: true
