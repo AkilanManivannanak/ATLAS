@@ -8,7 +8,7 @@
 
 [![ci](https://github.com/AkilanManivannanak/ATLAS/actions/workflows/ci.yml/badge.svg)](https://github.com/AkilanManivannanak/ATLAS/actions/workflows/ci.yml)
 ![python](https://img.shields.io/badge/python-3.12%20%7C%203.13-2a78d6)
-![tests](https://img.shields.io/badge/tests-152%20passing-1baf7a)
+![tests](https://img.shields.io/badge/tests-156%20passing-1baf7a)
 ![replay](https://img.shields.io/badge/benchmark%20runs%20replay--verified-100%25-1baf7a)
 ![data](https://img.shields.io/badge/data-100%25%20synthetic-eb6834)
 
@@ -217,7 +217,7 @@ Constrained PPO (NumPy, Lagrangian on safety rejections) **ties MPC on held-out 
 | Liquidity-saving systems fund closing positions | pre-cutoff and pre-close funding cycles | modeled assumption |
 | Banks' daily gross flows roughly offset; liquidity stress comes from *timing* | Sinkhorn-balanced expected flows + autocorrelated intraday activity | calibration choice |
 
-Everything that is an assumption is labeled as one in the code's rule registry and in [`docs/23`](docs/23_realism_and_calibration.md), including the biggest caveat: real FedNow settles in the same Fed master account as Fedwire.
+Everything that is an assumption is labeled as one in the code's rule registry and in [`docs/23`](docs/23_realism_and_calibration.md), including how FedNow is modeled: by default as its own pool, with a `fednow_shared_master` option that settles it in the same Fed master account as Fedwire (the results hold under both, see [`results/shared_master.md`](results/shared_master.md)).
 
 ---
 
@@ -226,7 +226,7 @@ Everything that is an assumption is labeled as one in the code's rule registry a
 ```bash
 python3 -m venv .venv && source .venv/bin/activate          # Python 3.12+
 pip install -r requirements-lock.txt && pip install --no-deps -e .
-pytest -q                                                   # 152 tests
+pytest -q                                                   # 156 tests
 uvicorn atlas.api.app:app --port 8000                       # API + demo runs → http://localhost:8000/docs
 cd frontend && npm ci && npm run dev                        # Command Center → http://localhost:3000
 ```
@@ -303,7 +303,7 @@ scripts/     studies, figure and site builders, demo recorder
 <summary><b>Honest limitations</b></summary>
 
 - Synthetic data only; cost weights are assumptions (hence the 27-model sensitivity check).
-- FedNow is modeled with its own liquidity pool; in reality it shares the Fed master account, so cross-rail fragmentation is overstated for FedNow.
+- FedNow uses its own pool by default; the realistic shared-master-account option exists and the headline results hold under it, but the MPC controller is not yet aware of the shared account.
 - Instant rails run only inside the large-value business day; intraday transfers are instantaneous.
 - No defaults, net debit caps, or PSR fee waiver. Auction loans that can't be repaid roll overnight.
 - LSTM / Temporal Fusion Transformer not implemented (no deep-learning framework in the dependency set).

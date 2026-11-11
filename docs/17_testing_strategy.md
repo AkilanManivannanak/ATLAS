@@ -1,6 +1,6 @@
 # Testing strategy
 
-`pytest -q` runs 152 tests (unit, property-based, integration and API).
+`pytest -q` runs 156 tests (unit, property-based, integration and API).
 
 | Layer | Examples |
 |---|---|

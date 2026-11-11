@@ -45,6 +45,19 @@ Findings:
 * Netting (bilateral, heuristic, exact MILP) is indistinguishable from the priority queue in 10/11 stresses; the one significant effect is −1% under concentrated outflows.
 * Failure-to-pay is the hardest case (savings shrink to 26%), plausibly because a failing bank's missing payments are a solvency-like shock that moving liquidity cannot replace.
 
+## FedNow on the shared Fed master account (`results/shared_master.md`)
+Same seeds (11–15), standard scenario, 5 arms × 3 stresses × 2 account models = 150 runs, all replay-verified. In the shared model FedNow draws on the RTGS balance and intraday credit, as the PSR policy allows.
+
+| Stress | MPC + auction vs priority (separate → shared) | MPC + auction vs rule-based treasury (shared) | Rule-based vs priority (shared) | Instant rejected, priority queue (separate → shared) |
+|---|---|---|---|---|
+| baseline | −61% → **−59%** | −$1.60M [−2.02, −1.19] | −29% | 89.2 → 30.4 |
+| liquidity hoarding | −56% → **−54%** | −$1.63M [−2.17, −1.20] | −25% | 89.2 → 30.2 |
+| combined | −52% → **−51%** | −$2.11M [−2.72, −1.50] | −20% | 179.8 → 117.6 |
+
+* **The headline conclusions survive the realistic account model.** MPC + auction stays the cheapest arm and beats the rule-based treasury by $1.6–2.1M/day in every stress; cross-rail rebalancing still saves 20–29% vs the priority queue, because RTP and the LSM remain prefunded pools.
+* **Sharing the master account removes most FedNow rejections on its own** (about two thirds on normal days), but the cost effect is small (−$0.10M to +$0.02M for the priority queue) because instant payments are low in value.
+* **One honest regression:** with MPC + auction, instant rejections rise from 1.6 to 12.4 per normal day and cost rises by $0.08M [+0.01, +0.19]. FedNow now competes with Fedwire and auction lending for the same balance, and the MPC still plans a separate FedNow buffer that the sweep returns to RTGS. Making the controllers aware of the shared account is the next task.
+
 ## E4: liquidity auction and incentives (`results/auction.json`)
 8 paired seeds, tighter liquidity (10% / 6%), normal and combined days.
 
@@ -109,4 +122,4 @@ See the README chart: a single CPU core simulates and replay-verifies a 100-bank
 All benchmark, auction, RL, game and scaling runs replay to the identical ledger state hash from their event logs. Every account's camt.053 statement reconciles to the ledger.
 
 ## Not yet run
-E3 (speed vs stability frontier as a dedicated sweep), cost-model calibration against observed data (none available by design), FedNow on a shared master account (see `23_realism_and_calibration.md`).
+E3 (speed vs stability frontier as a dedicated sweep), cost-model calibration against observed data (none available by design), controllers that are aware of the shared FedNow master account.

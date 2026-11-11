@@ -27,6 +27,7 @@ from atlas.domain import FinancialEvent, SettlementAccount, reconcile_account
 LEDGER_EVENT_TYPES = frozenset(
     {
         "PaymentSettled",
+        "MasterAccountTransfer",
         "LiquiditySavingCycleSettled",
         "FundingDrawn",
         "FundingRepaid",
@@ -170,6 +171,22 @@ class Ledger:
                 raise LedgerReplayError(f"event {event.event_id!r} transfers more than the sender's unreserved cash")
             self._set(src, ledger_balance_minor=p["from_ledger_before_minor"] - amount)
             self._set(dst, ledger_balance_minor=p["to_ledger_before_minor"] + amount)
+        elif kind == "MasterAccountTransfer":
+            src, dst, amount, draw = p["from_account_id"], p["to_account_id"], p["amount_minor"], p["credit_draw_minor"]
+            if src == dst or amount <= 0 or draw < 0 or draw > amount:
+                raise LedgerReplayError(f"event {event.event_id!r} is not a valid master-account transfer")
+            self._expect(src, "ledger_balance_minor", p["from_ledger_before_minor"], event)
+            self._expect(src, "intraday_credit_used_minor", p["from_credit_used_before_minor"], event)
+            self._expect(dst, "ledger_balance_minor", p["to_ledger_before_minor"], event)
+            s_acct = self.account(src)
+            if s_acct.institution_id != self.account(dst).institution_id:
+                raise LedgerReplayError(f"event {event.event_id!r} moves cash between different institutions")
+            if amount - draw > s_acct.cash_available_minor or draw > s_acct.undrawn_credit_minor:
+                raise LedgerReplayError(f"event {event.event_id!r} exceeds the source's cash plus undrawn credit")
+            self._set(src, ledger_balance_minor=p["from_ledger_before_minor"] + draw - amount,
+                      intraday_credit_used_minor=p["from_credit_used_before_minor"] + draw)
+            self._set(dst, ledger_balance_minor=p["to_ledger_before_minor"] + amount)
+            self.external_net_flow_minor += draw
         elif kind == "IntradayCreditRepaid":
             account_id = p["account_id"]
             self._expect(account_id, "ledger_balance_minor", p["account_ledger_before_minor"], event)
@@ -276,3 +293,27 @@ def interbank_transfer_event(src: SettlementAccount, dst: SettlementAccount, amo
                "to_account_id": dst.account_id, "from_ledger_before_minor": src.ledger_balance_minor,
                "to_ledger_before_minor": dst.ledger_balance_minor}
     return new_src, new_dst, _event("InterbankLoanTransfer", loan_id, payload, **meta)
+
+
+def master_account_transfer_event(src: SettlementAccount, dst: SettlementAccount, amount_minor: int, reason: str, *,
+                                  allow_intraday_credit: bool = False, **meta) -> tuple[SettlementAccount, SettlementAccount, FinancialEvent]:
+    """Move balance between two rail views of ONE institution's master account (e.g. Fedwire and FedNow).
+
+    Only the exact cash shortfall is drawn as intraday credit on the source, and only when explicitly allowed,
+    so a FedNow debit can use the same daylight-overdraft capacity as Fedwire.
+    """
+    if src.account_id == dst.account_id or src.institution_id != dst.institution_id or src.currency != dst.currency:
+        raise ValueError("master-account transfer requires two accounts of the same institution and currency")
+    if not isinstance(amount_minor, int) or isinstance(amount_minor, bool) or amount_minor <= 0:
+        raise ValueError("transfer amount must be positive integer minor units")
+    draw = max(0, amount_minor - src.cash_available_minor)
+    if draw and (not allow_intraday_credit or draw > src.undrawn_credit_minor):
+        raise ValueError("insufficient cash and permitted intraday credit for master-account transfer")
+    new_src = replace(src, ledger_balance_minor=src.ledger_balance_minor + draw - amount_minor,
+                      intraday_credit_used_minor=src.intraday_credit_used_minor + draw)
+    new_dst = replace(dst, ledger_balance_minor=dst.ledger_balance_minor + amount_minor)
+    payload = {"reason": reason, "amount_minor": amount_minor, "credit_draw_minor": draw,
+               "from_account_id": src.account_id, "to_account_id": dst.account_id,
+               "from_ledger_before_minor": src.ledger_balance_minor, "from_credit_used_before_minor": src.intraday_credit_used_minor,
+               "to_ledger_before_minor": dst.ledger_balance_minor}
+    return new_src, new_dst, _event("MasterAccountTransfer", src.institution_id, payload, **meta)

@@ -1,0 +1,3829 @@
+{
+ "arms": [
+  "priority",
+  "rule_rebalancer",
+  "mpc",
+  "auction_uniform",
+  "mpc_plus_auction"
+ ],
+ "config": {
+  "arms": [
+   "priority",
+   "rule_rebalancer",
+   "mpc",
+   "auction_uniform",
+   "mpc_plus_auction"
+  ],
+  "fednow_shared_master": false,
+  "name": "shared_master_study",
+  "reference_arm": "priority",
+  "scenario": {
+   "bank_sigma_milli": 200,
+   "business_date": "2026-03-10",
+   "collateralized_credit_bp": 6000,
+   "core_fraction_bp": 2500,
+   "core_size_multiplier": 6,
+   "credit_limit_bp": 1000,
+   "customer_cutoff": "18:00:00",
+   "customer_share_bp": 5500,
+   "day_close": "18:30:00",
+   "day_open": "08:00:00",
+   "day_volume_sigma_milli": 150,
+   "fednow_limit_minor": 1000000000,
+   "flow_imbalance_milli": 100,
+   "generator": "v2",
+   "instant_median_minor": 1500000,
+   "instant_payments_per_day": 2000,
+   "instant_prefunding_bp": 2500,
+   "instant_sigma_milli": 1000,
+   "intraday_phi_milli": 800,
+   "large_value_median_minor": 250000000,
+   "large_value_sigma_milli": 1100,
+   "lsm_share_bp": 3500,
+   "market_sigma_milli": 300,
+   "n_institutions": 16,
+   "opening_liquidity_bp": 1800,
+   "payments_per_day": 3000,
+   "relationship_sigma_milli": 1000,
+   "round_amount_share_bp": 1500,
+   "rtp_limit_minor": 1000000000,
+   "rtp_participation_bp": 7500,
+   "rtp_share_bp": 4500,
+   "timed_share_bp": 800,
+   "urgent_share_bp": 1200
+  },
+  "seeds": [
+   11,
+   12,
+   13,
+   14,
+   15
+  ],
+  "strategy": "early",
+  "stresses": [
+   "baseline",
+   "liquidity_hoarding",
+   "combined"
+  ],
+  "workers": 2
+ },
+ "modes": {
+  "separate": {
+   "all_replays_verified": true,
+   "vs_priority": [
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      -220231066.8,
+      -135038399.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 377092937.8,
+     "mean_diff": -170224225.2,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 547317163.0,
+     "rel_diff": -0.31101569018401126,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      0.009879902585551714,
+      0.014719491091007831
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.985669419418737,
+     "mean_diff": 0.012342413217999292,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9733270062007378,
+     "rel_diff": 0.0126806439555976,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 89.2,
+     "mean_diff": 0.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 89.2,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -251548667.8,
+      -96570741.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 384027776.2,
+     "mean_diff": -163289386.8,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 547317163.0,
+     "rel_diff": -0.29834508734380766,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      0.004906395724735657,
+      0.017163951581879312
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9837163730622989,
+     "mean_diff": 0.010389366861561134,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9733270062007378,
+     "rel_diff": 0.010674076436155562,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -101.6,
+      -66.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 5.2,
+     "mean_diff": -84.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 89.2,
+     "rel_diff": -0.9417040358744394,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -462746760.2,
+      -249951202.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 214385305.8,
+     "mean_diff": -332931857.2,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 547317163.0,
+     "rel_diff": -0.6082978567218803,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      0.01621281080918897,
+      0.02934100470952743
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9954827354531188,
+     "mean_diff": 0.022155729252381184,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9733270062007378,
+     "rel_diff": 0.022762883502907567,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -108.2,
+      -67.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 1.6,
+     "mean_diff": -87.6,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 89.2,
+     "rel_diff": -0.9820627802690582,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 547317163.0,
+     "mean_diff": 0.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 547317163.0,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": null
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9733270062007378,
+     "mean_diff": 0.0,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9733270062007378,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": null
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 89.2,
+     "mean_diff": 0.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 89.2,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      -255078279.6,
+      -93465116.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 386523380.2,
+     "mean_diff": -160793782.8,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 547317163.0,
+     "rel_diff": -0.29378538381410124,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.004643424562280951,
+      0.016928629704681696
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9835608208166411,
+     "mean_diff": 0.010233814615903336,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9733270062007378,
+     "rel_diff": 0.010514261446263341,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      -99.6,
+      -66.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 6.6,
+     "mean_diff": -82.6,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 89.2,
+     "rel_diff": -0.9260089686098654,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      -317595043.6,
+      -205270945.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 441849077.6,
+     "mean_diff": -252159415.6,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 694008493.2,
+     "rel_diff": -0.36333765086550956,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      0.01663161876680346,
+      0.021054835582671138
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9886627190681041,
+     "mean_diff": 0.018355794182849515,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9703069248852547,
+     "rel_diff": 0.018917513327053923,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 179.8,
+     "mean_diff": 0.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 179.8,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "combined",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -161613610.4,
+      -75421932.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 568479858.6,
+     "mean_diff": -125528634.6,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 694008493.2,
+     "rel_diff": -0.18087478154799042,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      0.004131563658311821,
+      0.01034792602709782
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9775156400049131,
+     "mean_diff": 0.0072087151196583935,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9703069248852547,
+     "rel_diff": 0.00742931430744027,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -114.2,
+      -61.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 92.0,
+     "mean_diff": -87.8,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 179.8,
+     "rel_diff": -0.48832035595105666,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -436240743.6,
+      -294047085.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 335420018.6,
+     "mean_diff": -358588474.6,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 694008493.2,
+     "rel_diff": -0.5166917669070393,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      0.0204235297339046,
+      0.026818689954128904
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9939280347292714,
+     "mean_diff": 0.023621109844016754,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9703069248852547,
+     "rel_diff": 0.024343956781314437,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -119.8,
+      -63.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 88.4,
+     "mean_diff": -91.4,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 179.8,
+     "rel_diff": -0.5083426028921023,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 694008493.2,
+     "mean_diff": 0.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 694008493.2,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "combined",
+     "win_rate": null
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9703069248852547,
+     "mean_diff": 0.0,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9703069248852547,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "combined",
+     "win_rate": null
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 179.8,
+     "mean_diff": 0.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 179.8,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "combined",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      -169034135.8,
+      -96253482.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 558069070.2,
+     "mean_diff": -135939423.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 694008493.2,
+     "rel_diff": -0.19587573398878397,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.005248939454478951,
+      0.012042472424488016
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9784952858738564,
+     "mean_diff": 0.00818836098860165,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9703069248852547,
+     "rel_diff": 0.008438939039386924,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      -113.4,
+      -58.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 93.8,
+     "mean_diff": -86.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 179.8,
+     "rel_diff": -0.4783092324805339,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      -224350881.6,
+      -151140985.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 391347677.0,
+     "mean_diff": -182775328.6,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 574123005.6,
+     "rel_diff": -0.3183556952381425,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      0.011360291903364428,
+      0.015280691026970383
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9883496856249392,
+     "mean_diff": 0.013476619564512538,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9748730660604267,
+     "rel_diff": 0.013823973636868537,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 89.2,
+     "mean_diff": 0.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 89.2,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -200862737.6,
+      -70901040.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 431395522.0,
+     "mean_diff": -142727483.6,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 574123005.6,
+     "rel_diff": -0.24860087857102933,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      0.003274381755092737,
+      0.012718344085850309
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9830612170645467,
+     "mean_diff": 0.008188151004120004,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9748730660604267,
+     "rel_diff": 0.008399197074147567,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.8
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -102.8,
+      -66.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 4.6,
+     "mean_diff": -84.6,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 89.2,
+     "rel_diff": -0.9484304932735425,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -418500297.6,
+      -234041429.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 255225864.0,
+     "mean_diff": -318897141.6,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 574123005.6,
+     "rel_diff": -0.5554509024886217,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      0.015616119736052925,
+      0.025583981745319773
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9956011506224101,
+     "mean_diff": 0.020728084561983294,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9748730660604267,
+     "rel_diff": 0.02126234202545758,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -106.8,
+      -67.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 2.2,
+     "mean_diff": -87.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 89.2,
+     "rel_diff": -0.9753363228699551,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 574123005.6,
+     "mean_diff": 0.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 574123005.6,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": null
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9748730660604267,
+     "mean_diff": 0.0,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9748730660604267,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": null
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 89.2,
+     "mean_diff": 0.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 89.2,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      -210481530.8,
+      -72834369.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 426284847.0,
+     "mean_diff": -147838158.6,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 574123005.6,
+     "rel_diff": -0.257502585958036,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.002953437739020148,
+      0.013078406153329891
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.983380835818924,
+     "mean_diff": 0.008507769758497208,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9748730660604267,
+     "rel_diff": 0.008727053864435988,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.8
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      -104.2,
+      -67.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 4.6,
+     "mean_diff": -84.6,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 89.2,
+     "rel_diff": -0.9484304932735425,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    }
+   ],
+   "vs_rule_rebalancer": [
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      -53432999.2,
+      34847212.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 377092937.8,
+     "mean_diff": -9430442.4,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 386523380.2,
+     "rel_diff": -0.02439811634452844,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": 0.6
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      -0.002316041211488584,
+      0.006145118916433989
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.985669419418737,
+     "mean_diff": 0.002108598602095957,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9835608208166411,
+     "rel_diff": 0.002143841598270667,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": 0.6
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      65.8,
+      99.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 89.2,
+     "mean_diff": 82.6,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 6.6,
+     "rel_diff": 12.515151515151516,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -17520071.0,
+      12870284.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 384027776.2,
+     "mean_diff": -2495604.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 386523380.2,
+     "rel_diff": -0.0064565408661920835,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": 0.6
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -0.0010238843413352683,
+      0.0011984034841617808
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9837163730622989,
+     "mean_diff": 0.00015555224565779734,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9835608208166411,
+     "rel_diff": 0.0001581521369757732,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": 0.6
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -2.0,
+      -0.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 5.2,
+     "mean_diff": -1.4,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 6.6,
+     "rel_diff": -0.21212121212121213,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 0.8
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -214371473.6,
+      -129904675.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 214385305.8,
+     "mean_diff": -172138074.4,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 386523380.2,
+     "rel_diff": -0.4453497077225447,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      0.009855483897363949,
+      0.013773748964819976
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9954827354531188,
+     "mean_diff": 0.011921914636477848,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9835608208166411,
+     "rel_diff": 0.012121176834371257,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -9.8,
+      -1.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 1.6,
+     "mean_diff": -5.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 6.6,
+     "rel_diff": -0.7575757575757576,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 0.8
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      88599517.6,
+      255078279.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 547317163.0,
+     "mean_diff": 160793782.8,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 386523380.2,
+     "rel_diff": 0.41600014652878176,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      -0.016561387160592345,
+      -0.004643424562280951
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9733270062007378,
+     "mean_diff": -0.010233814615903336,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9835608208166411,
+     "rel_diff": -0.010404862006811432,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      65.8,
+      99.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 89.2,
+     "mean_diff": 82.6,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 6.6,
+     "rel_diff": 12.515151515151516,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 386523380.2,
+     "mean_diff": 0.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 386523380.2,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9835608208166411,
+     "mean_diff": 0.0,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9835608208166411,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 6.6,
+     "mean_diff": 0.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 6.6,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": null
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      -186111355.6,
+      -46328629.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 441849077.6,
+     "mean_diff": -116219992.6,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 558069070.2,
+     "rel_diff": -0.20825377861982072,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      0.00540850262066841,
+      0.013865719104164963
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9886627190681041,
+     "mean_diff": 0.010167433194247866,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9784952858738564,
+     "rel_diff": 0.010390886232188359,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      58.6,
+      113.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 179.8,
+     "mean_diff": 86.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 93.8,
+     "rel_diff": 0.9168443496801706,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -5318959.6,
+      26164117.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 568479858.6,
+     "mean_diff": 10410788.4,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 558069070.2,
+     "rel_diff": 0.018655017731530967,
+     "significant": false,
+     "stress": "combined",
+     "win_rate": 0.4
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -0.0022135677781730534,
+      0.00016212061629792274
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9775156400049131,
+     "mean_diff": -0.0009796458689432575,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9784952858738564,
+     "rel_diff": -0.001001175869813592,
+     "significant": false,
+     "stress": "combined",
+     "win_rate": 0.2
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -5.2,
+      1.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 92.0,
+     "mean_diff": -1.8,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 93.8,
+     "rel_diff": -0.019189765458422176,
+     "significant": false,
+     "stress": "combined",
+     "win_rate": 0.4
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -287291968.4,
+      -162164403.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 335420018.6,
+     "mean_diff": -222649051.6,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 558069070.2,
+     "rel_diff": -0.398963252918151,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      0.01285166887464546,
+      0.01815888141022324
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9939280347292714,
+     "mean_diff": 0.015432748855415101,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9784952858738564,
+     "rel_diff": 0.015771919474944336,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -9.2,
+      -1.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 88.4,
+     "mean_diff": -5.4,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 93.8,
+     "rel_diff": -0.05756929637526653,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 0.6
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      96253482.2,
+      169034135.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 694008493.2,
+     "mean_diff": 135939423.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 558069070.2,
+     "rel_diff": 0.24358888578304871,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      -0.012196957880504544,
+      -0.005248939454478951
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9703069248852547,
+     "mean_diff": -0.00818836098860165,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9784952858738564,
+     "rel_diff": -0.008368319302927394,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      58.6,
+      113.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 179.8,
+     "mean_diff": 86.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 93.8,
+     "rel_diff": 0.9168443496801706,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 558069070.2,
+     "mean_diff": 0.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 558069070.2,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "combined",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9784952858738564,
+     "mean_diff": 0.0,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9784952858738564,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "combined",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 93.8,
+     "mean_diff": 0.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 93.8,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "combined",
+     "win_rate": null
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      -89195003.8,
+      11299531.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 391347677.0,
+     "mean_diff": -34937170.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 426284847.0,
+     "rel_diff": -0.08195733497418922,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.6
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      0.00185693720441531,
+      0.00808076240761535
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9883496856249392,
+     "mean_diff": 0.00496884980601533,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.983380835818924,
+     "rel_diff": 0.005052823509497673,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      67.0,
+      102.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 89.2,
+     "mean_diff": 84.6,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 4.6,
+     "rel_diff": 18.391304347826086,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      667594.8,
+      8804224.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 431395522.0,
+     "mean_diff": 5110675.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 426284847.0,
+     "rel_diff": 0.011988873252161365,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.2
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -0.000473044513484111,
+      -0.00014659310892524148
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9830612170645467,
+     "mean_diff": -0.00031961875437720445,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.983380835818924,
+     "rel_diff": -0.0003250203204448636,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.2
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -0.6,
+      0.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 4.6,
+     "mean_diff": 0.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 4.6,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.2
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -211959681.2,
+      -134257529.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 255225864.0,
+     "mean_diff": -171058983.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 426284847.0,
+     "rel_diff": -0.4012785915423355,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      0.010653620004384367,
+      0.013497740410148085
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9956011506224101,
+     "mean_diff": 0.012220314803486088,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.983380835818924,
+     "rel_diff": 0.012426838472309104,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -6.2,
+      -0.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 2.2,
+     "mean_diff": -2.4,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 4.6,
+     "rel_diff": -0.5217391304347826,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.6
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      72834369.0,
+      209470100.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 574123005.6,
+     "mean_diff": 147838158.6,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 426284847.0,
+     "rel_diff": 0.34680603741938776,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      -0.013078406153329891,
+      -0.0038041730356715765
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9748730660604267,
+     "mean_diff": -0.008507769758497208,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.983380835818924,
+     "rel_diff": -0.008651551310141451,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.2
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      67.0,
+      102.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 89.2,
+     "mean_diff": 84.6,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 4.6,
+     "rel_diff": 18.391304347826086,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 426284847.0,
+     "mean_diff": 0.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 426284847.0,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.983380835818924,
+     "mean_diff": 0.0,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.983380835818924,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 4.6,
+     "mean_diff": 0.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 4.6,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": null
+    }
+   ]
+  },
+  "shared": {
+   "all_replays_verified": true,
+   "vs_priority": [
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      -199674941.6,
+      -135594472.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 373958016.6,
+     "mean_diff": -163581050.4,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 537539067.0,
+     "rel_diff": -0.304314719510424,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      0.009932601512345717,
+      0.013257710455963866
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.985691488206605,
+     "mean_diff": 0.01181829561242025,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9738731925941847,
+     "rel_diff": 0.012135353660304481,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      10.0,
+      25.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 47.6,
+     "mean_diff": 17.2,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 30.4,
+     "rel_diff": 0.5657894736842105,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -218846446.8,
+      -94310176.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 386961838.2,
+     "mean_diff": -150577228.8,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 537539067.0,
+     "rel_diff": -0.2801233213436374,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      0.005011265448731983,
+      0.0154096753647883
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9836979047794282,
+     "mean_diff": 0.009824712185243435,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9738731925941847,
+     "rel_diff": 0.010088286914513536,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -35.0,
+      -14.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 6.0,
+     "mean_diff": -24.4,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 30.4,
+     "rel_diff": -0.8026315789473684,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -432110767.0,
+      -240952735.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 222649985.2,
+     "mean_diff": -314889081.8,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 537539067.0,
+     "rel_diff": -0.5857975747835273,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      0.016164897598636506,
+      0.027054280193338352
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.99488109837979,
+     "mean_diff": 0.02100790578560514,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9738731925941847,
+     "rel_diff": 0.02157150021723535,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -24.6,
+      -11.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 12.4,
+     "mean_diff": -18.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 30.4,
+     "rel_diff": -0.5921052631578948,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 537539067.0,
+     "mean_diff": 0.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 537539067.0,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": null
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9738731925941847,
+     "mean_diff": 0.0,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9738731925941847,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": null
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 30.4,
+     "mean_diff": 0.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 30.4,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      -230065633.8,
+      -97632636.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 382435723.0,
+     "mean_diff": -155103344.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 537539067.0,
+     "rel_diff": -0.2885433887914978,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.004893174558188829,
+      0.015601726897215373
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9837890837850184,
+     "mean_diff": 0.009915891190833647,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9738731925941847,
+     "rel_diff": 0.010181912045879286,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      -36.4,
+      -16.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 3.8,
+     "mean_diff": -26.6,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 30.4,
+     "rel_diff": -0.8750000000000001,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      -319708544.8,
+      -206696799.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 436924223.4,
+     "mean_diff": -253386861.2,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 690311084.6,
+     "rel_diff": -0.367061846249832,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      0.016995565240409995,
+      0.021030107054133905
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9888109993190112,
+     "mean_diff": 0.018531569117919023,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9702794302010922,
+     "rel_diff": 0.019099208476550226,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      9.0,
+      20.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 132.4,
+     "mean_diff": 14.8,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 117.6,
+     "rel_diff": 0.12585034013605442,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -161111264.4,
+      -83168640.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 562878731.0,
+     "mean_diff": -127432353.6,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 690311084.6,
+     "rel_diff": -0.18460134342742088,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      0.004932870726454275,
+      0.011419320830131552
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.978027373256247,
+     "mean_diff": 0.0077479430551549155,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9702794302010922,
+     "rel_diff": 0.00798526982433209,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -36.8,
+      -9.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 93.6,
+     "mean_diff": -24.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 117.6,
+     "rel_diff": -0.20408163265306123,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 0.8
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -428216030.4,
+      -291148596.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 338219979.8,
+     "mean_diff": -352091104.8,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 690311084.6,
+     "rel_diff": -0.5100470101881948,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      0.021047338734776135,
+      0.025757521814189534
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9936086704489501,
+     "mean_diff": 0.023329240247857853,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9702794302010922,
+     "rel_diff": 0.02404383677702291,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -25.2,
+      -8.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 100.4,
+     "mean_diff": -17.2,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 117.6,
+     "rel_diff": -0.14625850340136054,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 690311084.6,
+     "mean_diff": 0.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 690311084.6,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "combined",
+     "win_rate": null
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9702794302010922,
+     "mean_diff": 0.0,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9702794302010922,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "combined",
+     "win_rate": null
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 117.6,
+     "mean_diff": 0.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 117.6,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "combined",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      -171819790.4,
+      -101832064.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 549484087.8,
+     "mean_diff": -140826996.8,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 690311084.6,
+     "rel_diff": -0.20400512166424511,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.006131612272871045,
+      0.01223581262765674
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9790370162580289,
+     "mean_diff": 0.008757586056936573,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9702794302010922,
+     "rel_diff": 0.009025839139062804,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      -38.4,
+      -10.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 91.6,
+     "mean_diff": -26.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 117.6,
+     "rel_diff": -0.22108843537414968,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 0.8
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      -231312203.2,
+      -160228748.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 387793984.2,
+     "mean_diff": -188803792.8,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 576597777.0,
+     "rel_diff": -0.3274445381706701,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      0.012099850776209519,
+      0.015337805815914218
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9883244630212964,
+     "mean_diff": 0.0138114260677628,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9745130369535338,
+     "rel_diff": 0.014172643714381986,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      4.0,
+      12.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 38.4,
+     "mean_diff": 8.2,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 30.2,
+     "rel_diff": 0.271523178807947,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -201766657.0,
+      -75522760.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 435351609.8,
+     "mean_diff": -141246167.2,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 576597777.0,
+     "rel_diff": -0.2449648140075989,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      0.003639623488877519,
+      0.01253645963947625
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9828268404119939,
+     "mean_diff": 0.008313803458460157,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9745130369535338,
+     "rel_diff": 0.008531238827189308,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -34.0,
+      -13.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 6.6,
+     "mean_diff": -23.6,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 30.2,
+     "rel_diff": -0.7814569536423842,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -412095568.0,
+      -235515587.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 266792011.8,
+     "mean_diff": -309805765.2,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 576597777.0,
+     "rel_diff": -0.537299617788849,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      0.016129717270095177,
+      0.025061946131175163
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9947466066521082,
+     "mean_diff": 0.020233569698574528,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9745130369535338,
+     "rel_diff": 0.020762749118090347,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -30.0,
+      -13.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 8.6,
+     "mean_diff": -21.6,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 30.2,
+     "rel_diff": -0.7152317880794703,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 576597777.0,
+     "mean_diff": 0.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 576597777.0,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": null
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9745130369535338,
+     "mean_diff": 0.0,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9745130369535338,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": null
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 30.2,
+     "mean_diff": 0.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 30.2,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      -203684744.8,
+      -80731265.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 430150070.4,
+     "mean_diff": -146447706.6,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 576597777.0,
+     "rel_diff": -0.2539859022037124,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0038266149791398086,
+      0.012325901729443478
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9830307601232018,
+     "mean_diff": 0.00851772316966819,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9745130369535338,
+     "rel_diff": 0.008740491760167522,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      -35.6,
+      -18.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 3.2,
+     "mean_diff": -27.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 30.2,
+     "rel_diff": -0.8940397350993378,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    }
+   ],
+   "vs_rule_rebalancer": [
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      -51712081.8,
+      38318570.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 373958016.6,
+     "mean_diff": -8477706.4,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 382435723.0,
+     "rel_diff": -0.022167663453343246,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": 0.6
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      -0.0023463409256404555,
+      0.005952159358069276
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.985691488206605,
+     "mean_diff": 0.001902404421586601,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9837890837850184,
+     "rel_diff": 0.0019337523184007215,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": 0.6
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      28.4,
+      59.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 47.6,
+     "mean_diff": 43.8,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 3.8,
+     "rel_diff": 11.526315789473683,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -2910096.0,
+      10749101.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 386961838.2,
+     "mean_diff": 4526115.2,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 382435723.0,
+     "rel_diff": 0.011834969715943612,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": 0.2
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -0.0004361897910654999,
+      0.000351392149712626
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9836979047794282,
+     "mean_diff": -9.117900559021396e-05,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9837890837850184,
+     "rel_diff": -9.268145692307638e-05,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": 0.2
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      0.2,
+      4.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 6.0,
+     "mean_diff": 2.2,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 3.8,
+     "rel_diff": 0.5789473684210527,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 0.2
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -201930968.0,
+      -119345525.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 222649985.2,
+     "mean_diff": -159785737.8,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 382435723.0,
+     "rel_diff": -0.41781070174765034,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      0.009733433974605087,
+      0.0124505952149379
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.99488109837979,
+     "mean_diff": 0.011092014594771493,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9837890837850184,
+     "rel_diff": 0.011274789258787268,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      3.8,
+      12.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 12.4,
+     "mean_diff": 8.6,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 3.8,
+     "rel_diff": 2.263157894736842,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      96749268.2,
+      230065633.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 537539067.0,
+     "mean_diff": 155103344.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 382435723.0,
+     "rel_diff": 0.40556709185872786,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      -0.015330810764523894,
+      -0.004893174558188829
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9738731925941847,
+     "mean_diff": -0.009915891190833647,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9837890837850184,
+     "rel_diff": -0.01007928564594696,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      16.0,
+      36.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 30.4,
+     "mean_diff": 26.6,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 3.8,
+     "rel_diff": 7.000000000000001,
+     "significant": true,
+     "stress": "baseline",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 382435723.0,
+     "mean_diff": 0.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 382435723.0,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9837890837850184,
+     "mean_diff": 0.0,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9837890837850184,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 3.8,
+     "mean_diff": 0.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 3.8,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "baseline",
+     "win_rate": null
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      -173949134.8,
+      -49776375.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 436924223.4,
+     "mean_diff": -112559864.4,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 549484087.8,
+     "rel_diff": -0.20484644942251595,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      0.005227089675877883,
+      0.012878489886044387
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9888109993190112,
+     "mean_diff": 0.00977398306098245,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9790370162580289,
+     "rel_diff": 0.009983262020408104,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      28.2,
+      55.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 132.4,
+     "mean_diff": 40.8,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 91.6,
+     "rel_diff": 0.44541484716157204,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      7481781.0,
+      21373415.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 562878731.0,
+     "mean_diff": 13394643.2,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 549484087.8,
+     "rel_diff": 0.0243767626713794,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -0.001656173006810291,
+      -0.0005487574748745061
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.978027373256247,
+     "mean_diff": -0.001009643001781657,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9790370162580289,
+     "rel_diff": -0.0010312613159823181,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      0.2,
+      3.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 93.6,
+     "mean_diff": 2.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 91.6,
+     "rel_diff": 0.02183406113537118,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 0.2
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -272489667.4,
+      -150180439.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 338219979.8,
+     "mean_diff": -211264108.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 549484087.8,
+     "rel_diff": -0.3844772081496479,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      0.011658560332622182,
+      0.01726630028828171
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9936086704489501,
+     "mean_diff": 0.014571654190921279,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9790370162580289,
+     "rel_diff": 0.014883660115953027,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      1.0,
+      15.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 100.4,
+     "mean_diff": 8.8,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 91.6,
+     "rel_diff": 0.0960698689956332,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 0.2
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      101832064.8,
+      171819790.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 690311084.6,
+     "mean_diff": 140826996.8,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 549484087.8,
+     "rel_diff": 0.2562894903177941,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      -0.012313932934869709,
+      -0.006131612272871045
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9702794302010922,
+     "mean_diff": -0.008757586056936573,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9790370162580289,
+     "rel_diff": -0.008945102086547132,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      10.8,
+      38.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 117.6,
+     "mean_diff": 26.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 91.6,
+     "rel_diff": 0.2838427947598253,
+     "significant": true,
+     "stress": "combined",
+     "win_rate": 0.2
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 549484087.8,
+     "mean_diff": 0.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 549484087.8,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "combined",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9790370162580289,
+     "mean_diff": 0.0,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9790370162580289,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "combined",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 91.6,
+     "mean_diff": 0.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 91.6,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "combined",
+     "win_rate": null
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      -94490704.2,
+      1516070.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 387793984.2,
+     "mean_diff": -42356086.2,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 430150070.4,
+     "rel_diff": -0.09846816056687552,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.8
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      0.0026643305179513853,
+      0.008014693167462329
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9883244630212964,
+     "mean_diff": 0.00529370289809461,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9830307601232018,
+     "rel_diff": 0.005385083674727694,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "auction_uniform",
+     "ci95_diff": [
+      26.0,
+      46.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 38.4,
+     "mean_diff": 35.2,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 3.2,
+     "rel_diff": 11.0,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -3316918.6,
+      16284021.4
+     ],
+     "direction": "lower_is_better",
+     "mean": 435351609.8,
+     "mean_diff": 5201539.4,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 430150070.4,
+     "rel_diff": 0.012092383002897215,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.4
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      -0.000813270026257662,
+      0.00037249972919635167
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9828268404119939,
+     "mean_diff": -0.00020391971120803376,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9830307601232018,
+     "rel_diff": -0.00020743980705392861,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.2
+    },
+    {
+     "arm": "mpc",
+     "ci95_diff": [
+      1.4,
+      5.2
+     ],
+     "direction": "lower_is_better",
+     "mean": 6.6,
+     "mean_diff": 3.4,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 3.2,
+     "rel_diff": 1.0625,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      -217384490.4,
+      -120358360.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 266792011.8,
+     "mean_diff": -163358058.6,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 430150070.4,
+     "rel_diff": -0.379769921804481,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      0.01000421878169062,
+      0.013570355072611173
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9947466066521082,
+     "mean_diff": 0.011715846528906337,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9830307601232018,
+     "rel_diff": 0.01191808741309174,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 1.0
+    },
+    {
+     "arm": "mpc_plus_auction",
+     "ci95_diff": [
+      4.4,
+      6.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 8.6,
+     "mean_diff": 5.4,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 3.2,
+     "rel_diff": 1.6875,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      80731265.0,
+      203684744.8
+     ],
+     "direction": "lower_is_better",
+     "mean": 576597777.0,
+     "mean_diff": 146447706.6,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 430150070.4,
+     "rel_diff": 0.34045724196631444,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      -0.012325901729443478,
+      -0.004538228531784094
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9745130369535338,
+     "mean_diff": -0.00851772316966819,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9830307601232018,
+     "rel_diff": -0.008664757518473457,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "priority",
+     "ci95_diff": [
+      18.2,
+      35.6
+     ],
+     "direction": "lower_is_better",
+     "mean": 30.2,
+     "mean_diff": 27.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 3.2,
+     "rel_diff": 8.4375,
+     "significant": true,
+     "stress": "liquidity_hoarding",
+     "win_rate": 0.0
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 430150070.4,
+     "mean_diff": 0.0,
+     "metric": "total_cost_minor",
+     "n": 5,
+     "reference_mean": 430150070.4,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "higher_is_better",
+     "mean": 0.9830307601232018,
+     "mean_diff": 0.0,
+     "metric": "lv_settlement_rate_value",
+     "n": 5,
+     "reference_mean": 0.9830307601232018,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": null
+    },
+    {
+     "arm": "rule_rebalancer",
+     "ci95_diff": [
+      0.0,
+      0.0
+     ],
+     "direction": "lower_is_better",
+     "mean": 3.2,
+     "mean_diff": 0.0,
+     "metric": "instant_rejected",
+     "n": 5,
+     "reference_mean": 3.2,
+     "rel_diff": 0.0,
+     "significant": false,
+     "stress": "liquidity_hoarding",
+     "win_rate": null
+    }
+   ]
+  }
+ },
+ "runtime_s": 148.0,
+ "shared_minus_separate": [
+  {
+   "arm": "priority",
+   "ci95_diff": [
+    -23438688.4,
+    -2473658.2
+   ],
+   "mean_diff": -9778096.0,
+   "metric": "total_cost_minor",
+   "n": 5,
+   "rel_diff": -0.017865502237137044,
+   "separate_mean": 547317163.0,
+   "shared_mean": 537539067.0,
+   "significant": true,
+   "stress": "baseline"
+  },
+  {
+   "arm": "priority",
+   "ci95_diff": [
+    -1.662785982694537e-05,
+    0.001632637805697068
+   ],
+   "mean_diff": 0.000546186393447079,
+   "metric": "lv_settlement_rate_value",
+   "n": 5,
+   "rel_diff": 0.0005611540519964101,
+   "separate_mean": 0.9733270062007378,
+   "shared_mean": 0.9738731925941848,
+   "significant": false,
+   "stress": "baseline"
+  },
+  {
+   "arm": "priority",
+   "ci95_diff": [
+    -74.0,
+    -44.8
+   ],
+   "mean_diff": -58.8,
+   "metric": "instant_rejected",
+   "n": 5,
+   "rel_diff": -0.6591928251121075,
+   "separate_mean": 89.2,
+   "shared_mean": 30.400000000000006,
+   "significant": true,
+   "stress": "baseline"
+  },
+  {
+   "arm": "rule_rebalancer",
+   "ci95_diff": [
+    -20763765.8,
+    9888719.8
+   ],
+   "mean_diff": -4087657.2,
+   "metric": "total_cost_minor",
+   "n": 5,
+   "rel_diff": -0.010575446168055632,
+   "separate_mean": 386523380.2,
+   "shared_mean": 382435723.0,
+   "significant": false,
+   "stress": "baseline"
+  },
+  {
+   "arm": "rule_rebalancer",
+   "ci95_diff": [
+    -0.0007838670272945381,
+    0.0013458709976578165
+   ],
+   "mean_diff": 0.0002282629683773907,
+   "metric": "lv_settlement_rate_value",
+   "n": 5,
+   "rel_diff": 0.00023207814254726632,
+   "separate_mean": 0.9835608208166411,
+   "shared_mean": 0.9837890837850185,
+   "significant": false,
+   "stress": "baseline"
+  },
+  {
+   "arm": "rule_rebalancer",
+   "ci95_diff": [
+    -7.8,
+    1.6
+   ],
+   "mean_diff": -2.8,
+   "metric": "instant_rejected",
+   "n": 5,
+   "rel_diff": -0.42424242424242425,
+   "separate_mean": 6.6,
+   "shared_mean": 3.8,
+   "significant": false,
+   "stress": "baseline"
+  },
+  {
+   "arm": "mpc",
+   "ci95_diff": [
+    -2106201.6,
+    9248442.6
+   ],
+   "mean_diff": 2934062.0,
+   "metric": "total_cost_minor",
+   "n": 5,
+   "rel_diff": 0.007640233810775066,
+   "separate_mean": 384027776.2,
+   "shared_mean": 386961838.2,
+   "significant": false,
+   "stress": "baseline"
+  },
+  {
+   "arm": "mpc",
+   "ci95_diff": [
+    -0.0003538524056749592,
+    0.0002994945621253464
+   ],
+   "mean_diff": -1.8468282870620634e-05,
+   "metric": "lv_settlement_rate_value",
+   "n": 5,
+   "rel_diff": -1.8773991545072145e-05,
+   "separate_mean": 0.9837163730622989,
+   "shared_mean": 0.9836979047794282,
+   "significant": false,
+   "stress": "baseline"
+  },
+  {
+   "arm": "mpc",
+   "ci95_diff": [
+    -3.2,
+    4.4
+   ],
+   "mean_diff": 0.8,
+   "metric": "instant_rejected",
+   "n": 5,
+   "rel_diff": 0.15384615384615385,
+   "separate_mean": 5.2,
+   "shared_mean": 6.0,
+   "significant": false,
+   "stress": "baseline"
+  },
+  {
+   "arm": "auction_uniform",
+   "ci95_diff": [
+    -3681318.0,
+    -2525713.2
+   ],
+   "mean_diff": -3134921.2,
+   "metric": "total_cost_minor",
+   "n": 5,
+   "rel_diff": -0.008313391436841702,
+   "separate_mean": 377092937.8,
+   "shared_mean": 373958016.6,
+   "significant": true,
+   "stress": "baseline"
+  },
+  {
+   "arm": "auction_uniform",
+   "ci95_diff": [
+    0.0,
+    6.620636360410437e-05
+   ],
+   "mean_diff": 2.206878786803479e-05,
+   "metric": "lv_settlement_rate_value",
+   "n": 5,
+   "rel_diff": 2.2389644472331366e-05,
+   "separate_mean": 0.985669419418737,
+   "shared_mean": 0.985691488206605,
+   "significant": false,
+   "stress": "baseline"
+  },
+  {
+   "arm": "auction_uniform",
+   "ci95_diff": [
+    -50.8,
+    -33.2
+   ],
+   "mean_diff": -41.6,
+   "metric": "instant_rejected",
+   "n": 5,
+   "rel_diff": -0.4663677130044843,
+   "separate_mean": 89.2,
+   "shared_mean": 47.6,
+   "significant": true,
+   "stress": "baseline"
+  },
+  {
+   "arm": "mpc_plus_auction",
+   "ci95_diff": [
+    1158782.2,
+    18794991.2
+   ],
+   "mean_diff": 8264679.4,
+   "metric": "total_cost_minor",
+   "n": 5,
+   "rel_diff": 0.038550587080394945,
+   "separate_mean": 214385305.8,
+   "shared_mean": 222649985.20000002,
+   "significant": true,
+   "stress": "baseline"
+  },
+  {
+   "arm": "mpc_plus_auction",
+   "ci95_diff": [
+    -0.0016032450576653813,
+    -2.684467253413203e-05
+   ],
+   "mean_diff": -0.0006016370733289645,
+   "metric": "lv_settlement_rate_value",
+   "n": 5,
+   "rel_diff": -0.000604367159672653,
+   "separate_mean": 0.9954827354531188,
+   "shared_mean": 0.9948810983797899,
+   "significant": true,
+   "stress": "baseline"
+  },
+  {
+   "arm": "mpc_plus_auction",
+   "ci95_diff": [
+    7.0,
+    16.0
+   ],
+   "mean_diff": 10.8,
+   "metric": "instant_rejected",
+   "n": 5,
+   "rel_diff": 6.75,
+   "separate_mean": 1.6,
+   "shared_mean": 12.4,
+   "significant": true,
+   "stress": "baseline"
+  },
+  {
+   "arm": "priority",
+   "ci95_diff": [
+    -1910644.2,
+    8788245.4
+   ],
+   "mean_diff": 2474771.4,
+   "metric": "total_cost_minor",
+   "n": 5,
+   "rel_diff": 0.004310524706136249,
+   "separate_mean": 574123005.6,
+   "shared_mean": 576597777.0,
+   "significant": false,
+   "stress": "liquidity_hoarding"
+  },
+  {
+   "arm": "priority",
+   "ci95_diff": [
+    -0.0008195870710969722,
+    -2.8557394471917517e-05
+   ],
+   "mean_diff": -0.0003600291068930783,
+   "metric": "lv_settlement_rate_value",
+   "n": 5,
+   "rel_diff": -0.00036930870225802527,
+   "separate_mean": 0.9748730660604267,
+   "shared_mean": 0.9745130369535336,
+   "significant": true,
+   "stress": "liquidity_hoarding"
+  },
+  {
+   "arm": "priority",
+   "ci95_diff": [
+    -74.4,
+    -44.6
+   ],
+   "mean_diff": -59.0,
+   "metric": "instant_rejected",
+   "n": 5,
+   "rel_diff": -0.6614349775784754,
+   "separate_mean": 89.2,
+   "shared_mean": 30.200000000000003,
+   "significant": true,
+   "stress": "liquidity_hoarding"
+  },
+  {
+   "arm": "rule_rebalancer",
+   "ci95_diff": [
+    -2506710.0,
+    10337976.4
+   ],
+   "mean_diff": 3865223.4,
+   "metric": "total_cost_minor",
+   "n": 5,
+   "rel_diff": 0.009067231517145623,
+   "separate_mean": 426284847.0,
+   "shared_mean": 430150070.4,
+   "significant": false,
+   "stress": "liquidity_hoarding"
+  },
+  {
+   "arm": "rule_rebalancer",
+   "ci95_diff": [
+    -0.0008872530790698496,
+    0.00013680345762832058
+   ],
+   "mean_diff": -0.0003500756957220963,
+   "metric": "lv_settlement_rate_value",
+   "n": 5,
+   "rel_diff": -0.00035599198496741693,
+   "separate_mean": 0.983380835818924,
+   "shared_mean": 0.9830307601232019,
+   "significant": false,
+   "stress": "liquidity_hoarding"
+  },
+  {
+   "arm": "rule_rebalancer",
+   "ci95_diff": [
+    -5.8,
+    2.0
+   ],
+   "mean_diff": -1.4,
+   "metric": "instant_rejected",
+   "n": 5,
+   "rel_diff": -0.30434782608695654,
+   "separate_mean": 4.6,
+   "shared_mean": 3.1999999999999997,
+   "significant": false,
+   "stress": "liquidity_hoarding"
+  },
+  {
+   "arm": "mpc",
+   "ci95_diff": [
+    -1717821.2,
+    10208070.0
+   ],
+   "mean_diff": 3956087.8,
+   "metric": "total_cost_minor",
+   "n": 5,
+   "rel_diff": 0.009170442432177123,
+   "separate_mean": 431395522.0,
+   "shared_mean": 435351609.8,
+   "significant": false,
+   "stress": "liquidity_hoarding"
+  },
+  {
+   "arm": "mpc",
+   "ci95_diff": [
+    -0.0007059024201337305,
+    0.00021512765429949622
+   ],
+   "mean_diff": -0.0002343766525529256,
+   "metric": "lv_settlement_rate_value",
+   "n": 5,
+   "rel_diff": -0.00023841511442469678,
+   "separate_mean": 0.9830612170645467,
+   "shared_mean": 0.9828268404119939,
+   "significant": false,
+   "stress": "liquidity_hoarding"
+  },
+  {
+   "arm": "mpc",
+   "ci95_diff": [
+    -1.6,
+    5.6
+   ],
+   "mean_diff": 2.0,
+   "metric": "instant_rejected",
+   "n": 5,
+   "rel_diff": 0.4347826086956522,
+   "separate_mean": 4.6,
+   "shared_mean": 6.6,
+   "significant": false,
+   "stress": "liquidity_hoarding"
+  },
+  {
+   "arm": "auction_uniform",
+   "ci95_diff": [
+    -4973289.8,
+    -2375126.0
+   ],
+   "mean_diff": -3553692.8,
+   "metric": "total_cost_minor",
+   "n": 5,
+   "rel_diff": -0.00908065387596513,
+   "separate_mean": 391347677.0,
+   "shared_mean": 387793984.2,
+   "significant": true,
+   "stress": "liquidity_hoarding"
+  },
+  {
+   "arm": "auction_uniform",
+   "ci95_diff": [
+    -8.868460660931277e-05,
+    1.3016795680864668e-05
+   ],
+   "mean_diff": -2.5222603642816034e-05,
+   "metric": "lv_settlement_rate_value",
+   "n": 5,
+   "rel_diff": -2.5519918718715064e-05,
+   "separate_mean": 0.9883496856249392,
+   "shared_mean": 0.9883244630212964,
+   "significant": false,
+   "stress": "liquidity_hoarding"
+  },
+  {
+   "arm": "auction_uniform",
+   "ci95_diff": [
+    -64.0,
+    -38.2
+   ],
+   "mean_diff": -50.8,
+   "metric": "instant_rejected",
+   "n": 5,
+   "rel_diff": -0.5695067264573991,
+   "separate_mean": 89.2,
+   "shared_mean": 38.400000000000006,
+   "significant": true,
+   "stress": "liquidity_hoarding"
+  },
+  {
+   "arm": "mpc_plus_auction",
+   "ci95_diff": [
+    310699.6,
+    23475694.2
+   ],
+   "mean_diff": 11566147.8,
+   "metric": "total_cost_minor",
+   "n": 5,
+   "rel_diff": 0.045317302951710256,
+   "separate_mean": 255225864.0,
+   "shared_mean": 266792011.8,
+   "significant": true,
+   "stress": "liquidity_hoarding"
+  },
+  {
+   "arm": "mpc_plus_auction",
+   "ci95_diff": [
+    -0.0019053147687282611,
+    4.463628311173196e-05
+   ],
+   "mean_diff": -0.0008545439703018465,
+   "metric": "lv_settlement_rate_value",
+   "n": 5,
+   "rel_diff": -0.0008583195888912139,
+   "separate_mean": 0.9956011506224101,
+   "shared_mean": 0.9947466066521082,
+   "significant": false,
+   "stress": "liquidity_hoarding"
+  },
+  {
+   "arm": "mpc_plus_auction",
+   "ci95_diff": [
+    5.2,
+    7.6
+   ],
+   "mean_diff": 6.4,
+   "metric": "instant_rejected",
+   "n": 5,
+   "rel_diff": 2.909090909090909,
+   "separate_mean": 2.2,
+   "shared_mean": 8.600000000000001,
+   "significant": true,
+   "stress": "liquidity_hoarding"
+  },
+  {
+   "arm": "priority",
+   "ci95_diff": [
+    -5377056.0,
+    -1916341.6
+   ],
+   "mean_diff": -3697408.6,
+   "metric": "total_cost_minor",
+   "n": 5,
+   "rel_diff": -0.00532761289844111,
+   "separate_mean": 694008493.2,
+   "shared_mean": 690311084.6,
+   "significant": true,
+   "stress": "combined"
+  },
+  {
+   "arm": "priority",
+   "ci95_diff": [
+    -9.538304991774105e-05,
+    3.466290170917041e-05
+   ],
+   "mean_diff": -2.7494684162499004e-05,
+   "metric": "lv_settlement_rate_value",
+   "n": 5,
+   "rel_diff": -2.8336069193518778e-05,
+   "separate_mean": 0.9703069248852547,
+   "shared_mean": 0.9702794302010922,
+   "significant": false,
+   "stress": "combined"
+  },
+  {
+   "arm": "priority",
+   "ci95_diff": [
+    -81.6,
+    -44.2
+   ],
+   "mean_diff": -62.2,
+   "metric": "instant_rejected",
+   "n": 5,
+   "rel_diff": -0.3459399332591769,
+   "separate_mean": 179.8,
+   "shared_mean": 117.60000000000001,
+   "significant": true,
+   "stress": "combined"
+  },
+  {
+   "arm": "rule_rebalancer",
+   "ci95_diff": [
+    -15862638.8,
+    -2627602.6
+   ],
+   "mean_diff": -8584982.4,
+   "metric": "total_cost_minor",
+   "n": 5,
+   "rel_diff": -0.015383368938406363,
+   "separate_mean": 558069070.2,
+   "shared_mean": 549484087.8000001,
+   "significant": true,
+   "stress": "combined"
+  },
+  {
+   "arm": "rule_rebalancer",
+   "ci95_diff": [
+    7.02176098282381e-05,
+    0.0010132431585166079
+   ],
+   "mean_diff": 0.0005417303841724231,
+   "metric": "lv_settlement_rate_value",
+   "n": 5,
+   "rel_diff": 0.0005536361717763664,
+   "separate_mean": 0.9784952858738564,
+   "shared_mean": 0.9790370162580287,
+   "significant": true,
+   "stress": "combined"
+  },
+  {
+   "arm": "rule_rebalancer",
+   "ci95_diff": [
+    -6.4,
+    1.0
+   ],
+   "mean_diff": -2.2,
+   "metric": "instant_rejected",
+   "n": 5,
+   "rel_diff": -0.023454157782515993,
+   "separate_mean": 93.8,
+   "shared_mean": 91.6,
+   "significant": false,
+   "stress": "combined"
+  },
+  {
+   "arm": "mpc",
+   "ci95_diff": [
+    -15236713.4,
+    3013163.8
+   ],
+   "mean_diff": -5601127.6,
+   "metric": "total_cost_minor",
+   "n": 5,
+   "rel_diff": -0.009852816270032753,
+   "separate_mean": 568479858.6,
+   "shared_mean": 562878731.0,
+   "significant": false,
+   "stress": "combined"
+  },
+  {
+   "arm": "mpc",
+   "ci95_diff": [
+    -0.00015220820003238877,
+    0.001214650260367134
+   ],
+   "mean_diff": 0.0005117332513340234,
+   "metric": "lv_settlement_rate_value",
+   "n": 5,
+   "rel_diff": 0.000523503901514508,
+   "separate_mean": 0.9775156400049131,
+   "shared_mean": 0.9780273732562471,
+   "significant": false,
+   "stress": "combined"
+  },
+  {
+   "arm": "mpc",
+   "ci95_diff": [
+    -4.6,
+    7.2
+   ],
+   "mean_diff": 1.6,
+   "metric": "instant_rejected",
+   "n": 5,
+   "rel_diff": 0.017391304347826087,
+   "separate_mean": 92.0,
+   "shared_mean": 93.6,
+   "significant": false,
+   "stress": "combined"
+  },
+  {
+   "arm": "auction_uniform",
+   "ci95_diff": [
+    -9973858.2,
+    -1534502.6
+   ],
+   "mean_diff": -4924854.2,
+   "metric": "total_cost_minor",
+   "n": 5,
+   "rel_diff": -0.011146009915309597,
+   "separate_mean": 441849077.6,
+   "shared_mean": 436924223.40000004,
+   "significant": true,
+   "stress": "combined"
+  },
+  {
+   "arm": "auction_uniform",
+   "ci95_diff": [
+    -8.26069870232482e-05,
+    0.000527447739744269
+   ],
+   "mean_diff": 0.0001482802509070069,
+   "metric": "lv_settlement_rate_value",
+   "n": 5,
+   "rel_diff": 0.0001499806233684762,
+   "separate_mean": 0.9886627190681041,
+   "shared_mean": 0.9888109993190111,
+   "significant": false,
+   "stress": "combined"
+  },
+  {
+   "arm": "auction_uniform",
+   "ci95_diff": [
+    -68.0,
+    -28.6
+   ],
+   "mean_diff": -47.4,
+   "metric": "instant_rejected",
+   "n": 5,
+   "rel_diff": -0.2636262513904338,
+   "separate_mean": 179.8,
+   "shared_mean": 132.4,
+   "significant": true,
+   "stress": "combined"
+  },
+  {
+   "arm": "mpc_plus_auction",
+   "ci95_diff": [
+    -12911246.8,
+    17078232.2
+   ],
+   "mean_diff": 2799961.2,
+   "metric": "total_cost_minor",
+   "n": 5,
+   "rel_diff": 0.00834762698924971,
+   "separate_mean": 335420018.6,
+   "shared_mean": 338219979.8,
+   "significant": false,
+   "stress": "combined"
+  },
+  {
+   "arm": "mpc_plus_auction",
+   "ci95_diff": [
+    -0.001542678985305823,
+    0.0008763199652974451
+   ],
+   "mean_diff": -0.00031936428032139916,
+   "metric": "lv_settlement_rate_value",
+   "n": 5,
+   "rel_diff": -0.00032131529563746375,
+   "separate_mean": 0.9939280347292714,
+   "shared_mean": 0.99360867044895,
+   "significant": false,
+   "stress": "combined"
+  },
+  {
+   "arm": "mpc_plus_auction",
+   "ci95_diff": [
+    6.8,
+    19.4
+   ],
+   "mean_diff": 12.0,
+   "metric": "instant_rejected",
+   "n": 5,
+   "rel_diff": 0.13574660633484162,
+   "separate_mean": 88.4,
+   "shared_mean": 100.4,
+   "significant": true,
+   "stress": "combined"
+  }
+ ],
+ "stresses": [
+  "baseline",
+  "liquidity_hoarding",
+  "combined"
+ ]
+}
