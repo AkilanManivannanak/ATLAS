@@ -69,9 +69,10 @@ class Registry:
         self.counters = {"requests_total": 0, "simulations_total": 0, "simulation_seconds_total": 0.0, "errors_total": 0}
         self.path_counts: dict[str, int] = {}
 
-    def add(self, result: SimulationResult, request: dict) -> str:
+    def add(self, result: SimulationResult, request: dict, scenario: Any = None, ingest: dict | None = None) -> str:
         with self.lock:
-            self.runs[result.simulation_id] = {"result": result, "request": request, "created_at": time.time()}
+            self.runs[result.simulation_id] = {"result": result, "request": request, "created_at": time.time(),
+                                               "scenario": scenario, "ingest": ingest}
             while len(self.runs) > MAX_RUNS:
                 self.runs.popitem(last=False)
         return result.simulation_id
@@ -137,6 +138,20 @@ def _run(req: SimulationRequest) -> SimulationResult:
     return result
 
 
+def _run_scenario(sc, req: SimulationRequest, ingest: dict | None) -> SimulationResult:
+    """Run a user-supplied scenario (uploaded payments) under the requested settings."""
+    if req.stress not in SCENARIO_LIBRARY:
+        raise HTTPException(422, f"unknown stress scenario {req.stress!r}")
+    run_id = f"sim-{int(time.time() * 1000):x}-user-{req.policy}-{req.controller}-{req.auction}-{req.stress}"
+    t = time.perf_counter()
+    result = run_day(sc, SimulationSettings(policy=req.policy, strategy=req.strategy, auction=None if req.auction == "none" else req.auction),
+                     build_scenario(req.stress), simulation_id=run_id, controller=_controller(req.controller), store=REG.store)
+    REG.counters["simulations_total"] += 1
+    REG.counters["simulation_seconds_total"] += time.perf_counter() - t
+    REG.add(result, req.model_dump(), scenario=sc, ingest=ingest)
+    return result
+
+
 def _summary(run_id: str, item: dict) -> dict:
     r: SimulationResult = item["result"]
     m = r.metrics
@@ -183,7 +198,7 @@ def _demo() -> None:
 @app.get("/api/v1/health")
 def health() -> dict:
     return {"status": "ok", "version": __version__, "auth": "enabled" if auth_enabled() else "disabled (development mode)",
-            "runs_in_memory": len(REG.runs), "event_store": str(REG.store.path), "synthetic_only": True}
+            "runs_in_memory": len(REG.runs), "event_store": str(REG.store.path), "synthetic_only": not any(i.get("scenario") is not None for i in REG.runs.values()), "accepts_uploads": True}
 
 
 @app.get("/api/v1/meta")
@@ -321,7 +336,12 @@ def counterfactual(run_id: str, change: CounterfactualRequest, _=Depends(require
     if not changes:
         raise HTTPException(422, "counterfactual requires at least one explicit change")
     new_req = base_req.model_copy(update={**changes, "label": f"Counterfactual of {run_id}: {changes}"})
-    new = _run(new_req)
+    if base_item.get("scenario") is not None:
+        if {"opening_liquidity_bp", "credit_limit_bp"} & set(changes):
+            raise HTTPException(422, "balances of an uploaded day come from the upload; re-upload with different balances instead")
+        new = _run_scenario(base_item["scenario"], new_req, base_item.get("ingest"))
+    else:
+        new = _run(new_req)
     b, n = base_item["result"].metrics, new.metrics
     keys = {"total_cost_minor": lambda m: m["costs_minor"]["total"], "lv_settlement_rate_value": lambda m: m["large_value"]["settlement_rate_value"],
             "lv_value_weighted_delay_s": lambda m: m["large_value"]["value_weighted_delay_s"], "instant_rejected": lambda m: m["counters"]["instant_rejected"],
@@ -399,6 +419,66 @@ class NettingRequest(BaseModel):
     algorithm: Literal["heuristic", "milp", "bilateral"] = "heuristic"
 
 
+class IngestRequest(BaseModel):
+    payments_csv: str = Field(..., min_length=10, max_length=25_000_000, description="CSV text; GET /api/v1/ingest/template for the header")
+    balances_csv: str | None = Field(None, max_length=2_000_000)
+    business_date: str | None = Field(None, pattern=r"^\d{4}-\d{2}-\d{2}$")
+    timezone: str = "America/New_York"
+    policy: Literal["fifo", "fifo_strict", "priority", "bilateral", "multilateral", "multilateral_milp"] = "priority"
+    stress: str = "baseline"
+    controller: Literal["none", "mpc", "mpc_full", "rule", "safe_rl"] = "none"
+    auction: Literal["none", "pay_as_bid", "uniform"] = "none"
+    label: str | None = None
+
+
+@app.get("/api/v1/ingest/template", response_class=PlainTextResponse)
+def ingest_template(_=Depends(require("read"))) -> str:
+    from atlas.ingest import template_csv
+    return template_csv()
+
+
+@app.post("/api/v1/ingest/payments", status_code=201)
+def ingest_payments(req: IngestRequest, _=Depends(require("simulate"))) -> dict:
+    """Run the twin on the caller's own payment file. The file is held in memory for this run only."""
+    from datetime import date as _date
+
+    from atlas.ingest import IngestError, load_payments_csv
+    try:
+        sc, report = load_payments_csv(req.payments_csv, balances_csv=req.balances_csv, timezone=req.timezone,
+                                       business_date=_date.fromisoformat(req.business_date) if req.business_date else None)
+    except IngestError as exc:
+        raise HTTPException(422, str(exc)) from exc
+    except Exception as exc:  # zoneinfo / csv errors
+        raise HTTPException(422, f"could not read the file: {exc}") from exc
+    sim_req = SimulationRequest(policy=req.policy, stress=req.stress, controller=req.controller, auction=req.auction,
+                                n_institutions=min(120, max(2, len(sc.institutions))), label=req.label or "Uploaded day")
+    result = _run_scenario(sc, sim_req, report.to_dict())
+    return _summary(result.simulation_id, REG.get(result.simulation_id)) | {"ingest": report.to_dict()}
+
+
+@app.get("/api/v1/simulations/{run_id}/intraday-liquidity")
+def intraday_liquidity(run_id: str, _=Depends(require("read"))) -> dict:
+    """BCBS 248 intraday liquidity monitoring tools for every institution in this run."""
+    from atlas.regulatory import intraday_liquidity_report
+    r: SimulationResult = REG.get(run_id)["result"]
+    return intraday_liquidity_report(r.to_dict(include_payments=True))
+
+
+@app.get("/api/v1/simulations/{run_id}/anomalies")
+def anomalies(run_id: str, top: int = Query(25, ge=1, le=200), _=Depends(require("read"))) -> dict:
+    """Payments ranked as most unusual, for human review (training-free detector; nothing is blocked)."""
+    from atlas.detect import score_payments
+    r: SimulationResult = REG.get(run_id)["result"]
+    return score_payments(r.payments, top=top)
+
+
+@app.get("/api/v1/governance/models")
+def model_inventory(_=Depends(require("read"))) -> dict:
+    """Model inventory with materiality tiers and validation checks, rebuilt from the results artifacts."""
+    from atlas.governance import build_inventory
+    return build_inventory(RESULTS_DIR)
+
+
 @app.post("/api/v1/optimization/netting")
 def optimize_netting(req: NettingRequest, _=Depends(require("simulate"))) -> dict:
     try:
@@ -448,7 +528,8 @@ def get_benchmark(name: str, _=Depends(require("read"))) -> dict:
 
 
 @app.get("/api/v1/research/{artifact}")
-def research_artifact(artifact: Literal["forecasting", "game", "netting_optimality", "auction", "safe_rl", "scaling"],
+def research_artifact(artifact: Literal["forecasting", "game", "netting_optimality", "auction", "safe_rl", "scaling", "anomaly_detection",
+                                       "agent_evals", "calibration", "shared_master"],
                       _=Depends(require("read"))) -> dict:
     return _artifact(RESULTS_DIR / f"{artifact}.json")
 

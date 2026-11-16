@@ -102,3 +102,31 @@ def test_analyst_statements_and_auction(client):
     assert st["reconciliation"]["balanced"] and st["reconciliation"]["matches_ledger"] and st["xml"].startswith("<?xml")
     detail = client.get(f"/api/v1/simulations/{run_id}").json()
     assert detail["metrics"]["auction"]["mechanism"] == "uniform"
+
+
+def test_upload_own_payments_then_regulatory_and_anomaly_views(client):
+    from atlas.ingest import export_scenario_csv
+    from atlas.scenario import NexusPayConfig, generate_scenario
+    day = generate_scenario(NexusPayConfig(n_institutions=6, payments_per_day=300, instant_payments_per_day=150), seed=3)
+    assert "payment_id" in client.get("/api/v1/ingest/template").text
+    bad = client.post("/api/v1/ingest/payments", json={"payments_csv": "sender,receiver\nA,B\n"})
+    assert bad.status_code == 422 and "missing column" in bad.json()["error"]["message"]
+    up = client.post("/api/v1/ingest/payments", json={"payments_csv": export_scenario_csv(day), "label": "my day"})
+    assert up.status_code == 201
+    body = up.json()
+    assert body["ingest"]["accepted"] == len(day.payments) and body["scenario"]["data_origin"] == "user_supplied"
+    run_id = body["id"]
+    liq = client.get(f"/api/v1/simulations/{run_id}/intraday-liquidity").json()
+    assert liq["version"] == "atlas-bcbs248-v1" and len(liq["institutions"]) == 6 and liq["data_origin"] == "user_supplied"
+    alerts = client.get(f"/api/v1/simulations/{run_id}/anomalies", params={"top": 5}).json()
+    assert alerts["payments_scored"] == len(day.payments) and len(alerts["alerts"]) <= 5
+    assert client.post(f"/api/v1/simulations/{run_id}/replay").json()["replay_matches"]
+    cf = client.post(f"/api/v1/simulations/{run_id}/counterfactual", json={"stress": "combined"})
+    assert cf.status_code == 201 and cf.json()["same_scenario_fingerprint"] is True
+    assert client.post(f"/api/v1/simulations/{run_id}/counterfactual", json={"opening_liquidity_bp": 500}).status_code == 422
+
+
+def test_model_inventory_endpoint(client):
+    inv = client.get("/api/v1/governance/models").json()
+    assert inv["version"] == "atlas-mrm-v1" and inv["summary"]["models"] == len(inv["models"])
+    assert client.get("/api/v1/research/anomaly_detection").status_code in (200, 404)
