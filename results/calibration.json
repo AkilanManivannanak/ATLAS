@@ -1,0 +1,340 @@
+{
+ "version": "atlas-calibration-v1",
+ "targets": {
+  "fedwire_mean_usd": 5280000,
+  "fedwire_source_year": 2025,
+  "instant_blended_mean_usd": 33676,
+  "fednow_mean_usd": 58161,
+  "rtp_mean_usd": 3750
+ },
+ "default": {
+  "large_value_mean_usd": 4657945,
+  "large_value_error_pct": -11.8,
+  "instant_mean_usd": 24894,
+  "instant_error_pct": -26.1
+ },
+ "calibrated": {
+  "large_value_median_minor": 282756174,
+  "instant_median_minor": 2057637,
+  "large_value_mean_usd": 5268130,
+  "large_value_error_pct": -0.2,
+  "instant_mean_usd": 34122,
+  "instant_error_pct": 1.3
+ },
+ "scale": {
+  "twin_large_value_payments_per_day": 2945,
+  "fedwire_transfers_per_day": 869187,
+  "one_twin_payment_represents": 295,
+  "twin_institutions": 16
+ },
+ "not_identified_by_public_data": [
+  "payment-size distribution shape (only the mean is published)",
+  "bilateral network (who pays whom)",
+  "intraday timing of submissions",
+  "bank-level opening balances and credit lines",
+  "separate FedNow and RTP size distributions (the twin uses one)"
+ ],
+ "public_data": {
+  "fedwire_annual": [
+   {
+    "year": 2021.0,
+    "transfers_originated": 204490893.0,
+    "value_usd_millions": 991810545.0,
+    "average_value_per_transfer_usd_millions": 4.85,
+    "average_daily_volume": 811472.0,
+    "average_daily_value_usd_millions": 3935756.0
+   },
+   {
+    "year": 2022.0,
+    "transfers_originated": 196052238.0,
+    "value_usd_millions": 1060257294.0,
+    "average_value_per_transfer_usd_millions": 5.41,
+    "average_daily_volume": 784209.0,
+    "average_daily_value_usd_millions": 4241029.0
+   },
+   {
+    "year": 2023.0,
+    "transfers_originated": 193316782.0,
+    "value_usd_millions": 1087195950.0,
+    "average_value_per_transfer_usd_millions": 5.62,
+    "average_daily_volume": 773267.0,
+    "average_daily_value_usd_millions": 4348784.0
+   },
+   {
+    "year": 2024.0,
+    "transfers_originated": 209916835.0,
+    "value_usd_millions": 1133419684.0,
+    "average_value_per_transfer_usd_millions": 5.4,
+    "average_daily_volume": 836322.0,
+    "average_daily_value_usd_millions": 4515616.0
+   },
+   {
+    "year": 2025.0,
+    "transfers_originated": 217296700.0,
+    "value_usd_millions": 1148267267.0,
+    "average_value_per_transfer_usd_millions": 5.28,
+    "average_daily_volume": 869187.0,
+    "average_daily_value_usd_millions": 4593069.0
+   }
+  ],
+  "fednow_quarterly": [
+   {
+    "quarter": "2023Q3",
+    "settled_payments": 5564.0,
+    "value_usd_millions": 4.8,
+    "average_value_per_payment_usd": 859.0,
+    "average_daily_volume": 75.0,
+    "average_daily_value_usd_millions": 0.1
+   },
+   {
+    "quarter": "2023Q4",
+    "settled_payments": 41698.0,
+    "value_usd_millions": 13.7,
+    "average_value_per_payment_usd": 328.0,
+    "average_daily_volume": 453.0,
+    "average_daily_value_usd_millions": 0.1
+   },
+   {
+    "quarter": "2024Q1",
+    "settled_payments": 97424.0,
+    "value_usd_millions": 31.4,
+    "average_value_per_payment_usd": 323.0,
+    "average_daily_volume": 1071.0,
+    "average_daily_value_usd_millions": 0.3
+   },
+   {
+    "quarter": "2024Q2",
+    "settled_payments": 156076.0,
+    "value_usd_millions": 492.3,
+    "average_value_per_payment_usd": 3154.0,
+    "average_daily_volume": 1715.0,
+    "average_daily_value_usd_millions": 5.4
+   },
+   {
+    "quarter": "2024Q3",
+    "settled_payments": 336487.0,
+    "value_usd_millions": 17491.3,
+    "average_value_per_payment_usd": 51982.0,
+    "average_daily_volume": 3657.0,
+    "average_daily_value_usd_millions": 190.1
+   },
+   {
+    "quarter": "2024Q4",
+    "settled_payments": 915263.0,
+    "value_usd_millions": 20182.0,
+    "average_value_per_payment_usd": 22050.0,
+    "average_daily_volume": 9949.0,
+    "average_daily_value_usd_millions": 219.4
+   },
+   {
+    "quarter": "2025Q1",
+    "settled_payments": 1310017.0,
+    "value_usd_millions": 48600.3,
+    "average_value_per_payment_usd": 37099.0,
+    "average_daily_volume": 14556.0,
+    "average_daily_value_usd_millions": 540.0
+   },
+   {
+    "quarter": "2025Q2",
+    "settled_payments": 2130889.0,
+    "value_usd_millions": 245759.3,
+    "average_value_per_payment_usd": 115332.0,
+    "average_daily_volume": 23416.0,
+    "average_daily_value_usd_millions": 2700.7
+   },
+   {
+    "quarter": "2025Q3",
+    "settled_payments": 2506002.0,
+    "value_usd_millions": 307275.3,
+    "average_value_per_payment_usd": 122616.0,
+    "average_daily_volume": 27239.0,
+    "average_daily_value_usd_millions": 3339.9
+   },
+   {
+    "quarter": "2025Q4",
+    "settled_payments": 2466494.0,
+    "value_usd_millions": 251776.2,
+    "average_value_per_payment_usd": 102079.0,
+    "average_daily_volume": 26810.0,
+    "average_daily_value_usd_millions": 2736.7
+   },
+   {
+    "quarter": "2026Q1",
+    "settled_payments": 2728510.0,
+    "value_usd_millions": 271252.9,
+    "average_value_per_payment_usd": 99414.0,
+    "average_daily_volume": 30317.0,
+    "average_daily_value_usd_millions": 3013.9
+   },
+   {
+    "quarter": "2026Q2",
+    "settled_payments": 4997811.0,
+    "value_usd_millions": 274663.8,
+    "average_value_per_payment_usd": 54957.0,
+    "average_daily_volume": 54921.0,
+    "average_daily_value_usd_millions": 3018.3
+   },
+   {
+    "quarter": "2026Q3",
+    "settled_payments": 6376467.0,
+    "value_usd_millions": 370862.7,
+    "average_value_per_payment_usd": 58161.0,
+    "average_daily_volume": 69309.0,
+    "average_daily_value_usd_millions": 4031.1
+   }
+  ],
+  "rtp": {
+   "payments": 128000000,
+   "value_usd": 480000000000,
+   "average_usd": 3750,
+   "source": "Federal Reserve Bank of Richmond, Economic Brief 26-28 (Aug 2026)"
+  }
+ },
+ "headline_under_presets": [
+  {
+   "preset": "default",
+   "stress": "baseline",
+   "arm": "priority",
+   "mean_cost_minor": 547317163.0,
+   "mean_settled": 0.9733270062007378,
+   "mean_cost_change_vs_priority": 0.0,
+   "wins_vs_priority": 0,
+   "n": 5,
+   "replay_verified": true
+  },
+  {
+   "preset": "default",
+   "stress": "baseline",
+   "arm": "rule_rebalancer",
+   "mean_cost_minor": 386523380.2,
+   "mean_settled": 0.9835608208166411,
+   "mean_cost_change_vs_priority": -0.28830681538798275,
+   "wins_vs_priority": 5,
+   "n": 5,
+   "replay_verified": true
+  },
+  {
+   "preset": "default",
+   "stress": "baseline",
+   "arm": "mpc_plus_auction",
+   "mean_cost_minor": 214865455.6,
+   "mean_settled": 0.9954827354531188,
+   "mean_cost_change_vs_priority": -0.6007696110255405,
+   "wins_vs_priority": 5,
+   "n": 5,
+   "replay_verified": true
+  },
+  {
+   "preset": "default",
+   "stress": "combined",
+   "arm": "priority",
+   "mean_cost_minor": 694008493.2,
+   "mean_settled": 0.9703069248852547,
+   "mean_cost_change_vs_priority": 0.0,
+   "wins_vs_priority": 0,
+   "n": 5,
+   "replay_verified": true
+  },
+  {
+   "preset": "default",
+   "stress": "combined",
+   "arm": "rule_rebalancer",
+   "mean_cost_minor": 558500610.2,
+   "mean_settled": 0.9784952858738564,
+   "mean_cost_change_vs_priority": -0.20502521664754497,
+   "wins_vs_priority": 5,
+   "n": 5,
+   "replay_verified": true
+  },
+  {
+   "preset": "default",
+   "stress": "combined",
+   "arm": "mpc_plus_auction",
+   "mean_cost_minor": 333537059.2,
+   "mean_settled": 0.9940499679545385,
+   "mean_cost_change_vs_priority": -0.5237511817380799,
+   "wins_vs_priority": 5,
+   "n": 5,
+   "replay_verified": true
+  },
+  {
+   "preset": "calibrated",
+   "stress": "baseline",
+   "arm": "priority",
+   "mean_cost_minor": 617389828.0,
+   "mean_settled": 0.9736416294406844,
+   "mean_cost_change_vs_priority": 0.0,
+   "wins_vs_priority": 0,
+   "n": 5,
+   "replay_verified": true
+  },
+  {
+   "preset": "calibrated",
+   "stress": "baseline",
+   "arm": "rule_rebalancer",
+   "mean_cost_minor": 436382920.4,
+   "mean_settled": 0.9836484165336596,
+   "mean_cost_change_vs_priority": -0.2917142403286588,
+   "wins_vs_priority": 5,
+   "n": 5,
+   "replay_verified": true
+  },
+  {
+   "preset": "calibrated",
+   "stress": "baseline",
+   "arm": "mpc_plus_auction",
+   "mean_cost_minor": 243114833.6,
+   "mean_settled": 0.995482621936322,
+   "mean_cost_change_vs_priority": -0.6018955182429827,
+   "wins_vs_priority": 5,
+   "n": 5,
+   "replay_verified": true
+  },
+  {
+   "preset": "calibrated",
+   "stress": "combined",
+   "arm": "priority",
+   "mean_cost_minor": 785870125.4,
+   "mean_settled": 0.9703017867397096,
+   "mean_cost_change_vs_priority": 0.0,
+   "wins_vs_priority": 0,
+   "n": 5,
+   "replay_verified": true
+  },
+  {
+   "preset": "calibrated",
+   "stress": "combined",
+   "arm": "rule_rebalancer",
+   "mean_cost_minor": 630404490.0,
+   "mean_settled": 0.9784888733577974,
+   "mean_cost_change_vs_priority": -0.20890187318450387,
+   "wins_vs_priority": 5,
+   "n": 5,
+   "replay_verified": true
+  },
+  {
+   "preset": "calibrated",
+   "stress": "combined",
+   "arm": "mpc_plus_auction",
+   "mean_cost_minor": 374732451.4,
+   "mean_settled": 0.99426842623861,
+   "mean_cost_change_vs_priority": -0.5292099522724885,
+   "wins_vs_priority": 5,
+   "n": 5,
+   "replay_verified": true
+  }
+ ],
+ "manifest": {
+  "created_at": "2026-11-16T05:49:33.427461+00:00",
+  "runtime_s": 92.9,
+  "python": "3.13.18",
+  "platform": "Linux-6.18.44-fc-v470-x86_64-with-glibc2.39",
+  "seeds": [
+   11,
+   12,
+   13,
+   14,
+   15
+  ]
+ }
+}

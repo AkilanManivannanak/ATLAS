@@ -1,0 +1,295 @@
+{
+ "version": "atlas-detect-v1",
+ "data_origin": "synthetic",
+ "labels": "injected anomalies (six typologies); not observed fraud",
+ "features": [
+  "log_amount",
+  "corridor_z",
+  "sender_z",
+  "corridor_novelty",
+  "time_surprise",
+  "sender_burst_5m",
+  "sender_value_5m",
+  "receiver_fan_in_30m",
+  "limit_proximity",
+  "repeat_60s",
+  "is_instant"
+ ],
+ "typologies": {
+  "amount_spike": "known corridor, amount 8-30x the corridor's usual size",
+  "new_corridor": "first-ever payment between two banks, well above the sender's usual size",
+  "off_hours_burst": "6-12 instant payments inside two minutes in the sender's quietest half hour",
+  "structuring": "4-8 instant payments at 95-99.9% of the network limit to one receiver",
+  "fan_in": "many different senders paying one small receiver within twenty minutes (mule-account pattern)",
+  "duplicate": "the same payment submitted twice within a minute (operational error)"
+ },
+ "design": {
+  "history_days": 12,
+  "train_days": 8,
+  "test_days": 6,
+  "incidents_per_type_per_day": 1,
+  "test_payments": 29906,
+  "test_anomalies": 168,
+  "alert_rate": 0.01
+ },
+ "detectors": {
+  "robust_z": {
+   "pr_auc": 0.3504,
+   "alert_rate": 0.01,
+   "alerts": 299,
+   "recall_at_alert_rate": 0.4167,
+   "precision_at_alert_rate": 0.2341,
+   "base_rate": 0.00562,
+   "by_typology": {
+    "amount_spike": {
+     "n": 6,
+     "recall_at_alert_rate": 0.1667
+    },
+    "duplicate": {
+     "n": 6,
+     "recall_at_alert_rate": 1.0
+    },
+    "fan_in": {
+     "n": 47,
+     "recall_at_alert_rate": 0.2128
+    },
+    "new_corridor": {
+     "n": 6,
+     "recall_at_alert_rate": 1.0
+    },
+    "off_hours_burst": {
+     "n": 67,
+     "recall_at_alert_rate": 0.1642
+    },
+    "structuring": {
+     "n": 36,
+     "recall_at_alert_rate": 1.0
+    }
+   },
+   "curve": [
+    {
+     "alert_rate": 0.00104,
+     "recall": 0.1726,
+     "precision": 0.9355
+    },
+    {
+     "alert_rate": 0.00204,
+     "recall": 0.2857,
+     "precision": 0.7869
+    },
+    {
+     "alert_rate": 0.00505,
+     "recall": 0.369,
+     "precision": 0.4106
+    },
+    {
+     "alert_rate": 0.01003,
+     "recall": 0.4167,
+     "precision": 0.2333
+    },
+    {
+     "alert_rate": 0.02003,
+     "recall": 0.4821,
+     "precision": 0.1352
+    },
+    {
+     "alert_rate": 0.05002,
+     "recall": 0.5417,
+     "precision": 0.0608
+    },
+    {
+     "alert_rate": 0.10005,
+     "recall": 0.619,
+     "precision": 0.0348
+    }
+   ]
+  },
+  "iforest": {
+   "pr_auc": 0.2349,
+   "alert_rate": 0.01,
+   "alerts": 299,
+   "recall_at_alert_rate": 0.2798,
+   "precision_at_alert_rate": 0.1572,
+   "base_rate": 0.00562,
+   "by_typology": {
+    "amount_spike": {
+     "n": 6,
+     "recall_at_alert_rate": 0.1667
+    },
+    "duplicate": {
+     "n": 6,
+     "recall_at_alert_rate": 0.0
+    },
+    "fan_in": {
+     "n": 47,
+     "recall_at_alert_rate": 0.0213
+    },
+    "new_corridor": {
+     "n": 6,
+     "recall_at_alert_rate": 0.6667
+    },
+    "off_hours_burst": {
+     "n": 67,
+     "recall_at_alert_rate": 0.0746
+    },
+    "structuring": {
+     "n": 36,
+     "recall_at_alert_rate": 1.0
+    }
+   },
+   "curve": [
+    {
+     "alert_rate": 0.00104,
+     "recall": 0.1429,
+     "precision": 0.7742
+    },
+    {
+     "alert_rate": 0.00204,
+     "recall": 0.2262,
+     "precision": 0.623
+    },
+    {
+     "alert_rate": 0.00505,
+     "recall": 0.2619,
+     "precision": 0.2914
+    },
+    {
+     "alert_rate": 0.01003,
+     "recall": 0.2798,
+     "precision": 0.1567
+    },
+    {
+     "alert_rate": 0.02003,
+     "recall": 0.4048,
+     "precision": 0.1135
+    },
+    {
+     "alert_rate": 0.05002,
+     "recall": 0.506,
+     "precision": 0.0568
+    },
+    {
+     "alert_rate": 0.10005,
+     "recall": 0.631,
+     "precision": 0.0354
+    }
+   ]
+  },
+  "gbt": {
+   "pr_auc": 0.7081,
+   "alert_rate": 0.01,
+   "alerts": 299,
+   "recall_at_alert_rate": 0.7679,
+   "precision_at_alert_rate": 0.4314,
+   "base_rate": 0.00562,
+   "by_typology": {
+    "amount_spike": {
+     "n": 6,
+     "recall_at_alert_rate": 0.1667
+    },
+    "duplicate": {
+     "n": 6,
+     "recall_at_alert_rate": 0.0
+    },
+    "fan_in": {
+     "n": 47,
+     "recall_at_alert_rate": 0.6809
+    },
+    "new_corridor": {
+     "n": 6,
+     "recall_at_alert_rate": 0.5
+    },
+    "off_hours_burst": {
+     "n": 67,
+     "recall_at_alert_rate": 0.8507
+    },
+    "structuring": {
+     "n": 36,
+     "recall_at_alert_rate": 1.0
+    }
+   },
+   "curve": [
+    {
+     "alert_rate": 0.00104,
+     "recall": 0.1845,
+     "precision": 1.0
+    },
+    {
+     "alert_rate": 0.00204,
+     "recall": 0.3452,
+     "precision": 0.9508
+    },
+    {
+     "alert_rate": 0.00505,
+     "recall": 0.6012,
+     "precision": 0.6689
+    },
+    {
+     "alert_rate": 0.01003,
+     "recall": 0.7679,
+     "precision": 0.43
+    },
+    {
+     "alert_rate": 0.02003,
+     "recall": 0.869,
+     "precision": 0.2437
+    },
+    {
+     "alert_rate": 0.05002,
+     "recall": 0.9345,
+     "precision": 0.1049
+    },
+    {
+     "alert_rate": 0.10005,
+     "recall": 0.9464,
+     "precision": 0.0531
+    }
+   ]
+  }
+ },
+ "leave_one_typology_out": {
+  "amount_spike": {
+   "n": 6,
+   "gbt_unseen_recall": 0.0,
+   "iforest_recall": 0.1667,
+   "robust_z_recall": 0.1667
+  },
+  "new_corridor": {
+   "n": 6,
+   "gbt_unseen_recall": 0.0,
+   "iforest_recall": 0.6667,
+   "robust_z_recall": 1.0
+  },
+  "off_hours_burst": {
+   "n": 67,
+   "gbt_unseen_recall": 0.0896,
+   "iforest_recall": 0.0746,
+   "robust_z_recall": 0.1642
+  },
+  "structuring": {
+   "n": 36,
+   "gbt_unseen_recall": 0.0,
+   "iforest_recall": 1.0,
+   "robust_z_recall": 1.0
+  },
+  "fan_in": {
+   "n": 47,
+   "gbt_unseen_recall": 0.1277,
+   "iforest_recall": 0.0213,
+   "robust_z_recall": 0.2128
+  },
+  "duplicate": {
+   "n": 6,
+   "gbt_unseen_recall": 0.0,
+   "iforest_recall": 0.0,
+   "robust_z_recall": 1.0
+  }
+ },
+ "manifest": {
+  "created_at": "2026-11-16T05:43:02.109896+00:00",
+  "runtime_s": 14.75,
+  "python": "3.13.18",
+  "platform": "Linux-6.18.44-fc-v470-x86_64-with-glibc2.39",
+  "data_origin": "synthetic"
+ }
+}

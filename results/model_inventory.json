@@ -1,0 +1,436 @@
+{
+ "version": "atlas-mrm-v1",
+ "framework": "SR 26-2 structure (inventory, materiality = exposure x purpose, effective challenge, monitoring)",
+ "disclaimer": "Engineering implementation on synthetic data; not a compliance attestation.",
+ "summary": {
+  "models": 7,
+  "pass": 1,
+  "warn": 4,
+  "fail": 2,
+  "non_model_tools": 5,
+  "agentic_components": 1
+ },
+ "models": [
+  {
+   "id": "forecast.ridge",
+   "name": "Ridge liquidity forecaster",
+   "class": "statistical / machine learning",
+   "in_mrm_scope": true,
+   "purpose": "Forecast each bank's large-value outflow per 15 minutes; feeds MPC buffers",
+   "exposure": 2,
+   "purpose_score": 2,
+   "version": "atlas-forecast-v2",
+   "artifact": "results/forecasting.json",
+   "inputs": "own lagged flows, time of day, tier",
+   "challenger": "seasonal naive (MASE 1.013)",
+   "checks": [
+    {
+     "check": "skill vs seasonal-naive challenger (MASE, 15 min)",
+     "value": 0.783,
+     "status": "pass",
+     "rule": "MASE < 1.0"
+    },
+    {
+     "check": "90% interval coverage, in distribution (1 h)",
+     "value": 0.886,
+     "status": "pass",
+     "rule": "within 3 pp of nominal"
+    },
+    {
+     "check": "90% interval coverage under shift, static intervals (1 h)",
+     "value": 0.709,
+     "status": "warn",
+     "rule": ">= 0.85; warn >= 0.60"
+    },
+    {
+     "check": "90% interval coverage under shift, adaptive intervals (1 h)",
+     "value": 0.882,
+     "status": "pass",
+     "rule": ">= 0.85"
+    }
+   ],
+   "validated_at": "2026-11-10T20:55:30.903738+00:00",
+   "limitations": [
+    "trained and tested on synthetic days from one topology",
+    "static conformal intervals lose coverage under a volume shift; use the adaptive intervals"
+   ],
+   "materiality": {
+    "exposure": 2,
+    "purpose": 2,
+    "score": 4,
+    "tier": "moderate"
+   },
+   "status": "warn",
+   "data_origin": "synthetic"
+  },
+  {
+   "id": "forecast.gradient_boosting",
+   "name": "Gradient-boosting liquidity forecaster",
+   "class": "statistical / machine learning",
+   "in_mrm_scope": true,
+   "purpose": "Forecast each bank's large-value outflow per 15 minutes; feeds MPC buffers",
+   "exposure": 2,
+   "purpose_score": 2,
+   "version": "atlas-forecast-v2",
+   "artifact": "results/forecasting.json",
+   "inputs": "own lagged flows, time of day, tier",
+   "challenger": "seasonal naive (MASE 1.013)",
+   "checks": [
+    {
+     "check": "skill vs seasonal-naive challenger (MASE, 15 min)",
+     "value": 0.778,
+     "status": "pass",
+     "rule": "MASE < 1.0"
+    },
+    {
+     "check": "90% interval coverage, in distribution (1 h)",
+     "value": 0.885,
+     "status": "pass",
+     "rule": "within 3 pp of nominal"
+    },
+    {
+     "check": "90% interval coverage under shift, static intervals (1 h)",
+     "value": 0.732,
+     "status": "warn",
+     "rule": ">= 0.85; warn >= 0.60"
+    },
+    {
+     "check": "90% interval coverage under shift, adaptive intervals (1 h)",
+     "value": 0.882,
+     "status": "pass",
+     "rule": ">= 0.85"
+    }
+   ],
+   "validated_at": "2026-11-10T20:55:30.903738+00:00",
+   "limitations": [
+    "trained and tested on synthetic days from one topology",
+    "static conformal intervals lose coverage under a volume shift; use the adaptive intervals"
+   ],
+   "materiality": {
+    "exposure": 2,
+    "purpose": 2,
+    "score": 4,
+    "tier": "moderate"
+   },
+   "status": "warn",
+   "data_origin": "synthetic"
+  },
+  {
+   "id": "forecast.graph_ridge",
+   "name": "Graph-conditioned ridge forecaster",
+   "class": "statistical / machine learning",
+   "in_mrm_scope": true,
+   "purpose": "Forecast each bank's large-value outflow per 15 minutes; feeds MPC buffers",
+   "exposure": 2,
+   "purpose_score": 2,
+   "version": "atlas-forecast-v2",
+   "artifact": "results/forecasting.json",
+   "inputs": "own lagged flows, time of day, tier, learned neighbour flows",
+   "challenger": "seasonal naive (MASE 1.013)",
+   "checks": [
+    {
+     "check": "skill vs seasonal-naive challenger (MASE, 15 min)",
+     "value": 0.78,
+     "status": "pass",
+     "rule": "MASE < 1.0"
+    },
+    {
+     "check": "90% interval coverage, in distribution (1 h)",
+     "value": 0.888,
+     "status": "pass",
+     "rule": "within 3 pp of nominal"
+    },
+    {
+     "check": "90% interval coverage under shift, static intervals (1 h)",
+     "value": 0.711,
+     "status": "warn",
+     "rule": ">= 0.85; warn >= 0.60"
+    },
+    {
+     "check": "90% interval coverage under shift, adaptive intervals (1 h)",
+     "value": 0.882,
+     "status": "pass",
+     "rule": ">= 0.85"
+    }
+   ],
+   "validated_at": "2026-11-10T20:55:30.903738+00:00",
+   "limitations": [
+    "trained and tested on synthetic days from one topology",
+    "static conformal intervals lose coverage under a volume shift; use the adaptive intervals"
+   ],
+   "materiality": {
+    "exposure": 2,
+    "purpose": 2,
+    "score": 4,
+    "tier": "moderate"
+   },
+   "status": "warn",
+   "data_origin": "synthetic"
+  },
+  {
+   "id": "forecast.neural_window",
+   "name": "Neural window forecaster (MLP)",
+   "class": "statistical / machine learning",
+   "in_mrm_scope": true,
+   "purpose": "Forecast each bank's large-value outflow per 15 minutes; feeds MPC buffers",
+   "exposure": 2,
+   "purpose_score": 2,
+   "version": "atlas-forecast-v2",
+   "artifact": "results/forecasting.json",
+   "inputs": "own lagged flows, time of day, tier",
+   "challenger": "seasonal naive (MASE 1.013)",
+   "checks": [
+    {
+     "check": "skill vs seasonal-naive challenger (MASE, 15 min)",
+     "value": 0.773,
+     "status": "pass",
+     "rule": "MASE < 1.0"
+    },
+    {
+     "check": "90% interval coverage, in distribution (1 h)",
+     "value": 0.889,
+     "status": "pass",
+     "rule": "within 3 pp of nominal"
+    },
+    {
+     "check": "90% interval coverage under shift, static intervals (1 h)",
+     "value": 0.714,
+     "status": "warn",
+     "rule": ">= 0.85; warn >= 0.60"
+    },
+    {
+     "check": "90% interval coverage under shift, adaptive intervals (1 h)",
+     "value": 0.882,
+     "status": "pass",
+     "rule": ">= 0.85"
+    }
+   ],
+   "validated_at": "2026-11-10T20:55:30.903738+00:00",
+   "limitations": [
+    "trained and tested on synthetic days from one topology",
+    "static conformal intervals lose coverage under a volume shift; use the adaptive intervals"
+   ],
+   "materiality": {
+    "exposure": 2,
+    "purpose": 2,
+    "score": 4,
+    "tier": "moderate"
+   },
+   "status": "warn",
+   "data_origin": "synthetic"
+  },
+  {
+   "id": "control.safe_ppo",
+   "name": "Constrained PPO liquidity controller",
+   "class": "reinforcement learning",
+   "in_mrm_scope": true,
+   "purpose": "Propose cross-rail liquidity transfers; every proposal passes the fail-closed safety controller",
+   "exposure": 3,
+   "purpose_score": 3,
+   "version": "atlas-safe-ppo-v2",
+   "artifact": "results/safe_rl.json",
+   "inputs": "per-bank balances, queues, time to close, recent instant outflows",
+   "challenger": "MPC (linear programme) and the rule-based treasury",
+   "checks": [
+    {
+     "check": "cost vs MPC challenger, baseline",
+     "value": [
+      -0.057,
+      0.055
+     ],
+     "status": "pass",
+     "rule": "95% CI of difference includes 0 or is below it ($M)"
+    },
+    {
+     "check": "proposals rejected by safety layer, baseline",
+     "value": 0.0,
+     "status": "pass",
+     "rule": "<= 0.1%"
+    },
+    {
+     "check": "cost vs MPC challenger, combined (never trained on)",
+     "value": [
+      -0.162,
+      0.248
+     ],
+     "status": "pass",
+     "rule": "95% CI of difference includes 0 or is below it ($M)"
+    },
+    {
+     "check": "proposals rejected by safety layer, combined (never trained on)",
+     "value": 0.0,
+     "status": "pass",
+     "rule": "<= 0.1%"
+    },
+    {
+     "check": "cost vs MPC challenger, liquidity_hoarding (never trained on)",
+     "value": [
+      -0.086,
+      0.562
+     ],
+     "status": "pass",
+     "rule": "95% CI of difference includes 0 or is below it ($M)"
+    },
+    {
+     "check": "proposals rejected by safety layer, liquidity_hoarding (never trained on)",
+     "value": 0.0,
+     "status": "pass",
+     "rule": "<= 0.1%"
+    }
+   ],
+   "validated_at": null,
+   "limitations": [
+    "does not beat the MPC challenger",
+    "evaluated on 10 held-out synthetic days per stress",
+    "v1 of this agent failed to learn (documented)"
+   ],
+   "materiality": {
+    "exposure": 3,
+    "purpose": 3,
+    "score": 9,
+    "tier": "high"
+   },
+   "status": "pass",
+   "data_origin": "synthetic"
+  },
+  {
+   "id": "detect.gbt",
+   "name": "Supervised payment-anomaly classifier",
+   "class": "machine learning",
+   "in_mrm_scope": true,
+   "purpose": "Rank payments for human review before release; never blocks a payment on its own",
+   "exposure": 2,
+   "purpose_score": 3,
+   "version": "atlas-detect-v1",
+   "artifact": "results/anomaly_detection.json",
+   "inputs": "log_amount, corridor_z, sender_z, corridor_novelty, time_surprise, sender_burst_5m, sender_value_5m, receiver_fan_in_30m, limit_proximity, repeat_60s, is_instant",
+   "challenger": "hand-written robust-z rule (PR-AUC 0.350)",
+   "checks": [
+    {
+     "check": "PR-AUC on held-out days",
+     "value": 0.7081,
+     "status": "pass",
+     "rule": "beats the rule challenger"
+    },
+    {
+     "check": "recall at 1.0% alert rate",
+     "value": 0.7679,
+     "status": "pass",
+     "rule": ">= 0.60; warn >= 0.25"
+    },
+    {
+     "check": "worst recall on a typology never seen in training",
+     "value": 0.0,
+     "status": "fail",
+     "rule": ">= 0.50; warn >= 0.20"
+    }
+   ],
+   "validated_at": null,
+   "limitations": [
+    "labels are injected synthetic typologies, not observed fraud",
+    "typologies with one incident per day have few test cases",
+    "must run alongside the rule set: the two catch different patterns"
+   ],
+   "materiality": {
+    "exposure": 2,
+    "purpose": 3,
+    "score": 6,
+    "tier": "high"
+   },
+   "status": "fail",
+   "data_origin": "synthetic"
+  },
+  {
+   "id": "detect.iforest",
+   "name": "Isolation-forest anomaly detector",
+   "class": "machine learning",
+   "in_mrm_scope": true,
+   "purpose": "Rank payments for human review before release; never blocks a payment on its own",
+   "exposure": 2,
+   "purpose_score": 3,
+   "version": "atlas-detect-v1",
+   "artifact": "results/anomaly_detection.json",
+   "inputs": "log_amount, corridor_z, sender_z, corridor_novelty, time_surprise, sender_burst_5m, sender_value_5m, receiver_fan_in_30m, limit_proximity, repeat_60s, is_instant",
+   "challenger": "hand-written robust-z rule (PR-AUC 0.350)",
+   "checks": [
+    {
+     "check": "PR-AUC on held-out days",
+     "value": 0.2349,
+     "status": "warn",
+     "rule": "beats the rule challenger"
+    },
+    {
+     "check": "recall at 1.0% alert rate",
+     "value": 0.2798,
+     "status": "warn",
+     "rule": ">= 0.60; warn >= 0.25"
+    },
+    {
+     "check": "worst recall on a typology never seen in training",
+     "value": 0.0,
+     "status": "fail",
+     "rule": ">= 0.50; warn >= 0.20"
+    }
+   ],
+   "validated_at": null,
+   "limitations": [
+    "labels are injected synthetic typologies, not observed fraud",
+    "typologies with one incident per day have few test cases",
+    "must run alongside the rule set: the two catch different patterns"
+   ],
+   "materiality": {
+    "exposure": 2,
+    "purpose": 3,
+    "score": 6,
+    "tier": "high"
+   },
+   "status": "fail",
+   "data_origin": "synthetic"
+  }
+ ],
+ "non_model_tools": [
+  {
+   "id": "control.mpc",
+   "name": "MPC liquidity optimiser (LP / MILP)",
+   "why_excluded": "deterministic optimisation given its inputs; its forecast input is inventoried",
+   "controls": "unit and property tests, safety controller, replay verification"
+  },
+  {
+   "id": "control.rule_rebalancer",
+   "name": "Rule-based treasury",
+   "why_excluded": "deterministic rules",
+   "controls": "unit tests, safety controller"
+  },
+  {
+   "id": "settlement.netting",
+   "name": "Netting (heuristic, LP rounding, exact MILP)",
+   "why_excluded": "deterministic algorithms",
+   "controls": "property test against brute force, duplicate-selection assertion, optimality-gap study"
+  },
+  {
+   "id": "detect.robust_z",
+   "name": "Robust-z payment alert rule",
+   "why_excluded": "deterministic thresholds on computed statistics",
+   "controls": "evaluated as the challenger in results/anomaly_detection.json"
+  },
+  {
+   "id": "analyst.deterministic",
+   "name": "Decision Center analyst",
+   "why_excluded": "keyword routing to deterministic queries; no generative model",
+   "controls": "every number cited to a source field; cannot execute actions"
+  }
+ ],
+ "agentic_components": [
+  {
+   "id": "agent.tools",
+   "name": "Agent tool layer and MCP server",
+   "scope_note": "generative / agentic systems are outside SR 26-2; governed by the controls listed",
+   "controls": [
+    "read-only and what-if tools only, no settlement or transfer tool exists",
+    "per-session call and simulation budgets",
+    "hash-chained audit log of every tool call",
+    "grounding evaluation: numbers in an answer must appear in tool output"
+   ]
+  }
+ ]
+}
