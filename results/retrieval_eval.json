@@ -1,0 +1,119 @@
+{
+ "version": "atlas-knowledge-v1",
+ "passages": 170,
+ "questions": 20,
+ "methods": {
+  "bm25": {
+   "hit_at_1": 0.8,
+   "hit_at_3": 0.9,
+   "mrr": 0.854
+  },
+  "overlap": {
+   "hit_at_1": 0.75,
+   "hit_at_3": 1.0,
+   "mrr": 0.85
+  }
+ },
+ "rows": [
+  {
+   "question": "What is the FedNow transaction limit?",
+   "rank": 1,
+   "top": "docs/23_realism_and_calibration.md \u00a7 Realism and calibration (v0.6) / Source-backed parameters (recorded in `RAIL_RULES`, `atlas-rail-rules-v2`) (line 5)"
+  },
+  {
+   "question": "How is the daylight overdraft fee calculated?",
+   "rank": 1,
+   "top": "docs/24_glossary.md \u00a7 Payments glossary / PSR daylight-overdraft fee (line 42)"
+  },
+  {
+   "question": "What checks does the safety controller apply to a proposed transfer?",
+   "rank": 4,
+   "top": "DECISIONS.md \u00a7 Architecture and modeling decisions / D-015 \u2014 All controller actions pass a fail-closed safety controller (line 107)"
+  },
+  {
+   "question": "How does replay verify the ledger?",
+   "rank": 1,
+   "top": "docs/08_simulator_and_vertical_slice.md \u00a7 Event store, ledger replay, ISO 20022 and the multi-rail day simulator / Event store (`atlas-event-store-v1`) (line 6)"
+  },
+  {
+   "question": "Which BCBS 248 tools are not implemented?",
+   "rank": 1,
+   "top": "docs/15_api_specification.md \u00a7 API specification (v1) / v0.7 endpoints (line 32)"
+  },
+  {
+   "question": "Why did the first version of the reinforcement learning agent fail?",
+   "rank": 1,
+   "top": "docs/14_safe_rl_design.md \u00a7 Safe reinforcement learning (`atlas-safe-ppo-v2`) / History (line 23)"
+  },
+  {
+   "question": "What replaced SR 11-7 and what does it say about generative AI?",
+   "rank": 1,
+   "top": "docs/25_industry_landscape.md \u00a7 Industry landscape: what large US banks are doing with AI, and what they hire for / 3. The rulebook changed in 2026 (line 25)"
+  },
+  {
+   "question": "Is pay-as-bid or uniform price more manipulable?",
+   "rank": 1,
+   "top": "docs/19_experimental_results.md \u00a7 Experimental results (v0.6) / E4: liquidity auction and incentives (`results/auction.json`) (line 61)"
+  },
+  {
+   "question": "How is partial multilateral netting formulated as a MILP?",
+   "rank": 1,
+   "top": "docs/11_settlement_algorithms.md \u00a7 Settlement algorithms (line 1)"
+  },
+  {
+   "question": "What happens to auction loans that are not repaid by close?",
+   "rank": 1,
+   "top": "DECISIONS.md \u00a7 Architecture and modeling decisions / D-022 \u2014 Auction loans roll overnight rather than default (line 145)"
+  },
+  {
+   "question": "What does the anomaly detector do on patterns it has never seen?",
+   "rank": 3,
+   "top": "docs/model_cards/detect_iforest.md \u00a7 Model card: Isolation-forest anomaly detector / Validation checks (line 14)"
+  },
+  {
+   "question": "How are conformal prediction intervals made adaptive under distribution shift?",
+   "rank": null,
+   "top": "docs/model_cards/forecast_ridge.md \u00a7 Model card: Ridge liquidity forecaster / Limitations (line 23)"
+  },
+  {
+   "question": "What is a liquidity-saving mechanism?",
+   "rank": 1,
+   "top": "docs/24_glossary.md \u00a7 Payments glossary / LSM (liquidity-saving mechanism) (line 13)"
+  },
+  {
+   "question": "Which published statistics is payment size calibrated to?",
+   "rank": 1,
+   "top": "docs/23_realism_and_calibration.md \u00a7 Realism and calibration (v0.6) / Calibration to published aggregates (v0.7) (line 36)"
+  },
+  {
+   "question": "How does FedNow share the master account with Fedwire?",
+   "rank": 1,
+   "top": "docs/24_glossary.md \u00a7 Payments glossary / Fed master account (line 33)"
+  },
+  {
+   "question": "What are the agent tools not allowed to do?",
+   "rank": 2,
+   "top": "docs/19_experimental_results.md \u00a7 Experimental results (v0.6) / Agent evaluation (`results/agent_evals.json`) (line 143)"
+  },
+  {
+   "question": "How are bank release strategies defined?",
+   "rank": 1,
+   "top": "docs/09_agent_economics.md \u00a7 Agent economics / Family A \u2014 rule-based release strategies (`atlas.agents.strategies`) (line 3)"
+  },
+  {
+   "question": "What is the cost model and how sensitive are results to its weights?",
+   "rank": 1,
+   "top": "DECISIONS.md \u00a7 Architecture and modeling decisions / D-025 \u2014 Robustness of conclusions to cost weights (line 157)"
+  },
+  {
+   "question": "How is an ISO 20022 pacs.008 message validated?",
+   "rank": 1,
+   "top": "docs/24_glossary.md \u00a7 Payments glossary / ISO 20022 pacs.008 / pacs.009 (line 52)"
+  },
+  {
+   "question": "How is systemic importance of a bank measured in the network?",
+   "rank": 1,
+   "top": "docs/10_systemic_risk_model.md \u00a7 Systemic risk and stress model / Network analytics (`atlas.network`) (line 3)"
+  }
+ ]
+}

@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import time
 from collections.abc import Callable
 from dataclasses import dataclass
 
@@ -110,8 +111,10 @@ class ToolSession:
         if tool.scope == "simulate" and self.simulations >= self.max_simulations:
             raise BudgetExceeded(f"simulation budget of {self.max_simulations} reached; compare the runs you already have")
         self.calls += 1
+        t0 = time.perf_counter()
         result = tool.fn(**clean)
         self._audit(name, clean, result)
+        self.audit[-1]["ms"] = round((time.perf_counter() - t0) * 1000, 1)       # trace timing; not part of the hashed record
         return result
 
     def verify_audit(self) -> bool:
@@ -220,6 +223,14 @@ class ToolSession:
                 "alerts": [{**{k: a[k] for k in ("payment_id", "rail", "sender", "receiver", "score", "reason")}, "amount_usd": _usd(a["amount_minor"])}
                            for a in out["alerts"]]}
 
+    def _rulebook(self, query: str, n: int) -> dict:
+        from atlas.knowledge import load_corpus
+        if getattr(self, "_corpus", None) is None:
+            self._corpus = load_corpus()
+        hits = self._corpus.search(query, n)
+        return {"query": query, "found": bool(hits), "passages": [{k: h[k] for k in ("citation", "score", "text")} for h in hits],
+                "note": "Passages are quoted from the project's documents. Cite the citation string when you use one."}
+
     def _options(self) -> dict:
         s = self.scenario.summary()
         return {"policies": list(POLICIES), "stresses": list(STRESSES), "controllers": list(CONTROLLERS), "auctions": list(AUCTIONS),
@@ -246,5 +257,7 @@ class ToolSession:
             Tool("intraday_liquidity_report", "BCBS 248 intraday liquidity monitoring figures for a run: system totals and the most stretched institutions.",
                  obj(run_arg | top_n, ("run_id",)), self._intraday, "read"),
             Tool("unsettled_payments", "Payments that did not settle in a run, grouped by reason, with the largest listed.", obj(run_arg | top_n, ("run_id",)), self._unsettled, "read"),
+            Tool("search_rulebook", "Search the project's specifications, rail rules, model cards and limitations. Returns quoted passages with citations.",
+                 obj({"query": {"type": "string"}} | top_n, ("query",)), self._rulebook, "read"),
             Tool("anomaly_alerts", "Payments ranked as most unusual in a run, for human review. Nothing is blocked.", obj(run_arg | top_n, ("run_id",)), self._alerts, "read"),
         ]
