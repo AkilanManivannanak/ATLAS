@@ -1,0 +1,154 @@
+{
+ "version": "atlas-detect-real-v1",
+ "data_origin": "observed (public, anonymised)",
+ "dataset": {
+  "name": "ULB Credit Card Fraud Detection",
+  "rows": 284807,
+  "frauds": 492,
+  "fraud_rate": 0.00173,
+  "features": 29,
+  "period": "two days, September 2013",
+  "license": "Open Database License (not redistributed here)",
+  "citation": "Dal Pozzolo, Caelen, Johnson, Bontempi (2015), IEEE SSCI",
+  "mirror": "https://raw.githubusercontent.com/nsethi31/Kaggle-Data-Credit-Card-Fraud-Detection/master/creditcard.csv"
+ },
+ "design": {
+  "split": "time-ordered 60% train / 20% validation / 20% test; final models fit on train+validation",
+  "test_rows": 56962,
+  "test_frauds": 75,
+  "test_fraud_rate": 0.00132,
+  "alert_rate": 0.005
+ },
+ "models": {
+  "amount_only_rule": {
+   "pr_auc": 0.0014,
+   "alerts": 285,
+   "frauds_caught": 1,
+   "frauds_total": 75,
+   "recall_at_alert_rate": 0.0133,
+   "precision_at_alert_rate": 0.0035,
+   "alerts_per_fraud_caught": 285.0
+  },
+  "isolation_forest": {
+   "pr_auc": 0.0424,
+   "alerts": 285,
+   "frauds_caught": 13,
+   "frauds_total": 75,
+   "recall_at_alert_rate": 0.1733,
+   "precision_at_alert_rate": 0.0456,
+   "alerts_per_fraud_caught": 21.9
+  },
+  "logistic_regression": {
+   "pr_auc": 0.7472,
+   "alerts": 285,
+   "frauds_caught": 64,
+   "frauds_total": 75,
+   "recall_at_alert_rate": 0.8533,
+   "precision_at_alert_rate": 0.2246,
+   "alerts_per_fraud_caught": 4.5
+  },
+  "gradient_boosting": {
+   "pr_auc": 0.8102,
+   "alerts": 285,
+   "frauds_caught": 63,
+   "frauds_total": 75,
+   "recall_at_alert_rate": 0.84,
+   "precision_at_alert_rate": 0.2211,
+   "alerts_per_fraud_caught": 4.5
+  }
+ },
+ "shuffled_split_gradient_boosting": {
+  "pr_auc": 0.846,
+  "alerts": 285,
+  "frauds_caught": 88,
+  "frauds_total": 103,
+  "recall_at_alert_rate": 0.8544,
+  "precision_at_alert_rate": 0.3088,
+  "alerts_per_fraud_caught": 3.2
+ },
+ "split_optimism_pr_auc": 0.0358,
+ "importance": [
+  {
+   "feature": "V14",
+   "drop_in_pr_auc": 0.1536
+  },
+  {
+   "feature": "V4",
+   "drop_in_pr_auc": 0.0762
+  },
+  {
+   "feature": "V10",
+   "drop_in_pr_auc": 0.0279
+  },
+  {
+   "feature": "V16",
+   "drop_in_pr_auc": 0.0241
+  },
+  {
+   "feature": "V12",
+   "drop_in_pr_auc": 0.021
+  },
+  {
+   "feature": "V1",
+   "drop_in_pr_auc": 0.0133
+  },
+  {
+   "feature": "V7",
+   "drop_in_pr_auc": 0.013
+  },
+  {
+   "feature": "V17",
+   "drop_in_pr_auc": 0.0086
+  }
+ ],
+ "robustness": [
+  {
+   "noise_in_feature_sds": 0.0,
+   "pr_auc": 0.8102
+  },
+  {
+   "noise_in_feature_sds": 0.1,
+   "pr_auc": 0.8141
+  },
+  {
+   "noise_in_feature_sds": 0.25,
+   "pr_auc": 0.7969
+  },
+  {
+   "noise_in_feature_sds": 0.5,
+   "pr_auc": 0.7678
+  }
+ ],
+ "drift": [
+  {
+   "feature": "V1",
+   "psi_train_vs_test": 1.4625
+  },
+  {
+   "feature": "V12",
+   "psi_train_vs_test": 0.2984
+  },
+  {
+   "feature": "V4",
+   "psi_train_vs_test": 0.1914
+  },
+  {
+   "feature": "V14",
+   "psi_train_vs_test": 0.1111
+  },
+  {
+   "feature": "V10",
+   "psi_train_vs_test": 0.0475
+  },
+  {
+   "feature": "V16",
+   "psi_train_vs_test": 0.0091
+  }
+ ],
+ "scope_note": "Card fraud with anonymised features, not interbank payments. It validates the detector families and the evaluation method on real labels.",
+ "manifest": {
+  "created_at": "2026-11-16T13:11:23.095951+00:00",
+  "runtime_s": 55.0,
+  "python": "3.13.18"
+ }
+}
