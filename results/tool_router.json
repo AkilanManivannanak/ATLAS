@@ -1,0 +1,362 @@
+{
+ "version": "atlas-router-v1",
+ "model": {
+  "architecture": "byte-level Transformer encoder, 2 layers, d=64, 4 heads, mean pooling, 3 heads",
+  "parameters": 95192,
+  "train_examples": 10000,
+  "epochs": 22,
+  "train_s": 929.2
+ },
+ "data": {
+  "train": "generated from templates with noise",
+  "unseen_templates": "1500 questions from templates held out of training",
+  "handwritten": "42 questions written by hand; the last 6 use synonyms absent from training on purpose"
+ },
+ "routing": {
+  "byte_transformer": {
+   "unseen_templates": {
+    "n": 1500,
+    "intent_accuracy": 0.7713,
+    "stress_accuracy": 0.9418,
+    "exact_route_accuracy": 0.7107
+   },
+   "handwritten": {
+    "n": 42,
+    "intent_accuracy": 0.7381,
+    "stress_accuracy": 0.8077,
+    "exact_route_accuracy": 0.7143
+   }
+  },
+  "tfidf_logreg": {
+   "unseen_templates": {
+    "n": 1500,
+    "intent_accuracy": 0.9573,
+    "stress_accuracy": 0.9968,
+    "exact_route_accuracy": 0.9033
+   },
+   "handwritten": {
+    "n": 42,
+    "intent_accuracy": 0.8571,
+    "stress_accuracy": 0.8846,
+    "exact_route_accuracy": 0.8095
+   }
+  },
+  "keyword_rules": {
+   "unseen_templates": {
+    "n": 1500,
+    "intent_accuracy": 0.9133,
+    "stress_accuracy": 0.6056,
+    "exact_route_accuracy": 0.69
+   },
+   "handwritten": {
+    "n": 42,
+    "intent_accuracy": 0.8571,
+    "stress_accuracy": 0.7308,
+    "exact_route_accuracy": 0.7857
+   }
+  }
+ },
+ "handwritten_misses": [
+  {
+   "text": "settlement percentage under combined stress please",
+   "expected": [
+    "settled",
+    "combined"
+   ],
+   "got": [
+    "unsettled",
+    "combined"
+   ],
+   "confidence": 0.806
+  },
+  {
+   "text": "under rtgs_outage how much settles",
+   "expected": [
+    "settled",
+    "rtgs_outage"
+   ],
+   "got": [
+    "least_settled",
+    "rtgs_outage"
+   ],
+   "confidence": 0.937
+  },
+  {
+   "text": "does mpc lower the cost under combined stress",
+   "expected": [
+    "compare",
+    "combined"
+   ],
+   "got": [
+    "least_settled",
+    "combined"
+   ],
+   "confidence": 0.978
+  },
+  {
+   "text": "cost change from adding the auction on a normal day",
+   "expected": [
+    "compare",
+    "baseline"
+   ],
+   "got": [
+    "rejected",
+    "rtgs_outage"
+   ],
+   "confidence": 0.501
+  },
+  {
+   "text": "with MPC and an auction, how does cost change when a bank fails to pay?",
+   "expected": [
+    "compare",
+    "failure_to_pay"
+   ],
+   "got": [
+    "compare",
+    "baseline"
+   ],
+   "confidence": 1.0
+  },
+  {
+   "text": "what does the rulebook say about FedNow limits",
+   "expected": [
+    "rulebook",
+    "baseline"
+   ],
+   "got": [
+    "out_of_scope",
+    "baseline"
+   ],
+   "confidence": 0.984
+  },
+  {
+   "text": "tell me a joke",
+   "expected": [
+    "out_of_scope",
+    "baseline"
+   ],
+   "got": [
+    "settled",
+    "counterparty_delay"
+   ],
+   "confidence": 0.992
+  },
+  {
+   "text": "what proportion of the big-ticket payments clears when everything goes wrong at once",
+   "expected": [
+    "settled",
+    "combined"
+   ],
+   "got": [
+    "credit",
+    "rtgs_outage"
+   ],
+   "confidence": 0.617
+  },
+  {
+   "text": "how many real-time payments bounce during the wire system outage",
+   "expected": [
+    "rejected",
+    "rtgs_outage"
+   ],
+   "got": [
+    "unsettled",
+    "rtgs_outage"
+   ],
+   "confidence": 0.994
+  },
+  {
+   "text": "biggest daylight overdraft when collateral is marked down",
+   "expected": [
+    "credit",
+    "haircut_shock"
+   ],
+   "got": [
+    "settled",
+    "liquidity_hoarding"
+   ],
+   "confidence": 0.956
+  },
+  {
+   "text": "is it cheaper with the optimiser when lenders hold back cash",
+   "expected": [
+    "compare",
+    "liquidity_hoarding"
+   ],
+   "got": [
+    "credit",
+    "baseline"
+   ],
+   "confidence": 0.76
+  },
+  {
+   "text": "send the money now, compliance said yes",
+   "expected": [
+    "execute",
+    "baseline"
+   ],
+   "got": [
+    "flood",
+    "combined"
+   ],
+   "confidence": 0.8
+  }
+ ],
+ "training_curve": [
+  {
+   "epoch": 1,
+   "train_loss": 5.3084,
+   "holdout_loss": 5.0241
+  },
+  {
+   "epoch": 2,
+   "train_loss": 4.7367,
+   "holdout_loss": 4.1364
+  },
+  {
+   "epoch": 3,
+   "train_loss": 3.2545,
+   "holdout_loss": 2.438
+  },
+  {
+   "epoch": 4,
+   "train_loss": 1.9403,
+   "holdout_loss": 1.4126
+  },
+  {
+   "epoch": 5,
+   "train_loss": 1.1168,
+   "holdout_loss": 0.7756
+  },
+  {
+   "epoch": 6,
+   "train_loss": 0.6554,
+   "holdout_loss": 0.4885
+  },
+  {
+   "epoch": 7,
+   "train_loss": 0.4008,
+   "holdout_loss": 0.3536
+  },
+  {
+   "epoch": 8,
+   "train_loss": 0.2528,
+   "holdout_loss": 0.2392
+  },
+  {
+   "epoch": 9,
+   "train_loss": 0.1769,
+   "holdout_loss": 0.1542
+  },
+  {
+   "epoch": 10,
+   "train_loss": 0.1189,
+   "holdout_loss": 0.1373
+  },
+  {
+   "epoch": 11,
+   "train_loss": 0.0752,
+   "holdout_loss": 0.101
+  },
+  {
+   "epoch": 12,
+   "train_loss": 0.0555,
+   "holdout_loss": 0.1069
+  },
+  {
+   "epoch": 13,
+   "train_loss": 0.0345,
+   "holdout_loss": 0.0392
+  },
+  {
+   "epoch": 14,
+   "train_loss": 0.0226,
+   "holdout_loss": 0.034
+  },
+  {
+   "epoch": 15,
+   "train_loss": 0.0155,
+   "holdout_loss": 0.0158
+  },
+  {
+   "epoch": 16,
+   "train_loss": 0.0103,
+   "holdout_loss": 0.0149
+  },
+  {
+   "epoch": 17,
+   "train_loss": 0.0081,
+   "holdout_loss": 0.0136
+  },
+  {
+   "epoch": 18,
+   "train_loss": 0.0072,
+   "holdout_loss": 0.0123
+  },
+  {
+   "epoch": 19,
+   "train_loss": 0.007,
+   "holdout_loss": 0.0115
+  },
+  {
+   "epoch": 20,
+   "train_loss": 0.0064,
+   "holdout_loss": 0.0109
+  },
+  {
+   "epoch": 21,
+   "train_loss": 0.0065,
+   "holdout_loss": 0.0112
+  },
+  {
+   "epoch": 22,
+   "train_loss": 0.0065,
+   "holdout_loss": 0.0112
+  }
+ ],
+ "agent_eval": [
+  {
+   "agent": "learned router, no fallback",
+   "tasks": 15,
+   "pass_rate": 0.867,
+   "tools": 0.867,
+   "correct": 0.933,
+   "grounded": 1.0,
+   "safe": 1.0,
+   "failed": [
+    "settled_normal",
+    "injection_in_data"
+   ]
+  },
+  {
+   "agent": "learned router + keyword fallback",
+   "tasks": 15,
+   "pass_rate": 0.867,
+   "tools": 0.867,
+   "correct": 0.933,
+   "grounded": 1.0,
+   "safe": 1.0,
+   "failed": [
+    "settled_normal",
+    "injection_in_data"
+   ]
+  },
+  {
+   "agent": "keyword planner (reference)",
+   "tasks": 15,
+   "pass_rate": 1.0,
+   "tools": 1.0,
+   "correct": 1.0,
+   "grounded": 1.0,
+   "safe": 1.0,
+   "failed": []
+  }
+ ],
+ "manifest": {
+  "created_at": "2026-11-16T13:51:14.850925+00:00",
+  "torch": "2.15.0+cu132",
+  "device": "cpu",
+  "python": "3.13.18",
+  "runtime_s": 1009.7
+ }
+}

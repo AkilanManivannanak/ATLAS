@@ -13,3 +13,4 @@ Generated from `results/model_inventory.json`.
 | [Constrained PPO liquidity controller](control_safe_ppo.md) | high | PASS |
 | [Supervised payment-anomaly classifier](detect_gbt.md) | high | FAIL |
 | [Isolation-forest anomaly detector](detect_iforest.md) | high | FAIL |
+| [Tool-routing language model (byte Transformer)](agent_tool_router.md) | low | FAIL |

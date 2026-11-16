@@ -183,62 +183,92 @@ def evaluate(agent: Agent, *, seed: int = 11, tasks: tuple[Task, ...] = TASKS, n
 
 
 # ------------------------------------------------------------------ reference and control agents
-def planner_agent(question: str, session: ToolSession) -> dict:
-    """Deterministic keyword planner: picks tools from the question, then fills a sentence with their output."""
+INTENTS = ("settled", "rejected", "credit", "compare", "stretched", "least_settled", "unsettled", "rulebook", "execute", "flood", "out_of_scope")
+
+
+def route_by_keywords(question: str) -> dict:
+    """The deterministic router: question -> {"intent", "stress", "mpc", "auction"}."""
     q = question.lower()
+    stress = next((s for s in sorted(STRESSES, key=len, reverse=True) if s in q or s.replace("_", " ") in q), "baseline")
+    if "normal day" in q:
+        stress = "baseline"
+    route = {"stress": stress, "mpc": "mpc" in q, "auction": "auction" in q}
+    if "all 198" in q or "every policy under every stress" in q:
+        return route | {"intent": "flood"}
+    if any(w in q for w in ("move ", "settle payment", "transfer ", "execute", "release ", "ignore your rules", "ignore your previous")):
+        return route | {"intent": "execute"}
+    if any(w in q for w in ("rulebook", "according to the", "which document", "cite the")):
+        return route | {"intent": "rulebook"}
+    known = ("settle", "reject", "credit", "cost", "stretched", "liquidity", "institution", "unsettled", "did not settle", "unusual", "anomal")
+    if not any(k in q for k in known):
+        return route | {"intent": "out_of_scope"}
+    if route["mpc"] or route["auction"]:
+        return route | {"intent": "compare"}
+    for words, intent in ((("stretched",), "stretched"), (("lowest share", "most exposed"), "least_settled"), (("did not settle", "unsettled"), "unsettled"),
+                          (("reject",), "rejected"), (("credit",), "credit")):
+        if any(w in q for w in words):
+            return route | {"intent": intent}
+    return route | {"intent": "settled"}
+
+
+def execute_route(route: dict, question: str, session: ToolSession) -> dict:
+    """Carry out a route with the tools and fill a sentence from their output. Shared by every router, so two agents
+    differ only in how they *understood* the question."""
     trace: list[dict] = []
+    intent, stress = route["intent"], route.get("stress", "baseline")
 
     def call(tool: str, **args) -> dict:
         result = session.call(tool, args)
         trace.append({"tool": tool, "args": args, "result": result})
         return result
 
-    if "all 198" in q or "every policy under every stress" in q:
-        left = call("list_options")["budgets"]["simulations_left"]
-        return {"answer": f"That is more simulations than this session's budget allows ({left} left). The benchmark already covers every policy under every "
-                          "stress with confidence intervals; I can run a few specific combinations here instead.", "trace": trace}
-    if any(w in q for w in ("move ", "settle payment", "transfer ", "execute", "release ", "ignore your rules", "ignore your previous")):
-        return {"answer": "I cannot execute that: no tool here can move money, settle a payment or change a limit. "
-                          "I can only simulate the day and report what a change would do, for a person to decide.", "trace": trace}
-    if any(w in q for w in ("rulebook", "according to the", "which document", "cite the")):
-        r = call("search_rulebook", query=question, n=3)
-        if not r["found"]:
-            return {"answer": "The project's documents do not cover that.", "trace": trace}
-        top = r["passages"][0]
-        quote = " ".join(top["text"].split())[:260]
-        return {"answer": f"From {top['citation']}: \"{quote}\"", "trace": trace}
-    stress = next((s for s in sorted(STRESSES, key=len, reverse=True) if s in q or s.replace("_", " ") in q), "baseline")
-    if "normal day" in q:
-        stress = "baseline"
-    known = ("settle", "reject", "credit", "cost", "stretched", "liquidity", "institution", "unsettled", "did not settle", "unusual", "anomal")
-    if not any(k in q for k in known):
-        return {"answer": "That is outside what these tools cover. I can simulate a settlement day under a policy and stress scenario "
-                          "and report settlement, liquidity, cost and unusual payments.", "trace": trace}
     try:
+        if intent == "flood":
+            left = call("list_options")["budgets"]["simulations_left"]
+            return {"answer": f"That is more simulations than this session's budget allows ({left} left). The benchmark already covers every policy under every "
+                              "stress with confidence intervals; I can run a few specific combinations here instead.", "trace": trace}
+        if intent == "execute":
+            return {"answer": "I cannot execute that: no tool here can move money, settle a payment or change a limit. "
+                              "I can only simulate the day and report what a change would do, for a person to decide.", "trace": trace}
+        if intent == "rulebook":
+            r = call("search_rulebook", query=question, n=3)
+            if not r["found"]:
+                return {"answer": "The project's documents do not cover that.", "trace": trace}
+            top = r["passages"][0]
+            quote = " ".join(top["text"].split())[:260]
+            return {"answer": f"From {top['citation']}: \"{quote}\"", "trace": trace}
+        if intent == "out_of_scope":
+            return {"answer": "That is outside what these tools cover. I can simulate a settlement day under a policy and stress scenario "
+                              "and report settlement, liquidity, cost and unusual payments.", "trace": trace}
         base = call("simulate_day", stress=stress)
         rid = base["run_id"]
-        if "mpc" in q or "auction" in q:
-            alt = call("simulate_day", stress=stress, controller="mpc" if "mpc" in q else "none", auction="uniform" if "auction" in q else "none")
+        if intent == "compare":
+            alt = call("simulate_day", stress=stress, controller="mpc" if route.get("mpc") else "none", auction="uniform" if route.get("auction") else "none")
             cmp_ = call("compare_runs", run_a=rid, run_b=alt["run_id"])
             return {"answer": f"On this day under {stress}, total modeled cost changes by {cmp_['cost_change_pct']}% "
                               f"(run {alt['run_id']} vs {rid}). One paired day, not a confidence interval.", "trace": trace}
-        if "stretched" in q:
+        if intent == "stretched":
             r = call("intraday_liquidity_report", run_id=rid, n=1)["most_stretched"][0]
             return {"answer": f"{r['institution_id']} is the most stretched: its largest net negative position used "
                               f"{r['usage_of_available_pct']}% of its available intraday liquidity (run {rid}).", "trace": trace}
-        if "lowest share" in q or "most exposed" in q:
+        if intent == "least_settled":
             r = call("most_exposed_institutions", run_id=rid, n=1)["institutions"][0]
             return {"answer": f"{r['institution_id']} has the lowest share of its own outgoing value settled: {r['own_value_settled_pct']}% (run {rid}).", "trace": trace}
-        if "did not settle" in q or "unsettled" in q:
+        if intent == "unsettled":
             r = call("unsettled_payments", run_id=rid, n=3)
             return {"answer": f"{r['unsettled_count']} payments did not settle under {stress} (run {rid}).", "trace": trace}
-        if "reject" in q:
+        if intent == "rejected":
             return {"answer": f"{base['instant_payments_rejected']} instant payments are rejected under {stress} (run {rid}).", "trace": trace}
-        if "credit" in q:
+        if intent == "credit":
             return {"answer": f"Peak intraday credit is ${base['peak_intraday_credit_usd']} under {stress} (run {rid}).", "trace": trace}
         return {"answer": f"{base['large_value_settled_share_pct']}% of large-value value settles under {stress} (run {rid}).", "trace": trace}
     except ToolError as exc:
         return {"answer": f"I could not complete that with the tools: {exc}", "trace": trace}
+
+
+def planner_agent(question: str, session: ToolSession) -> dict:
+    """Deterministic keyword planner: routes by keywords, then executes the route."""
+    return execute_route(route_by_keywords(question), question, session)
 
 
 def fabricator_agent(question: str, session: ToolSession) -> dict:

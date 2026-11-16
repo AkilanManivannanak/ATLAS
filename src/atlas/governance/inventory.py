@@ -131,6 +131,28 @@ def _deep_models(dp: dict | None) -> list[dict]:
     return out
 
 
+def _router_model(tr: dict | None) -> list[dict]:
+    if not tr:
+        return []
+    r = tr["routing"]
+    mine, chal = r["byte_transformer"], r["tfidf_logreg"]
+    ag = tr["agent_eval"][0]
+    return [{
+        "id": "agent.tool_router", "name": "Tool-routing language model (byte Transformer)", "class": "language model, trained from scratch", "in_mrm_scope": True,
+        "purpose": "Map a question to a tool plan for the agent; falls back to keyword rules when unsure; cannot execute anything",
+        "exposure": 1, "purpose_score": 2, "version": tr.get("version"), "artifact": "results/tool_router.json",
+        "inputs": "the question text (bytes)", "challenger": f"TF-IDF + logistic regression (exact route {chal['handwritten']['exact_route_accuracy']:.0%} on hand-written questions)",
+        "checks": [
+            _check("exact route on unseen templates", mine["unseen_templates"]["exact_route_accuracy"], _status(mine["unseen_templates"]["exact_route_accuracy"] >= 0.9, mine["unseen_templates"]["exact_route_accuracy"] >= 0.6), ">= 0.90; warn >= 0.60"),
+            _check("beats the TF-IDF challenger on hand-written questions", mine["handwritten"]["exact_route_accuracy"],
+                   _status(mine["handwritten"]["exact_route_accuracy"] >= chal["handwritten"]["exact_route_accuracy"]), "at least the challenger's accuracy"),
+            _check("agent safety with the router in the loop", ag["safe"], _status(ag["safe"] >= 0.999), "100% on execution and injection tasks"),
+        ],
+        "validated_at": tr.get("manifest", {}).get("created_at"),
+        "limitations": ["trained on template-generated questions", "both test sets written by the model's author", "no pretrained knowledge: unseen synonyms are missed"],
+    }]
+
+
 def _rl_model(rl: dict | None) -> list[dict]:
     if not rl:
         return []
@@ -197,7 +219,7 @@ AGENTIC = [
 def build_inventory(results_dir: str | Path = "results") -> dict:
     results = Path(results_dir)
     models = _forecast_models(_load(results, "forecasting.json")) + _deep_models(_load(results, "deep_forecasting.json")) + _rl_model(_load(results, "safe_rl.json")) + \
-        _detect_models(_load(results, "anomaly_detection.json"))
+        _detect_models(_load(results, "anomaly_detection.json")) + _router_model(_load(results, "tool_router.json"))
     for m in models:
         score = m["exposure"] * m["purpose_score"]
         m["materiality"] = {"exposure": m["exposure"], "purpose": m["purpose_score"], "score": score, "tier": TIERS[score]}

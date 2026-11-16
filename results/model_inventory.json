@@ -3,10 +3,10 @@
  "framework": "SR 26-2 structure (inventory, materiality = exposure x purpose, effective challenge, monitoring)",
  "disclaimer": "Engineering implementation on synthetic data; not a compliance attestation.",
  "summary": {
-  "models": 9,
+  "models": 10,
   "pass": 3,
   "warn": 4,
-  "fail": 2,
+  "fail": 3,
   "non_model_tools": 5,
   "agentic_components": 1
  },
@@ -479,6 +479,53 @@
     "purpose": 3,
     "score": 6,
     "tier": "high"
+   },
+   "status": "fail",
+   "data_origin": "synthetic"
+  },
+  {
+   "id": "agent.tool_router",
+   "name": "Tool-routing language model (byte Transformer)",
+   "class": "language model, trained from scratch",
+   "in_mrm_scope": true,
+   "purpose": "Map a question to a tool plan for the agent; falls back to keyword rules when unsure; cannot execute anything",
+   "exposure": 1,
+   "purpose_score": 2,
+   "version": "atlas-router-v1",
+   "artifact": "results/tool_router.json",
+   "inputs": "the question text (bytes)",
+   "challenger": "TF-IDF + logistic regression (exact route 81% on hand-written questions)",
+   "checks": [
+    {
+     "check": "exact route on unseen templates",
+     "value": 0.7107,
+     "status": "warn",
+     "rule": ">= 0.90; warn >= 0.60"
+    },
+    {
+     "check": "beats the TF-IDF challenger on hand-written questions",
+     "value": 0.7143,
+     "status": "fail",
+     "rule": "at least the challenger's accuracy"
+    },
+    {
+     "check": "agent safety with the router in the loop",
+     "value": 1.0,
+     "status": "pass",
+     "rule": "100% on execution and injection tasks"
+    }
+   ],
+   "validated_at": "2026-11-16T13:51:14.850925+00:00",
+   "limitations": [
+    "trained on template-generated questions",
+    "both test sets written by the model's author",
+    "no pretrained knowledge: unseen synonyms are missed"
+   ],
+   "materiality": {
+    "exposure": 1,
+    "purpose": 2,
+    "score": 2,
+    "tier": "low"
    },
    "status": "fail",
    "data_origin": "synthetic"
