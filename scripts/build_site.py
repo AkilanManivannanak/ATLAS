@@ -34,12 +34,39 @@ def main() -> None:
         "forecasting": {k: v for k, v in (load("forecasting.json") or {}).items() if k in ("results", "target", "splits")},
         "netting": load("netting_optimality.json"),
         "game": {k: v for k, v in (load("game.json") or {}).items() if k in ("profiles", "deviations", "seeds", "socially_best_profile")},
+        "detect": {k: v for k, v in (load("anomaly_detection.json") or {}).items() if k in ("detectors", "leave_one_typology_out", "design", "typologies")},
+        "mrm": load("model_inventory.json"),
+        "agents": load("agent_evals.json"),
     }
     html = TEMPLATE.replace("__DATA__", json.dumps(data, separators=(",", ":")).replace("</", "<\\/"))
     out = ROOT / "site"
     out.mkdir(exist_ok=True)
     (out / "index.html").write_text(html)
     print(f"wrote {out / 'index.html'} ({len(html) / 1e6:.2f} MB)")
+    build_lab(out)
+
+
+def _tz_bytes(name: str) -> bytes:
+    """One compiled time-zone file, from the OS database or the tzdata wheel."""
+    p = Path("/usr/share/zoneinfo") / name
+    if p.exists():
+        return p.read_bytes()
+    from importlib import resources
+    return (resources.files("tzdata.zoneinfo") / name).read_bytes()
+
+
+def build_lab(out: Path) -> None:
+    """Live lab: the simulator itself (pure-Python core) zipped for Pyodide, plus the page that runs it."""
+    import zipfile
+
+    src = ROOT / "src"
+    with zipfile.ZipFile(out / "atlas.zip", "w", zipfile.ZIP_DEFLATED) as z:
+        for f in sorted(src.rglob("*.py")):
+            z.write(f, f.relative_to(src).as_posix())
+        for zone in ("America/New_York", "UTC"):
+            z.writestr(f"tz/{zone}", _tz_bytes(zone))
+    (out / "lab.html").write_text((ROOT / "scripts" / "lab_template.html").read_text())
+    print(f"wrote {out / 'lab.html'} and atlas.zip ({(out / 'atlas.zip').stat().st_size / 1e3:.0f} kB)")
 
 
 TEMPLATE = r"""<!doctype html>
@@ -61,7 +88,7 @@ main{max-width:1180px;margin:auto;padding:16px 20px 60px}.panel{background:var(-
 .tab{display:none}.tab.on{display:block}.chart{width:100%;min-height:380px}.badge{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:1px 9px;font-size:12px;color:var(--ink2)}
 .toggle{float:right;border:1px solid var(--line);background:var(--panel);color:var(--ink2);border-radius:999px;padding:4px 10px;cursor:pointer}
 </style></head><body>
-<header><button class="toggle" id="theme">Theme</button><h1>ATLAS-Σ Results Explorer</h1>
+<header><button class="toggle" id="theme">Theme</button><a class="toggle" style="margin-right:8px;text-decoration:none;font-size:13px" href="lab.html">Live lab: run it yourself →</a><h1>ATLAS-Σ Results Explorer</h1>
 <p>Interactive view of every published experiment from the ATLAS-Σ multi-rail settlement digital twin. All numbers are read from the repository's result artifacts. <b>All data is synthetic</b>; no real bank or payment-system data is used.</p></header>
 <nav id="nav"></nav><main id="main"></main>
 <script id="data" type="application/json">__DATA__</script>
@@ -175,6 +202,32 @@ tab('game', 'Strategic behaviour', el => {
   const G = D.game; if (!G.profiles) return;
   el.append($(`<div class="panel"><p class="note">Empirical liquidity-timing game, ${G.seeds.length} paired seeds. Each symmetric profile is tested against unilateral deviations by the largest and median bank. Verdicts cover only these deviations; they are not proofs of Nash equilibrium.</p><table><thead><tr><th>Everyone plays</th><th>Verdict</th><th>System cost</th></tr></thead><tbody>${Object.entries(G.profiles).map(([k,v])=>`<tr><td>${k}${k===G.socially_best_profile?' ★':''}</td><td><span class="badge">${v.verdict}</span></td><td>${M(v.mean_system_cost_minor)}</td></tr>`).join('')}</tbody></table>
   <h3>Deviation gains (focal bank's own cost saved)</h3><table><thead><tr><th>Profile → deviation</th><th>Focal</th><th>Mean gain</th><th>95% CI</th></tr></thead><tbody>${G.deviations.map(d=>`<tr><td>${d.profile} → ${d.deviation}</td><td>${d.focal}</td><td>${M(d.mean_gain_minor)}</td><td>[${M(d.ci95[0])}, ${M(d.ci95[1])}]</td></tr>`).join('')}</tbody></table></div>`));
+});
+
+tab('detect', 'Anomaly detection', el => {
+  const A = D.detect; if (!A.detectors) return; const names = {robust_z:'Hand-written rule', iforest:'Isolation forest', gbt:'Supervised model'}, cols = {robust_z:'--neutral', iforest:'--s2', gbt:'--s1'};
+  const T = Object.keys(A.typologies);
+  el.append($(`<div class="panel"><h3>Share of injected incidents caught at a ${(A.design.alert_rate*100).toFixed(0)}% alert rate</h3><div class="chart" id="dc"></div>
+    <p class="note">${A.design.test_anomalies} injected anomalies in ${A.design.test_payments.toLocaleString()} payments on ${A.design.test_days} held-out days. Labels are synthetic typologies, not observed fraud. "Never seen" = the supervised model retrained without that pattern.</p></div>
+    <div class="panel"><table><thead><tr><th>Detector</th><th>PR-AUC</th><th>Recall</th><th>Precision</th></tr></thead><tbody>${Object.entries(A.detectors).map(([k,v])=>`<tr><td>${names[k]}</td><td>${v.pr_auc.toFixed(3)}</td><td>${(v.recall_at_alert_rate*100).toFixed(1)}%</td><td>${(v.precision_at_alert_rate*100).toFixed(1)}%</td></tr>`).join('')}</tbody></table></div>`));
+  const tr = Object.keys(names).map(k => ({type:'bar', name:names[k], x:T.map(t=>t.replace(/_/g,' ')), y:T.map(t=>((A.detectors[k].by_typology[t]||{}).recall_at_alert_rate||0)*100), marker:{color:css(cols[k])}, hovertemplate:'%{x}: %{y:.0f}%<extra>'+names[k]+'</extra>'}));
+  tr.push({type:'scatter', mode:'markers', name:'Supervised, never seen', x:T.map(t=>t.replace(/_/g,' ')), y:T.map(t=>A.leave_one_typology_out[t].gbt_unseen_recall*100), marker:{symbol:'circle-open', size:13, color:css('--ink'), line:{width:2}}, hovertemplate:'%{x}: %{y:.0f}%<extra>never seen</extra>'});
+  Plotly.react('dc', tr, layout({barmode:'group', bargap:0.25, margin:{l:50,r:20,t:30,b:60}, yaxis:{ticksuffix:'%', range:[0,105], gridcolor:css('--line')}}), cfg);
+});
+
+tab('mrm', 'Model risk', el => {
+  const M = D.mrm; if (!M) return; const badge = s => `<b style="color:${css(s==='pass'?'--s3':s==='warn'?'--s2':'--bad')}">${s==='pass'?'✓ pass':s==='warn'?'! warn':'✕ fail'}</b>`;
+  el.append($(`<div class="panel"><p class="note">${M.framework}. ${M.disclaimer} ${M.summary.pass} pass, ${M.summary.warn} warn, ${M.summary.fail} fail.</p>
+    ${M.models.map(m=>`<h3 style="margin-bottom:2px">${m.name} · ${badge(m.status)}</h3><p class="note" style="margin-top:0">${m.purpose}. Tier <b>${m.materiality.tier}</b> (exposure ${m.materiality.exposure} × purpose ${m.materiality.purpose}). Challenger: ${m.challenger}.</p>
+    <table><thead><tr><th>Check</th><th>Value</th><th>Rule</th><th>Status</th></tr></thead><tbody>${m.checks.map(c=>`<tr><td>${c.check}</td><td>${JSON.stringify(c.value)}</td><td>${c.rule}</td><td>${badge(c.status)}</td></tr>`).join('')}</tbody></table>`).join('')}</div>
+    <div class="panel"><h3>Tools kept out of the model inventory</h3><table><thead><tr><th>Tool</th><th>Why</th><th>Controls</th></tr></thead><tbody>${M.non_model_tools.map(t=>`<tr><td>${t.name}</td><td>${t.why_excluded}</td><td>${t.controls}</td></tr>`).join('')}</tbody></table></div>`));
+});
+
+tab('agents', 'Agent evaluation', el => {
+  const E = D.agents; if (!E) return; const pct = v => (v*100).toFixed(0)+'%', cell = v => `<td style="color:${css(v>=0.999?'--s3':'--bad')};font-weight:600">${v>=0.999?'✓':'✕'} ${pct(v)}</td>`;
+  el.append($(`<div class="panel"><p class="note">${E.note}</p><table><thead><tr><th>Agent</th><th>Right tools</th><th>Right answer</th><th>No invented numbers</th><th>Refuses to execute</th><th>All checks</th></tr></thead><tbody>
+    ${E.agents.map(a=>`<tr><td>${a.agent}</td>${cell(a.tools)}${cell(a.correct)}${cell(a.grounded)}${cell(a.safe)}${cell(a.pass_rate)}</tr>`).join('')}</tbody></table></div>
+    <div class="panel"><h3>Tasks and the reference agent's answers</h3><table><thead><tr><th>Question</th><th>Answer</th></tr></thead><tbody>${E.agents[0].rows.map((r,i)=>`<tr><td style="white-space:normal">${E.tasks[i].question}</td><td style="white-space:normal;text-align:left">${r.answer}</td></tr>`).join('')}</tbody></table></div>`));
 });
 
 const nav = document.getElementById('nav'), main = document.getElementById('main');

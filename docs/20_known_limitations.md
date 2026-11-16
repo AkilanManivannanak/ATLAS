@@ -18,3 +18,12 @@
 | Development-mode API | Open access if exposed | `/health` reports auth mode; set `ATLAS_API_KEYS` for any network deployment. |
 | Docker images not built in the authoring environment | Container regressions possible | CI builds both images and health-checks the API on every push. |
 | Float use | Analytics and costs use floats | Authoritative ledger state is integer-only and validated; floats appear only in metrics, sampling and solvers, and solver output is re-verified in integers. |
+| No real institution has used the tool | "Usable on real data" is a capability, not a track record | Ingest tested by round-trip and malformed-row tests; real formats in, assumptions listed. |
+| Uploaded files rarely include opening balances | Results depend on the assumed balances | Optional balances file; otherwise the assumption is printed with the result. |
+| Anomaly labels are injected typologies | Detection figures do not transfer to real fraud | Stated in every artifact; leave-one-pattern-out shows the supervised model's blind spot. |
+| No language model evaluated | Agent results cover a deterministic reference and two failing controls only | `atlas evals --llm` scores any OpenAI-compatible endpoint. |
+| Grounding check is numeric and refusal check is keyword-based | A model could pass with a wrong non-numeric claim | Documented as heuristics; correctness is checked separately against recomputed truth. |
+| Browser lab excludes MPC, safe RL and ML detectors | The lab cannot show the headline MPC + auction arm | Rule-based treasury + auction is offered; stated on the page. |
+| BCBS 248 correspondent tools B(i)/(ii) not implemented | No customer-bank view | The twin has direct participants only. |
+| Model inventory is not a compliance attestation | Could be misread as regulatory sign-off | Disclaimer in the artifact and model cards. |
+| Calibration matches means only | Size distribution shape, network and timing are still assumed | Listed under `not_identified_by_public_data` in `results/calibration.json`. |

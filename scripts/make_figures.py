@@ -303,6 +303,223 @@ def fig_replication(t, theme, ext):
     save(fig, "replication", theme)
 
 
+STATUS = {"light": {"pass": "#12855c", "warn": "#b7791f", "fail": "#d03b3a"}, "dark": {"pass": "#3fbf8f", "warn": "#e0a84a", "fail": "#e66767"}}
+
+# What nine AI/ML postings at five US banks ask for, by level (docs/25_industry_landscape.md lists the postings).
+# 2 = required at that level, 1 = preferred / nice to have, 0 = not mentioned. Last item: where the twin shows it, or the gap.
+HIRING = [
+    ("Production Python, testing, CI/CD", 2, 2, 2, "180 tests, lint, CI, Docker"),
+    ("Statistics, time series, applied ML", 2, 2, 2, "6 forecasters, conformal intervals"),
+    ("Evaluation frameworks, measured impact", 2, 2, 2, "paired benchmark, agent evals"),
+    ("LLM apps: tool calling, agents, RAG", 1, 2, 2, "tool layer + agent loop (no RAG)"),
+    ("Guardrails, least privilege, human in loop", 1, 2, 2, "read-only tools, safety controller"),
+    ("Agent interoperability (MCP)", 0, 2, 1, "MCP server over stdio"),
+    ("Model risk, audit-ready docs, model cards", 2, 1, 2, "inventory, tiers, model cards"),
+    ("Monitoring, drift, fallbacks, rollback", 1, 2, 2, "validation checks, PSI, metrics"),
+    ("Reinforcement learning, optimisation", 1, 1, 0, "constrained PPO, MPC, MILP"),
+    ("Cloud ML platforms (SageMaker, Bedrock, Vertex)", 1, 1, 1, "gap: Docker only"),
+    ("Kubernetes, IaC, distributed training, GPUs", 0, 2, 1, "gap: single machine"),
+    ("Leading teams, setting platform standards", 0, 1, 2, "gap: not a code feature"),
+]
+
+
+def fig_hiring(t, theme):
+    fig, ax = plt.subplots(figsize=(10.5, 0.36 * len(HIRING) + 1.7))
+    style(ax, t, "What bank AI/ML roles ask for, and where this project shows it",
+          "Nine postings, five US banks (JPMorgan, Bank of America, Citi, Goldman Sachs, Wells Fargo). Filled = required, ring = preferred.")
+    ax.grid(False)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    cols = [("Junior", 5.25), ("Senior", 6.05), ("Principal", 6.85)]
+    n = len(HIRING)
+    for i, (label, j, s_, p, where) in enumerate(HIRING):
+        y = n - 1 - i
+        if i % 2 == 0:
+            ax.add_patch(plt.Rectangle((0, y - 0.5), 10.5, 1, color=t["grid"], alpha=0.35, lw=0))
+        ax.text(0.12, y, label, va="center", ha="left", fontsize=9.3, color=t["ink"])
+        for (_, x), v in zip(cols, (j, s_, p)):
+            if v == 2:
+                ax.scatter([x], [y], s=95, color=t["s"][0], zorder=3)
+            elif v == 1:
+                ax.scatter([x], [y], s=85, facecolors="none", edgecolors=t["s"][0], linewidths=1.6, zorder=3)
+            else:
+                ax.plot([x - 0.07, x + 0.07], [y, y], color=t["neutral"], lw=1.2)
+        gap = where.startswith("gap")
+        ax.text(7.55, y, ("✕  " if gap else "✓  ") + where.replace("gap: ", ""), va="center", ha="left", fontsize=9,
+                color=STATUS[theme]["fail"] if gap else t["ink"], fontweight="bold" if gap else "normal")
+    for name, x in cols:
+        ax.text(x, n - 0.25, name, ha="center", va="bottom", fontsize=9, color=t["ink2"], fontweight="bold")
+    ax.text(7.55, n - 0.25, "In ATLAS-Σ", ha="left", va="bottom", fontsize=9, color=t["ink2"], fontweight="bold")
+    ax.set_xlim(0, 10.5)
+    ax.set_ylim(-0.6, n + 0.2)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    fig.subplots_adjust(top=1 - 1.05 / (0.36 * n + 1.7), left=0.01, right=0.99, bottom=0.02)
+    save(fig, "hiring-map", theme)
+
+
+def fig_detect(t, theme, det):
+    types = list(det["typologies"])
+    nice = {"amount_spike": "Amount spike", "new_corridor": "New corridor", "off_hours_burst": "Off-hours burst", "structuring": "Just under the limit",
+            "fan_in": "Many-to-one (mule)", "duplicate": "Duplicate"}
+    series = [("Hand-written rule", "robust_z", t["neutral"], "s"), ("Isolation forest", "iforest", t["s"][1], "D"), ("Supervised model, pattern seen in training", "gbt", t["s"][0], "o")]
+    fig, ax = plt.subplots(figsize=(10.5, 4.3))
+    d = det["design"]
+    style(ax, t, "Catching unusual payments: what each detector finds",
+          f"Share of injected incidents caught when reviewing the top {d['alert_rate']:.0%} of payments. {d['test_days']} held-out days, {d['test_anomalies']} anomalies in {d['test_payments']:,} payments.")
+    ys = list(range(len(types)))[::-1]
+    for y, typ in zip(ys, types):
+        vals = [det["detectors"][k]["by_typology"].get(typ, {}).get("recall_at_alert_rate", 0) for _, k, _, _ in series]
+        unseen = det["leave_one_typology_out"][typ]["gbt_unseen_recall"]
+        ax.plot([min(vals + [unseen]), max(vals + [unseen])], [y, y], color=t["grid"], lw=2, zorder=1)
+        for off, ((_, _k, color, marker), v) in zip((0.16, 0.0, -0.16), zip(series, vals)):
+            ax.scatter([v], [y + off], s=70, color=color, marker=marker, zorder=3, edgecolors=t["bg"], linewidths=1.2)
+        ax.scatter([unseen], [y - 0.32], s=70, facecolors="none", edgecolors=t["s"][0], linewidths=1.8, zorder=3)
+    for name, _k, color, marker in series:
+        ax.scatter([], [], s=60, color=color, marker=marker, label=name)
+    ax.scatter([], [], s=60, facecolors="none", edgecolors=t["s"][0], linewidths=1.8, label="Supervised model, pattern never seen")
+    ax.set_yticks(ys)
+    ax.set_yticklabels([f"{nice[x]}  (n={det['leave_one_typology_out'][x]['n']})" for x in types], color=t["ink"])
+    ax.set_ylim(-0.7, len(types) - 0.4)
+    ax.set_xlim(-0.04, 1.04)
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:.0%}"))
+    ax.set_xlabel("incidents caught")
+    ax.grid(True, axis="x", color=t["grid"], linewidth=0.6)
+    ax.grid(False, axis="y")
+    legend(ax, t, loc="upper center", bbox_to_anchor=(0.45, -0.14), ncol=2)
+    fig.subplots_adjust(top=0.82, left=0.2, bottom=0.26)
+    save(fig, "anomaly-detection", theme)
+
+
+def fig_mrm(t, theme, inv):
+    models = inv["models"]
+    sym = {"pass": "✓", "warn": "!", "fail": "✕"}
+    width = max(len(m["checks"]) for m in models)
+    fig, ax = plt.subplots(figsize=(10.5, 0.5 * len(models) + 1.9))
+    c = inv["summary"]
+    style(ax, t, "Every model is checked by code, and some fail",
+          f"Model inventory in the structure of US guidance SR 26-2. {c['pass']} pass, {c['warn']} warn, {c['fail']} fail. Each mark is one automated validation check.")
+    ax.grid(False)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    n = len(models)
+    for i, m in enumerate(models):
+        y = n - 1 - i
+        ax.text(0.1, y, m["name"], va="center", ha="left", fontsize=9.5, color=t["ink"])
+        ax.text(5.0, y, m["materiality"]["tier"], va="center", ha="center", fontsize=9, color=t["ink2"])
+        for j, chk in enumerate(m["checks"]):
+            x = 5.9 + j * 0.52
+            col = STATUS[theme][chk["status"]]
+            ax.add_patch(plt.Rectangle((x - 0.21, y - 0.3), 0.42, 0.6, color=col, lw=0, alpha=0.95))
+            ax.text(x, y, sym[chk["status"]], va="center", ha="center", fontsize=9.5, color="#ffffff" if theme == "light" else "#141413", fontweight="bold")
+        ax.text(5.9 + width * 0.52 + 0.1, y, m["status"].upper(), va="center", ha="left", fontsize=9, fontweight="bold", color=STATUS[theme][m["status"]])
+    ax.text(5.0, n - 0.35, "Tier", ha="center", va="bottom", fontsize=9, color=t["ink2"], fontweight="bold")
+    ax.text(5.7, n - 0.35, "Validation checks", ha="left", va="bottom", fontsize=9, color=t["ink2"], fontweight="bold")
+    ax.set_xlim(0, 10.5)
+    ax.set_ylim(-0.6, n + 0.1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    fig.subplots_adjust(top=1 - 1.05 / (0.5 * n + 1.9), left=0.01, right=0.99, bottom=0.02)
+    save(fig, "model-risk", theme)
+
+
+def fig_calibration(t, theme, cal):
+    fig, axes = plt.subplots(1, 2, figsize=(10.5, 3.6))
+    groups = [("Large-value payment, mean size", cal["targets"]["fedwire_mean_usd"], cal["default"]["large_value_mean_usd"], cal["calibrated"]["large_value_mean_usd"], "Fedwire Funds 2025"),
+              ("Instant payment, mean size", cal["targets"]["instant_blended_mean_usd"], cal["default"]["instant_mean_usd"], cal["calibrated"]["instant_mean_usd"], "FedNow + RTP blend")]
+    fmt = lambda v: f"${v / 1e6:.2f}M" if v >= 1e6 else f"${v / 1e3:.1f}k"
+    for ax, (ttl, real, default, calib, src) in zip(axes, groups):
+        vals = [real, default, calib]
+        names = [f"Published\n({src})", "Twin, default", "Twin, calibrated"]
+        ax.bar(range(3), vals, width=0.58, color=[t["neutral"], t["s"][1], t["s"][0]], edgecolor=t["bg"], linewidth=2)
+        for i, v in enumerate(vals):
+            ax.text(i, v, fmt(v), ha="center", va="bottom", fontsize=9.5, color=t["ink"])
+        ax.set_xticks(range(3))
+        ax.set_xticklabels(names, color=t["ink2"], fontsize=9)
+        ax.set_title(ttl, color=t["ink"], fontsize=10, loc="left")
+        ax.set_ylim(0, max(vals) * 1.18)
+        ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: fmt(v) if v else "0"))
+        style(ax, t, "Payment sizes checked against published Federal Reserve statistics",
+              f"Only the mean is published, so only the mean is fitted. One simulated payment stands for about {cal['scale']['one_twin_payment_represents']} real Fedwire transfers.")
+        ax.grid(False, axis="x")
+    fig.subplots_adjust(top=0.74, wspace=0.22)
+    save(fig, "calibration", theme)
+
+
+def fig_agent(t, theme, ev):
+    agents = ev["agents"]
+    cols = [("tools", "Right tools"), ("correct", "Right answer"), ("grounded", "No invented numbers"), ("safe", "Refuses to execute"), ("pass_rate", "Passes all checks")]
+    fig, ax = plt.subplots(figsize=(10.5, 0.62 * len(agents) + 1.8))
+    style(ax, t, "Agent evaluation: the harness has to be able to fail a bad agent",
+          f"{agents[0]['tasks']} tasks. Two deliberately broken agents are included as controls: one misreports numbers, one claims to move money.")
+    ax.grid(False)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    n = len(agents)
+    for i, a in enumerate(agents):
+        y = n - 1 - i
+        ax.text(0.1, y, a["agent"], va="center", ha="left", fontsize=9.5, color=t["ink"])
+        for j, (key, _) in enumerate(cols):
+            v = a[key]
+            x = 4.6 + j * 1.2
+            status = "pass" if v >= 0.999 else "fail"
+            ax.add_patch(plt.Rectangle((x - 0.5, y - 0.32), 1.0, 0.64, color=STATUS[theme][status], alpha=0.95 if status == "fail" else 0.9, lw=0))
+            ax.text(x, y, f"{'✓' if status == 'pass' else '✕'} {v:.0%}", va="center", ha="center", fontsize=9.5, fontweight="bold",
+                    color="#ffffff" if theme == "light" else "#141413")
+    for j, (_, name) in enumerate(cols):
+        ax.text(4.6 + j * 1.2, n - 0.42, name.replace(" ", "\n", 1), ha="center", va="bottom", fontsize=8.5, color=t["ink2"], fontweight="bold")
+    ax.set_xlim(0, 10.5)
+    ax.set_ylim(-0.6, n + 0.45)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    fig.subplots_adjust(top=1 - 1.05 / (0.62 * n + 1.8), left=0.01, right=0.99, bottom=0.02)
+    save(fig, "agent-evals", theme)
+
+
+def fig_bcbs(t, theme):
+    from atlas.regulatory import intraday_liquidity_report
+    from atlas.scenario import generate_scenario
+    from atlas.sim import SimulationSettings, run_day
+    from atlas.stress import build_scenario
+    sc = generate_scenario(seed=11)
+    reps = {name: intraday_liquidity_report(run_day(sc, SimulationSettings(policy="priority"), build_scenario(st)).to_dict(include_payments=True))
+            for name, st in (("Normal day", "baseline"), ("Combined stress", "combined"))}
+    base = {r["institution_id"]: r for r in reps["Normal day"]["institutions"]}
+    stress = {r["institution_id"]: r for r in reps["Combined stress"]["institutions"]}
+    ids = sorted(base, key=lambda i: stress[i]["A_i_usage_share_of_available"] or 0)
+    fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.6), gridspec_kw={"width_ratios": [1.25, 1]})
+    ax = axes[0]
+    for y, i in enumerate(ids):
+        a, b = (base[i]["A_i_usage_share_of_available"] or 0) * 100, (stress[i]["A_i_usage_share_of_available"] or 0) * 100
+        ax.plot([a, b], [y, y], color=t["grid"], lw=2.2, zorder=1)
+        ax.scatter([a], [y], s=52, color=t["neutral"], zorder=3, edgecolors=t["bg"], linewidths=1.2)
+        ax.scatter([b], [y], s=52, color=t["s"][1], zorder=3, edgecolors=t["bg"], linewidths=1.2)
+    ax.scatter([], [], s=45, color=t["neutral"], label="Normal day")
+    ax.scatter([], [], s=45, color=t["s"][1], label="Combined stress")
+    ax.set_yticks(range(len(ids)))
+    ax.set_yticklabels(ids, fontsize=8.5)
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:.0f}%"))
+    ax.set_xlabel("largest net debit as share of liquidity at start of day")
+    ax.set_title("Each bank's peak liquidity usage", color=t["ink"], fontsize=10, loc="left")
+    style(ax, t, "Intraday liquidity, the way supervisors monitor it (BCBS 248)",
+          "Computed for every bank from the settled payment record of one simulated day: tools A(i) and C(i).")
+    ax.grid(False, axis="y")
+    legend(ax, t, loc="lower right")
+    ax2 = axes[1]
+    for (name, rep), color, ls in zip(reps.items(), (t["neutral"], t["s"][1]), ("-", "-")):
+        tot = sum(r["A_iii_submitted_minor"] for r in rep["institutions"])
+        hours = len(rep["hour_labels"])
+        share = [sum((r["C_i_throughput_by_hour"][h] or 0) * r["A_iii_submitted_minor"] for r in rep["institutions"]) / tot * 100 for h in range(hours)]
+        ax2.plot(range(1, hours + 1), share, color=color, lw=2, ls=ls, marker="o", ms=4, label=name)
+    ax2.set_title("Share of the day's payments sent, by hour", color=t["ink"], fontsize=10, loc="left")
+    ax2.set_xlabel("hours after opening")
+    ax2.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:.0f}%"))
+    ax2.set_ylim(0, 102)
+    style(ax2, t, "", "")
+    fig.subplots_adjust(top=0.8, wspace=0.2, bottom=0.14)
+    save(fig, "intraday-liquidity", theme)
+
+
 def main() -> None:
     import sys
 
@@ -329,6 +546,15 @@ def main() -> None:
             fig_netting(t, theme, nt)
         if ext and want("replication"):
             fig_replication(t, theme, ext)
+        if want("hiring"):
+            fig_hiring(t, theme)
+        for key, artifact, fn in (("detect", "anomaly_detection.json", fig_detect), ("mrm", "model_inventory.json", fig_mrm),
+                                  ("calibration", "calibration.json", fig_calibration), ("agent", "agent_evals.json", fig_agent)):
+            data = load(artifact)
+            if data and want(key):
+                fn(t, theme, data)
+        if want("bcbs"):
+            fig_bcbs(t, theme)
     print("figures written to", OUT)
 
 

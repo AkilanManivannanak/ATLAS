@@ -32,3 +32,7 @@ With generator defaults (opening liquidity 18% and credit 10% of expected gross 
 * Instant rails run only inside the large-value business day, not 24/7.
 * Intraday cross-rail transfers are instantaneous (subject to a 15-minute pre-close cutoff).
 * No net debit caps, no $150 PSR waiver, no penalty-rate institutions, no default or insolvency.
+
+## Calibration to published aggregates (v0.7)
+
+`atlas.calibration.public_calibrated_config()` fits the two payment-size medians so the generator's **mean** payment matches the Fedwire Funds 2025 mean ($5.28M) and a FedNow/RTP blend ($33.7k); see `data/public/` for the figures and their sources and `results/calibration.json` for the fit (errors −0.2% and +1.3%). At the default size one simulated large-value payment stands for about 295 real Fedwire transfers. Published data does not identify the size distribution's shape, the bilateral network, intraday timing or bank-level balances, so those remain modelling choices. The headline result is unchanged under the calibrated preset because liquidity is sized relative to flows.

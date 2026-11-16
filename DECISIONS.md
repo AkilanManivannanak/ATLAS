@@ -161,3 +161,27 @@
 ## D-026 — FedNow shared master account as an option, not the default
 
 **Decision:** `fednow_shared_master=True` settles FedNow in the RTGS (master-account) balance, including intraday credit, through an explicit `MasterAccountTransfer` ledger event, so replay still verifies every cent. The default stays a separate pool so published v0.6 results remain comparable; `results/shared_master.md` reports both models on the same seeds. RTP and the LSM remain prefunded pools.
+
+## D-027 — User data runs through the same simulator, with assumptions listed
+
+**Decision:** `atlas.ingest` turns a CSV or ISO 20022 file into the same `Scenario` type the generator produces, labelled `data_origin: user_supplied`. Rows that fail validation are rejected with a reason, never repaired. Anything the file does not contain (opening balances, credit lines, deadlines) is filled by a stated rule and reported under `assumptions`. **Why:** a tool for real data must not hide what it invented.
+
+## D-028 — The simulator core stays standard-library only so it can run in a browser
+
+**Decision:** ingest, simulation, ledger, replay, the BCBS 248 report and `atlas.lab` import nothing outside the standard library; numpy/scipy/scikit-learn are imported lazily by MPC, forecasting and the ML detectors. The GitHub Pages lab runs that core under Pyodide. **Consequence:** the browser lab offers the rule-based treasury, not MPC.
+
+## D-029 — Agents get read-only and simulate-only tools; the MCP server is hand-written
+
+**Decision:** no tool settles, transfers or changes a limit. Inputs are schema-validated, sessions have call and simulation budgets, and every call is hash-chained. The MCP server implements the JSON-RPC subset it needs (initialize, ping, tools/list, tools/call) on the standard library rather than depending on an SDK whose API changed between major versions; interoperability was checked against the official Python client 2.3.
+
+## D-030 — An evaluation harness ships with agents that must fail
+
+**Decision:** `atlas.agent.evals` scores tool use, correctness, grounding (every number traceable to a tool result) and refusal to execute. Two deliberately broken agents are scored alongside the reference so the harness is shown to discriminate. No language model is bundled, and none is claimed to have been evaluated.
+
+## D-031 — Model inventory statuses are computed, including failures
+
+**Decision:** `atlas.governance` follows the structure of SR 26-2 (inventory of statistical models, materiality = exposure × purpose, challenger, monitoring). Checks are thresholds in code over results artifacts. Models that fail stay in the README as failing. It is an engineering implementation, not a compliance attestation.
+
+## D-032 — Calibrate only what public data identifies
+
+**Decision:** mean payment sizes are fitted to published Fedwire and FedNow/RTP aggregates as an optional preset; defaults are unchanged so earlier results stay reproducible. Distribution shape, network and timing remain assumptions because no operator publishes them.

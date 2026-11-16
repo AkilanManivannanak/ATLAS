@@ -121,5 +121,38 @@ See the README chart: a single CPU core simulates and replay-verifies a 100-bank
 ## E8: resilience and replay
 All benchmark, auction, RL, game and scaling runs replay to the identical ledger state hash from their event logs. Every account's camt.053 statement reconciles to the ledger.
 
+## v0.7 additions
+
+### Anomaly detection (`results/anomaly_detection.json`)
+12 history days, 8 training days, 6 held-out days; 168 injected anomalies in 29,906 payments (0.56%); alert budget = top 1% of payments.
+
+| Detector | PR-AUC | Caught at 1% alert rate | Precision |
+|---|---|---|---|
+| Hand-written robust-z rule | 0.350 | 41.7% | 23.4% |
+| Isolation forest | 0.235 | 28.0% | 15.7% |
+| Supervised gradient boosting | **0.708** | **76.8%** | 43.1% |
+
+* The supervised model is far ahead on patterns it trained on, and nearly blind to patterns it did not: leave-one-typology-out recall is 0% to 13%. The rule catches duplicates, limit-hugging and new corridors at 100% without training.
+* Amount spikes are hard for everyone (17%): with lognormal sizes (σ = 1.1) an 8-30× payment is not far out in the tail.
+* Three typologies have only 6 test incidents each; their per-type figures are coarse.
+* Labels are injected. This says nothing about performance on real fraud.
+
+### Model inventory (`results/model_inventory.json`, `docs/model_cards/`)
+7 models: 1 pass, 4 warn, 2 fail. The four forecasters warn because static intervals lose coverage under shift (≈71%); both anomaly models fail the unseen-pattern check. The checks are thresholds in code, so the statuses change if a re-run changes the evidence.
+
+### Agent evaluation (`results/agent_evals.json`)
+11 tasks (8 analysis, 2 execution requests, 1 out of scope). The deterministic planner passes 100%. The fabricating control fails every task where it changed a number (grounded 46%); the over-reaching control fails both execution requests (safe 82%). **No language model was evaluated.** The official MCP Python client (v2.3) connects to the server and calls tools; that check is manual, not in CI.
+
+### Calibration to published statistics (`results/calibration.json`)
+| | Published | Twin, default | Twin, calibrated |
+|---|---|---|---|
+| Large-value mean | $5.28M (Fedwire Funds 2025) | $4.66M (−11.8%) | $5.27M (−0.2%) |
+| Instant mean | $33.7k (FedNow Q3 2026 and RTP Q1 2026, weighted by the twin's rail split) | $24.9k (−26.1%) | $34.1k (+1.3%) |
+
+Re-running three arms under the calibrated sizes leaves the headline unchanged (MPC + auction −60% normal, −53% combined, 5 seeds), which is expected: liquidity is sized relative to flows, so results are scale-free. Only means are published; distribution shape, network and timing stay assumptions.
+
+### Browser lab
+`atlas.lab.run_lab` under Pyodide 0.27.7 in headless Chromium: a 12-bank, 2,424-payment day in 1.1-1.4 s; a 4,855-payment uploaded CSV in 2.2 s; ledger replay verified in the page.
+
 ## Not yet run
 E3 (speed vs stability frontier as a dedicated sweep), cost-model calibration against observed data (none available by design), controllers that are aware of the shared FedNow master account.

@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="766.8pt" height="435.5208pt" viewBox="0 0 766.8 435.5208" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-16T01:03:01.525843</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 435.5208 
+L 766.8 435.5208 
+L 766.8 0 
+L 0 0 
+z
+" style="fill: #fcfcfb"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 12.96 422.5608 
+L 753.84 422.5608 
+L 753.84 73.3896 
+L 12.96 73.3896 
+z
+" style="fill: #fcfcfb"/>
+   </g>
+   <g id="matplotlib.axis_1"/>
+   <g id="matplotlib.axis_2"/>
+   <g id="patch_3">
+    <path d="M 12.96 119.7639 
+L 753.84 119.7639 
+L 753.84 92.4849 
+L 12.96 92.4849 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: #e4e3df; opacity: 0.35"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 12.96 174.3219 
+L 753.84 174.3219 
+L 753.84 147.0429 
+L 12.96 147.0429 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: #e4e3df; opacity: 0.35"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 12.96 228.8799 
+L 753.84 228.8799 
+L 753.84 201.6009 
+L 12.96 201.6009 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: #e4e3df; opacity: 0.35"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 12.96 283.4379 
+L 753.84 283.4379 
+L 753.84 256.1589 
+L 12.96 256.1589 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: #e4e3df; opacity: 0.35"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 12.96 337.9959 
+L 753.84 337.9959 
+L 753.84 310.7169 
+L 12.96 310.7169 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: #e4e3df; opacity: 0.35"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 12.96 392.5539 
+L 753.84 392.5539 
+L 753.84 365.2749 
+L 12.96 365.2749 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: #e4e3df; opacity: 0.35"/>
+   </g>
+   <g id="line2d_1">
+    <path d="M 378.4608 242.5194 
+L 388.3392 242.5194 
+" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #a8a7a2; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_2">
+    <path d="M 491.3568 324.3564 
+L 501.2352 324.3564 
+" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #a8a7a2; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_3">
+    <path d="M 378.4608 378.9144 
+L 388.3392 378.9144 
+" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #a8a7a2; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_4">
+    <path d="M 378.4608 406.1934 
+L 388.3392 406.1934 
+" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #a8a7a2; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="text_1">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="108.540584" transform="rotate(-0 21.4272 108.540584)">Production Python, testing, CI/CD</text>
+   </g>
+   <g id="PathCollection_1">
+    <defs>
+     <path id="m20ac617b9d" d="M 0 4.873397 
+C 1.29244 4.873397 2.532119 4.359905 3.446012 3.446012 
+C 4.359905 2.532119 4.873397 1.29244 4.873397 0 
+C 4.873397 -1.29244 4.359905 -2.532119 3.446012 -3.446012 
+C 2.532119 -4.359905 1.29244 -4.873397 0 -4.873397 
+C -1.29244 -4.873397 -2.532119 -4.359905 -3.446012 -3.446012 
+C -4.359905 -2.532119 -4.873397 -1.29244 -4.873397 0 
+C -4.873397 1.29244 -4.359905 2.532119 -3.446012 3.446012 
+C -2.532119 4.359905 -1.29244 4.873397 0 4.873397 
+z
+" style="stroke: #2a78d6"/>
+    </defs>
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="383.4" y="106.1244" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="PathCollection_2">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="439.848" y="106.1244" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="PathCollection_3">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="496.296" y="106.1244" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="108.462642" transform="rotate(-0 545.688 108.462642)">✓  180 tests, lint, CI, Docker</text>
+   </g>
+   <g id="text_3">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="135.819584" transform="rotate(-0 21.4272 135.819584)">Statistics, time series, applied ML</text>
+   </g>
+   <g id="PathCollection_4">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="383.4" y="133.4034" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="PathCollection_5">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="439.848" y="133.4034" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="PathCollection_6">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="496.296" y="133.4034" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="135.741642" transform="rotate(-0 545.688 135.741642)">✓  6 forecasters, conformal intervals</text>
+   </g>
+   <g id="text_5">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="163.098584" transform="rotate(-0 21.4272 163.098584)">Evaluation frameworks, measured impact</text>
+   </g>
+   <g id="PathCollection_7">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="383.4" y="160.6824" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="PathCollection_8">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="439.848" y="160.6824" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="PathCollection_9">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="496.296" y="160.6824" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="text_6">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="163.020642" transform="rotate(-0 545.688 163.020642)">✓  paired benchmark, agent evals</text>
+   </g>
+   <g id="text_7">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="190.377584" transform="rotate(-0 21.4272 190.377584)">LLM apps: tool calling, agents, RAG</text>
+   </g>
+   <g id="PathCollection_10">
+    <path d="M 383.4 192.571172 
+C 384.622526 192.571172 385.795145 192.085458 386.659601 191.221001 
+C 387.524058 190.356545 388.009772 189.183926 388.009772 187.9614 
+C 388.009772 186.738874 387.524058 185.566255 386.659601 184.701799 
+C 385.795145 183.837342 384.622526 183.351628 383.4 183.351628 
+C 382.177474 183.351628 381.004855 183.837342 380.140399 184.701799 
+C 379.275942 185.566255 378.790228 186.738874 378.790228 187.9614 
+C 378.790228 189.183926 379.275942 190.356545 380.140399 191.221001 
+C 381.004855 192.085458 382.177474 192.571172 383.4 192.571172 
+L 383.4 192.571172 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="PathCollection_11">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="439.848" y="187.9614" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="PathCollection_12">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="496.296" y="187.9614" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="190.299642" transform="rotate(-0 545.688 190.299642)">✓  tool layer + agent loop (no RAG)</text>
+   </g>
+   <g id="text_9">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="217.656584" transform="rotate(-0 21.4272 217.656584)">Guardrails, least privilege, human in loop</text>
+   </g>
+   <g id="PathCollection_13">
+    <path d="M 383.4 219.850172 
+C 384.622526 219.850172 385.795145 219.364458 386.659601 218.500001 
+C 387.524058 217.635545 388.009772 216.462926 388.009772 215.2404 
+C 388.009772 214.017874 387.524058 212.845255 386.659601 211.980799 
+C 385.795145 211.116342 384.622526 210.630628 383.4 210.630628 
+C 382.177474 210.630628 381.004855 211.116342 380.140399 211.980799 
+C 379.275942 212.845255 378.790228 214.017874 378.790228 215.2404 
+C 378.790228 216.462926 379.275942 217.635545 380.140399 218.500001 
+C 381.004855 219.364458 382.177474 219.850172 383.4 219.850172 
+L 383.4 219.850172 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="PathCollection_14">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="439.848" y="215.2404" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="PathCollection_15">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="496.296" y="215.2404" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="text_10">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="217.578642" transform="rotate(-0 545.688 217.578642)">✓  read-only tools, safety controller</text>
+   </g>
+   <g id="text_11">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="244.935584" transform="rotate(-0 21.4272 244.935584)">Agent interoperability (MCP)</text>
+   </g>
+   <g id="PathCollection_16">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="439.848" y="242.5194" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="PathCollection_17">
+    <path d="M 496.296 247.129172 
+C 497.518526 247.129172 498.691145 246.643458 499.555601 245.779001 
+C 500.420058 244.914545 500.905772 243.741926 500.905772 242.5194 
+C 500.905772 241.296874 500.420058 240.124255 499.555601 239.259799 
+C 498.691145 238.395342 497.518526 237.909628 496.296 237.909628 
+C 495.073474 237.909628 493.900855 238.395342 493.036399 239.259799 
+C 492.171942 240.124255 491.686228 241.296874 491.686228 242.5194 
+C 491.686228 243.741926 492.171942 244.914545 493.036399 245.779001 
+C 493.900855 246.643458 495.073474 247.129172 496.296 247.129172 
+L 496.296 247.129172 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="244.857642" transform="rotate(-0 545.688 244.857642)">✓  MCP server over stdio</text>
+   </g>
+   <g id="text_13">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="272.214584" transform="rotate(-0 21.4272 272.214584)">Model risk, audit-ready docs, model cards</text>
+   </g>
+   <g id="PathCollection_18">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="383.4" y="269.7984" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="PathCollection_19">
+    <path d="M 439.848 274.408172 
+C 441.070526 274.408172 442.243145 273.922458 443.107601 273.058001 
+C 443.972058 272.193545 444.457772 271.020926 444.457772 269.7984 
+C 444.457772 268.575874 443.972058 267.403255 443.107601 266.538799 
+C 442.243145 265.674342 441.070526 265.188628 439.848 265.188628 
+C 438.625474 265.188628 437.452855 265.674342 436.588399 266.538799 
+C 435.723942 267.403255 435.238228 268.575874 435.238228 269.7984 
+C 435.238228 271.020926 435.723942 272.193545 436.588399 273.058001 
+C 437.452855 273.922458 438.625474 274.408172 439.848 274.408172 
+L 439.848 274.408172 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="PathCollection_20">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="496.296" y="269.7984" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="text_14">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="272.136642" transform="rotate(-0 545.688 272.136642)">✓  inventory, tiers, model cards</text>
+   </g>
+   <g id="text_15">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="299.493584" transform="rotate(-0 21.4272 299.493584)">Monitoring, drift, fallbacks, rollback</text>
+   </g>
+   <g id="PathCollection_21">
+    <path d="M 383.4 301.687172 
+C 384.622526 301.687172 385.795145 301.201458 386.659601 300.337001 
+C 387.524058 299.472545 388.009772 298.299926 388.009772 297.0774 
+C 388.009772 295.854874 387.524058 294.682255 386.659601 293.817799 
+C 385.795145 292.953342 384.622526 292.467628 383.4 292.467628 
+C 382.177474 292.467628 381.004855 292.953342 380.140399 293.817799 
+C 379.275942 294.682255 378.790228 295.854874 378.790228 297.0774 
+C 378.790228 298.299926 379.275942 299.472545 380.140399 300.337001 
+C 381.004855 301.201458 382.177474 301.687172 383.4 301.687172 
+L 383.4 301.687172 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="PathCollection_22">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="439.848" y="297.0774" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="PathCollection_23">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="496.296" y="297.0774" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="text_16">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="299.415642" transform="rotate(-0 545.688 299.415642)">✓  validation checks, PSI, metrics</text>
+   </g>
+   <g id="text_17">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="326.772584" transform="rotate(-0 21.4272 326.772584)">Reinforcement learning, optimisation</text>
+   </g>
+   <g id="PathCollection_24">
+    <path d="M 383.4 328.966172 
+C 384.622526 328.966172 385.795145 328.480458 386.659601 327.616001 
+C 387.524058 326.751545 388.009772 325.578926 388.009772 324.3564 
+C 388.009772 323.133874 387.524058 321.961255 386.659601 321.096799 
+C 385.795145 320.232342 384.622526 319.746628 383.4 319.746628 
+C 382.177474 319.746628 381.004855 320.232342 380.140399 321.096799 
+C 379.275942 321.961255 378.790228 323.133874 378.790228 324.3564 
+C 378.790228 325.578926 379.275942 326.751545 380.140399 327.616001 
+C 381.004855 328.480458 382.177474 328.966172 383.4 328.966172 
+L 383.4 328.966172 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="PathCollection_25">
+    <path d="M 439.848 328.966172 
+C 441.070526 328.966172 442.243145 328.480458 443.107601 327.616001 
+C 443.972058 326.751545 444.457772 325.578926 444.457772 324.3564 
+C 444.457772 323.133874 443.972058 321.961255 443.107601 321.096799 
+C 442.243145 320.232342 441.070526 319.746628 439.848 319.746628 
+C 438.625474 319.746628 437.452855 320.232342 436.588399 321.096799 
+C 435.723942 321.961255 435.238228 323.133874 435.238228 324.3564 
+C 435.238228 325.578926 435.723942 326.751545 436.588399 327.616001 
+C 437.452855 328.480458 438.625474 328.966172 439.848 328.966172 
+L 439.848 328.966172 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="text_18">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="326.694642" transform="rotate(-0 545.688 326.694642)">✓  constrained PPO, MPC, MILP</text>
+   </g>
+   <g id="text_19">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="354.051584" transform="rotate(-0 21.4272 354.051584)">Cloud ML platforms (SageMaker, Bedrock, Vertex)</text>
+   </g>
+   <g id="PathCollection_26">
+    <path d="M 383.4 356.245172 
+C 384.622526 356.245172 385.795145 355.759458 386.659601 354.895001 
+C 387.524058 354.030545 388.009772 352.857926 388.009772 351.6354 
+C 388.009772 350.412874 387.524058 349.240255 386.659601 348.375799 
+C 385.795145 347.511342 384.622526 347.025628 383.4 347.025628 
+C 382.177474 347.025628 381.004855 347.511342 380.140399 348.375799 
+C 379.275942 349.240255 378.790228 350.412874 378.790228 351.6354 
+C 378.790228 352.857926 379.275942 354.030545 380.140399 354.895001 
+C 381.004855 355.759458 382.177474 356.245172 383.4 356.245172 
+L 383.4 356.245172 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="PathCollection_27">
+    <path d="M 439.848 356.245172 
+C 441.070526 356.245172 442.243145 355.759458 443.107601 354.895001 
+C 443.972058 354.030545 444.457772 352.857926 444.457772 351.6354 
+C 444.457772 350.412874 443.972058 349.240255 443.107601 348.375799 
+C 442.243145 347.511342 441.070526 347.025628 439.848 347.025628 
+C 438.625474 347.025628 437.452855 347.511342 436.588399 348.375799 
+C 435.723942 349.240255 435.238228 350.412874 435.238228 351.6354 
+C 435.238228 352.857926 435.723942 354.030545 436.588399 354.895001 
+C 437.452855 355.759458 438.625474 356.245172 439.848 356.245172 
+L 439.848 356.245172 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="PathCollection_28">
+    <path d="M 496.296 356.245172 
+C 497.518526 356.245172 498.691145 355.759458 499.555601 354.895001 
+C 500.420058 354.030545 500.905772 352.857926 500.905772 351.6354 
+C 500.905772 350.412874 500.420058 349.240255 499.555601 348.375799 
+C 498.691145 347.511342 497.518526 347.025628 496.296 347.025628 
+C 495.073474 347.025628 493.900855 347.511342 493.036399 348.375799 
+C 492.171942 349.240255 491.686228 350.412874 491.686228 351.6354 
+C 491.686228 352.857926 492.171942 354.030545 493.036399 354.895001 
+C 493.900855 355.759458 495.073474 356.245172 496.296 356.245172 
+L 496.296 356.245172 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="text_20">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #d03b3a" x="545.688" y="353.973642" transform="rotate(-0 545.688 353.973642)">✕  Docker only</text>
+   </g>
+   <g id="text_21">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="381.330584" transform="rotate(-0 21.4272 381.330584)">Kubernetes, IaC, distributed training, GPUs</text>
+   </g>
+   <g id="PathCollection_29">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="439.848" y="378.9144" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="PathCollection_30">
+    <path d="M 496.296 383.524172 
+C 497.518526 383.524172 498.691145 383.038458 499.555601 382.174001 
+C 500.420058 381.309545 500.905772 380.136926 500.905772 378.9144 
+C 500.905772 377.691874 500.420058 376.519255 499.555601 375.654799 
+C 498.691145 374.790342 497.518526 374.304628 496.296 374.304628 
+C 495.073474 374.304628 493.900855 374.790342 493.036399 375.654799 
+C 492.171942 376.519255 491.686228 377.691874 491.686228 378.9144 
+C 491.686228 380.136926 492.171942 381.309545 493.036399 382.174001 
+C 493.900855 383.038458 495.073474 383.524172 496.296 383.524172 
+L 496.296 383.524172 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="text_22">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #d03b3a" x="545.688" y="381.252642" transform="rotate(-0 545.688 381.252642)">✕  single machine</text>
+   </g>
+   <g id="text_23">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="408.609584" transform="rotate(-0 21.4272 408.609584)">Leading teams, setting platform standards</text>
+   </g>
+   <g id="PathCollection_31">
+    <path d="M 439.848 410.803172 
+C 441.070526 410.803172 442.243145 410.317458 443.107601 409.453001 
+C 443.972058 408.588545 444.457772 407.415926 444.457772 406.1934 
+C 444.457772 404.970874 443.972058 403.798255 443.107601 402.933799 
+C 442.243145 402.069342 441.070526 401.583628 439.848 401.583628 
+C 438.625474 401.583628 437.452855 402.069342 436.588399 402.933799 
+C 435.723942 403.798255 435.238228 404.970874 435.238228 406.1934 
+C 435.238228 407.415926 435.723942 408.588545 436.588399 409.453001 
+C 437.452855 410.317458 438.625474 410.803172 439.848 410.803172 
+L 439.848 410.803172 
+z
+" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="PathCollection_32">
+    <g clip-path="url(#p6d35ad6650)">
+     <use xlink:href="#m20ac617b9d" x="496.296" y="406.1934" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="text_24">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #d03b3a" x="545.688" y="408.531642" transform="rotate(-0 545.688 408.531642)">✕  not a code feature</text>
+   </g>
+   <g id="text_25">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #52514e" x="383.4" y="83.503041" transform="rotate(-0 383.4 83.503041)">Junior</text>
+   </g>
+   <g id="text_26">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #52514e" x="439.848" y="83.503041" transform="rotate(-0 439.848 83.503041)">Senior</text>
+   </g>
+   <g id="text_27">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #52514e" x="496.296" y="83.503041" transform="rotate(-0 496.296 83.503041)">Principal</text>
+   </g>
+   <g id="text_28">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52514e" x="545.688" y="83.503041" transform="rotate(-0 545.688 83.503041)">In ATLAS-Σ</text>
+   </g>
+  </g>
+  <g id="text_29">
+   <text style="font-weight: 700; font-size: 12.5px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="14.472" y="22.458047" transform="rotate(-0 14.472 22.458047)">What bank AI/ML roles ask for, and where this project shows it</text>
+  </g>
+  <g id="text_30">
+   <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52514e" x="14.472" y="45.804994" transform="rotate(-0 14.472 45.804994)">Nine postings, five US banks (JPMorgan, Bank of America, Citi, Goldman Sachs, Wells Fargo). Filled = required, ring = preferred.</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p6d35ad6650">
+   <rect x="12.96" y="73.3896" width="740.88" height="349.1712"/>
+  </clipPath>
+ </defs>
+</svg>

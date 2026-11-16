@@ -107,3 +107,19 @@ Acceptance: every policy and every stress scenario replays exactly; same seed gi
 - [x] Visual README (dark/light figures, Mermaid, demo GIF), GitHub Pages explorer.
 
 Acceptance: 152 tests pass; every published run replay-verified; every source-backed parameter cited; negative results (RL v1, MPC ≈ rule-based treasury, netting irrelevant at realistic liquidity) reported.
+
+## v0.7 — real data in, supervisory and model-risk views out (2026-11-16)
+- [x] Ingestion: CSV and ISO 20022, row-level rejects, listed assumptions, optional balances file.
+- [x] `atlas` CLI (`template`, `run`, `mcp`, `evals`); API upload, intraday-liquidity, anomalies, model inventory endpoints.
+- [x] Browser lab on GitHub Pages (Pyodide), including CSV upload that stays on the device.
+- [x] BCBS 248 intraday liquidity report.
+- [x] Anomaly detection study with leave-one-pattern-out.
+- [x] Model inventory, automated checks, generated model cards.
+- [x] Agent tool layer, MCP server, OpenAI-compatible loop, evaluation harness with failing controls.
+- [x] Calibration of mean payment sizes to published Fed statistics.
+- [x] Industry landscape and job-posting review (`docs/25`); README rebuilt around figures.
+- [ ] Command Center screens for the v0.7 views.
+- [ ] Score a real language model with `atlas evals --llm`.
+- [ ] 24/7 days, tokenized-deposit rail, retrieval over policy documents, cloud deployment.
+
+Acceptance: 180 tests pass; lab verified in headless Chromium; MCP server verified with the official Python client.

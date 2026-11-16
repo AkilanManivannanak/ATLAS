@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ATLAS-Σ Live Lab</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.0/plotly.min.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js"></script>
+<style>
+:root{--bg:#fcfcfb;--panel:#ffffff;--ink:#0b0b0b;--ink2:#52514e;--line:#e4e3df;--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#8a5cd6;--neutral:#a8a7a2;--bad:#d03b3a;--good:#12855c;--soft:#f3f2ee}
+@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){--bg:#141413;--panel:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--line:#33322f;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#9a74e0;--neutral:#6b6a64;--bad:#e66767;--good:#3fbf8f;--soft:#222220}}
+:root[data-theme="dark"]{--bg:#141413;--panel:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--line:#33322f;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#9a74e0;--neutral:#6b6a64;--bad:#e66767;--good:#3fbf8f;--soft:#222220}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{max-width:1240px;margin:auto;padding:22px 16px 6px;display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+h1{margin:0;font-size:24px}header p{margin:4px 0 0;color:var(--ink2);max-width:720px}
+.links a,.links button{font:inherit;font-size:13px;color:var(--ink2);border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;text-decoration:none;cursor:pointer;margin-left:6px}
+.wrap{max-width:1240px;margin:auto;padding:10px 16px 60px;display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px}
+@media (max-width:860px){.wrap{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.ctl h2{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2);margin:14px 0 6px}.ctl h2:first-child{margin-top:0}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:8px;overflow:hidden}.seg button{font:inherit;border:0;background:var(--panel);color:var(--ink2);padding:7px;cursor:pointer}
+.seg button.on{background:var(--s1);color:#fff}
+label{display:block;font-size:12px;color:var(--ink2);margin:8px 0 2px}select,input[type=number]{width:100%;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:inherit}
+input[type=range]{width:100%;accent-color:var(--s1)}.rv{float:right;color:var(--ink);font-variant-numeric:tabular-nums}
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--ink);margin-top:10px}.chk input{margin-top:3px}
+.go{width:100%;margin-top:14px;padding:10px;border:0;border-radius:8px;background:var(--s1);color:#fff;font:inherit;font-weight:600;cursor:pointer}.go:disabled{opacity:.5;cursor:wait}
+.ghost{width:100%;margin-top:8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;cursor:pointer}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.presets button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
+.presets button:hover{border-color:var(--s1)}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}@media (max-width:560px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi .v{font-size:20px}}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px}.kpi .l{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2)}
+.kpi .v{font-size:24px;font-weight:650;font-variant-numeric:tabular-nums;line-height:1.25}.kpi .d{font-size:12px;font-variant-numeric:tabular-nums;color:var(--ink2)}
+.d.good{color:var(--good)}.d.bad{color:var(--bad)}
+.badge{display:inline-flex;gap:6px;align-items:center;font-size:12px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;margin:0 6px 6px 0;background:var(--panel);color:var(--ink2)}
+.badge b{color:var(--ink);font-weight:600}.badge.ok b{color:var(--good)}.badge.no b{color:var(--bad)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:12px;margin-bottom:12px}
+.panel h3{margin:0 0 2px;font-size:14px}.panel .sub{margin:0 0 6px;font-size:12px;color:var(--ink2)}.chart{height:250px}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}th,td{padding:5px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink2);font-weight:600}
+.scroll{overflow-x:auto}.bar{display:inline-block;height:8px;border-radius:4px;background:var(--s1);vertical-align:middle;margin-right:6px}.bar.hot{background:var(--bad)}
+#status{font-size:13px;color:var(--ink2);margin:0 0 10px;min-height:20px}#status.err{color:var(--bad)}
+.note{font-size:12px;color:var(--ink2)}.hide{display:none}ul.tight{margin:4px 0 0;padding-left:18px;font-size:13px}
+.drop{border:1px dashed var(--neutral);border-radius:8px;padding:12px;text-align:center;font-size:13px;color:var(--ink2);cursor:pointer}.drop.has{border-style:solid;border-color:var(--good);color:var(--ink)}
+.drop a{color:var(--s1)}
+</style></head><body>
+<header><div><h1>ATLAS-Σ Live Lab</h1><p>A full settlement day for a network of banks, simulated in your browser. Change a setting, press run, see what breaks. <b>Nothing is uploaded:</b> your file stays on this device.</p></div>
+<div class="links"><a href="index.html">Results explorer</a><a href="https://github.com/AkilanManivannanak/ATLAS">Code</a><button id="theme">Theme</button></div></header>
+<div class="wrap">
+<aside class="panel ctl">
+  <h2>Data</h2>
+  <div class="seg"><button id="src-syn" class="on">Synthetic day</button><button id="src-csv">My payments</button></div>
+  <div id="syn">
+    <label>Banks <span class="rv" id="v-banks"></span></label><input type="range" id="banks" min="6" max="24" value="12">
+    <label>Large-value payments <span class="rv" id="v-payments"></span></label><input type="range" id="payments" min="300" max="4000" step="100" value="1500">
+    <label>Instant payments <span class="rv" id="v-instant"></span></label><input type="range" id="instant" min="0" max="3000" step="100" value="1000">
+    <label>Day (random seed)</label><input type="number" id="seed" min="0" max="99999" value="11">
+  </div>
+  <div id="csv" class="hide">
+    <label>Payments CSV</label>
+    <div class="drop" id="drop">Choose a CSV or drop it here<br><a href="#" id="tpl">template</a> · <a href="#" id="sample">sample day</a></div>
+    <input type="file" id="file" accept=".csv,text/csv" class="hide">
+    <p class="note">Columns: sender, receiver, amount, time. Optional: rail, due, priority, kind, payment_id.</p>
+  </div>
+  <h2>What happens</h2>
+  <label>Stress scenario</label><select id="stress"></select>
+  <label>Opening liquidity, % of each bank's outflow <span class="rv" id="v-liq"></span></label><input type="range" id="liq" min="4" max="40" value="18">
+  <h2>How the system responds</h2>
+  <label>Queue policy</label><select id="policy"><option value="priority">Priority queue</option><option value="fifo">First in, first out</option><option value="bilateral">Bilateral offsetting</option><option value="multilateral">Multilateral netting</option></select>
+  <label>Bank treasury</label><select id="controller"><option value="none">Passive (no rebalancing)</option><option value="rule">Rule-based rebalancing across rails</option></select>
+  <label>Interbank liquidity auction</label><select id="auction"><option value="none">Off</option><option value="uniform">Uniform price</option><option value="pay_as_bid">Pay as bid</option></select>
+  <label class="chk"><input type="checkbox" id="shared"><span>FedNow shares the Fed master account with Fedwire (as in reality)</span></label>
+  <button class="go" id="run" disabled>Loading simulator…</button>
+  <button class="ghost" id="pin" disabled>Pin this run as the baseline</button>
+  <button class="ghost" id="dl" disabled>Download this run (JSON)</button>
+</aside>
+<main>
+  <div class="presets" id="presets"></div>
+  <p id="status">Loading the Python simulator (about 10 MB, cached after the first visit)…</p>
+  <div id="out" class="hide">
+    <div id="badges"></div>
+    <div class="kpis" id="kpis"></div>
+    <div class="grid2">
+      <div class="panel"><h3>Payments waiting to settle</h3><p class="sub">Value stuck in queues during the day. Tall and late is bad.</p><div class="chart" id="c-queue"></div></div>
+      <div class="panel"><h3>Share of the day's payments sent, by hour</h3><p class="sub">Regulators watch this: late throughput means banks are waiting on each other.</p><div class="chart" id="c-thru"></div></div>
+      <div class="panel"><h3>Cash on each rail</h3><p class="sub">Total balances on the two large-value rails.</p><div class="chart" id="c-cash"></div></div>
+      <div class="panel"><h3>Where the modeled cost comes from</h3><p class="sub">Delay, unsettled payments, liquidity and credit, in dollars.</p><div class="chart" id="c-cost"></div></div>
+    </div>
+    <div class="panel" style="margin-bottom:12px"><h3>Every bank's intraday liquidity (BCBS 248 monitoring)</h3><p class="sub">Largest net debit position during the day against the liquidity the bank started with.</p><div class="scroll"><table id="t-banks"></table></div></div>
+    <div class="grid2">
+      <div class="panel"><h3>Largest payments that did not settle</h3><p class="sub" id="uns-sub"></p><div class="scroll"><table id="t-uns"></table></div></div>
+      <div class="panel" id="ing"><h3>Your file</h3><div id="ing-body"></div></div>
+    </div>
+    <p class="note">Simulated results. Rails are models of RTGS (Fedwire-style), a liquidity-saving mechanism (CHIPS-style), FedNow and RTP; they are not connected to those systems. The browser lab runs the rule-based treasury; the optimisation-based controller (MPC), the learned controller and the anomaly models run in the Python package.</p>
+  </div>
+</main></div>
+<script>
+const $ = id => document.getElementById(id), css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const STRESS = {baseline:'Normal day', counterparty_delay:'A major bank pays late', rtgs_outage:'RTGS outage', liquidity_withdrawal:'Liquidity withdrawal', funding_disruption:'Funding disruption',
+  haircut_shock:'Collateral haircut shock', failure_to_pay:'A bank fails to pay', concentrated_outflows:'Concentrated outflows', liquidity_hoarding:'Banks hoard liquidity', messaging_failure:'Messaging failure', combined:'Combined stress'};
+Object.entries(STRESS).forEach(([k, v]) => $('stress').append(new Option(v, k)));
+const PRESETS = [['Normal day', {stress:'baseline', policy:'priority', controller:'none', auction:'none', liq:18}],
+  ['Combined stress', {stress:'combined', policy:'priority', controller:'none', auction:'none', liq:18}],
+  ['Stress + treasury + auction', {stress:'combined', policy:'multilateral', controller:'rule', auction:'uniform', liq:18}],
+  ['Liquidity squeeze', {stress:'liquidity_hoarding', policy:'priority', controller:'none', auction:'none', liq:8}],
+  ['Squeeze + netting', {stress:'liquidity_hoarding', policy:'multilateral', controller:'none', auction:'none', liq:8}]];
+let py = null, last = null, pinned = null, csvText = null, source = 'syn';
+const usd = v => { const a = Math.abs(v); return (v < 0 ? '−' : '') + '$' + (a >= 1e9 ? (a / 1e9).toFixed(2) + 'B' : a >= 1e6 ? (a / 1e6).toFixed(2) + 'M' : a >= 1e3 ? (a / 1e3).toFixed(1) + 'k' : a.toFixed(0)); };
+const sliders = [['banks', 'v-banks', v => v], ['payments', 'v-payments', v => (+v).toLocaleString()], ['instant', 'v-instant', v => (+v).toLocaleString()], ['liq', 'v-liq', v => v + '%']];
+sliders.forEach(([id, out, f]) => { const u = () => $(out).textContent = f($(id).value); $(id).oninput = u; u(); });
+const setSource = s => { source = s; $('src-syn').classList.toggle('on', s === 'syn'); $('src-csv').classList.toggle('on', s === 'csv'); $('syn').classList.toggle('hide', s !== 'syn'); $('csv').classList.toggle('hide', s !== 'csv'); };
+$('src-syn').onclick = () => setSource('syn'); $('src-csv').onclick = () => setSource('csv');
+const status = (t, err) => { $('status').textContent = t; $('status').className = err ? 'err' : ''; };
+const save = (name, text, type) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], {type})); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); };
+const takeFile = f => { if (!f) return; f.text().then(t => { csvText = t; $('drop').classList.add('has'); $('drop').firstChild.textContent = f.name + ' (' + (t.split('\n').length - 1).toLocaleString() + ' rows) ready'; }); };
+$('drop').onclick = e => { if (e.target.tagName !== 'A') $('file').click(); }; $('file').onchange = e => takeFile(e.target.files[0]);
+$('drop').ondragover = e => e.preventDefault(); $('drop').ondrop = e => { e.preventDefault(); takeFile(e.dataTransfer.files[0]); };
+$('tpl').onclick = e => { e.preventDefault(); if (py) save('atlas_payments_template.csv', py.globals.get('lab_template')(), 'text/csv'); };
+$('sample').onclick = e => { e.preventDefault(); if (!py) return; const t = py.globals.get('lab_sample')(+$('seed').value || 11); csvText = t; $('drop').classList.add('has');
+  $('drop').firstChild.textContent = 'Sample day loaded (' + (t.split('\n').length - 2).toLocaleString() + ' payments)'; save('atlas_sample_day.csv', t, 'text/csv'); };
+PRESETS.forEach(([name, p]) => { const b = document.createElement('button'); b.textContent = name; b.onclick = () => { ['stress', 'policy', 'controller', 'auction'].forEach(k => $(k).value = p[k]); $('liq').value = p.liq; $('liq').oninput(); run(); }; $('presets').append(b); });
+
+function layout(extra) { return Object.assign({paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:css('--ink2'), size:12, family:'system-ui,sans-serif'}, margin:{l:56, r:12, t:8, b:36}, showlegend:true,
+  legend:{orientation:'h', y:1.14, x:0, font:{size:11}}, hoverlabel:{bgcolor:css('--panel'), bordercolor:css('--line'), font:{color:css('--ink')}},
+  xaxis:{gridcolor:css('--line'), linecolor:css('--line'), nticks:8}, yaxis:{gridcolor:css('--line'), zerolinecolor:css('--line'), rangemode:'tozero'}}, extra || {}); }
+const cfg = {displayModeBar:false, responsive:true};
+function delta(cur, base, lowerBetter, fmt) { if (base == null) return ''; const d = cur - base; if (Math.abs(d) < 1e-9) return '<div class="d">same as baseline</div>';
+  const good = lowerBetter ? d < 0 : d > 0; return `<div class="d ${good ? 'good' : 'bad'}">${d > 0 ? '▲' : '▼'} ${fmt(Math.abs(d))} vs baseline</div>`; }
+
+function render(r) {
+  const k = r.kpis, b = pinned ? pinned.kpis : {};
+  $('out').classList.remove('hide');
+  $('badges').innerHTML = `<span class="badge ${r.integrity.replay_verified ? 'ok' : 'no'}">Ledger replay <b>${r.integrity.replay_verified ? 'verified ✓' : 'FAILED'}</b></span>
+    <span class="badge">State hash <b>${r.integrity.state_hash.slice(0, 12)}…</b></span><span class="badge"><b>${r.scenario.institutions}</b> banks · <b>${r.scenario.payments.toLocaleString()}</b> payments · <b>${usd(r.scenario.value_usd)}</b></span>
+    <span class="badge"><b>${r.integrity.events.toLocaleString()}</b> ledger events in <b>${r.integrity.runtime_s}s</b></span><span class="badge">Data <b>${r.data_origin === 'user_supplied' ? 'your file' : 'synthetic'}</b></span>${pinned ? '<span class="badge">Baseline <b>pinned</b></span>' : ''}`;
+  const tiles = [['Large-value settled', k.settled_pct.toFixed(2) + '%', delta(k.settled_pct, b.settled_pct, false, v => v.toFixed(2) + ' pp')],
+    ['Average delay', k.delay_min.toFixed(1) + ' min', delta(k.delay_min, b.delay_min, true, v => v.toFixed(1) + ' min')],
+    ['Left unsettled', usd(k.unsettled_usd), delta(k.unsettled_usd, b.unsettled_usd, true, usd)],
+    ['Instant payments rejected', k.instant_rejected.toLocaleString(), delta(k.instant_rejected, b.instant_rejected, true, v => v.toFixed(0))],
+    ['Peak intraday credit', usd(k.peak_credit_usd), delta(k.peak_credit_usd, b.peak_credit_usd, true, usd)],
+    ['Modeled cost of the day', usd(k.cost_usd), delta(k.cost_usd, b.cost_usd, true, usd)]];
+  $('kpis').innerHTML = tiles.map(t => `<div class="kpi"><div class="l">${t[0]}</div><div class="v">${t[1]}</div>${t[2]}</div>`).join('');
+  const S = r.series, tr = (name, y, color, extra) => Object.assign({x:S.t, y, name, type:'scatter', mode:'lines', line:{color:css(color), width:2}, hovertemplate:'%{x} · %{y:$.3s}<extra>' + name + '</extra>'}, extra || {});
+  const q = [tr('This run', S.queued_usd, '--s1', {fill:'tozeroy', fillcolor:css('--s1') + '22'})];
+  if (pinned) q.push({x:pinned.series.t, y:pinned.series.queued_usd, name:'Baseline', type:'scatter', mode:'lines', line:{color:css('--neutral'), width:2, dash:'dot'}, hovertemplate:'%{x} · %{y:$.3s}<extra>Baseline</extra>'});
+  Plotly.react('c-queue', q, layout({yaxis:{gridcolor:css('--line'), tickformat:'$.2s', rangemode:'tozero'}}), cfg);
+  const T = r.throughput, th = [{x:T.hours, y:T.share.map(v => v * 100), type:'bar', name:'This run', marker:{color:css('--s1')}, hovertemplate:'by %{x}: %{y:.0f}%<extra>This run</extra>'}];
+  if (pinned) th.push({x:pinned.throughput.hours, y:pinned.throughput.share.map(v => v * 100), type:'scatter', mode:'lines+markers', name:'Baseline', line:{color:css('--neutral'), dash:'dot', width:2}, marker:{size:6}, hovertemplate:'by %{x}: %{y:.0f}%<extra>Baseline</extra>'});
+  Plotly.react('c-thru', th, layout({bargap:0.25, yaxis:{gridcolor:css('--line'), ticksuffix:'%', range:[0, 100]}}), cfg);
+  Plotly.react('c-cash', [tr('RTGS', S.cash_usd.rtgs, '--s1'), tr('Liquidity-saving', S.cash_usd.lsm, '--s2')], layout({yaxis:{gridcolor:css('--line'), tickformat:'$.2s', rangemode:'tozero'}}), cfg);
+  const names = {delay:'Delay', late_penalty:'Late', unsettled_penalty:'Unsettled', liquidity:'Liquidity held', intraday_credit:'Intraday credit', daylight_overdraft_fee:'Overdraft fee', collateral_opportunity:'Collateral', instant_rejections:'Instant rejections', auction_interest:'Auction interest', overnight:'Overnight funding'};
+  const comp = Object.entries(k.cost_components_usd).sort((a, c) => c[1] - a[1]).slice(0, 7).reverse();
+  const cost = [{y:comp.map(c => names[c[0]] || c[0].replace(/_/g, ' ')), x:comp.map(c => c[1]), type:'bar', orientation:'h', name:'This run', marker:{color:css('--s1')}, hovertemplate:'%{y}: %{x:$,.0f}<extra></extra>'}];
+  Plotly.react('c-cost', cost, layout({showlegend:false, margin:{l:118, r:16, t:8, b:36}, xaxis:{gridcolor:css('--line'), tickformat:'$.2s'}, yaxis:{gridcolor:'rgba(0,0,0,0)'}}), cfg);
+  const banks = r.banks.slice().sort((a, c) => c.usage_pct - a.usage_pct);
+  $('t-banks').innerHTML = '<thead><tr><th>Bank</th><th>Tier</th><th>Payments sent</th><th>Largest net debit</th><th>Liquidity at start</th><th>Used</th><th>Own payments settled</th></tr></thead><tbody>' +
+    banks.map(x => `<tr><td>${x.id}</td><td>${x.tier}</td><td>${usd(x.sent_usd)}</td><td>${usd(x.max_net_debit_usd)}</td><td>${usd(x.available_usd)}</td><td style="text-align:left"><span class="bar ${x.usage_pct > 100 ? 'hot' : ''}" style="width:${Math.min(90, x.usage_pct * 0.6)}px"></span>${x.usage_pct.toFixed(0)}%</td><td>${x.own_settled_pct.toFixed(1)}%</td></tr>`).join('') + '</tbody>';
+  $('uns-sub').textContent = r.unsettled_count ? `${r.unsettled_count.toLocaleString()} payments did not settle.` : 'Every payment settled.';
+  $('t-uns').innerHTML = r.unsettled.length ? '<thead><tr><th>From → to</th><th>Rail</th><th>Amount</th><th style="text-align:left">Why</th></tr></thead><tbody>' +
+    r.unsettled.map(u => `<tr><td>${u.from} → ${u.to}</td><td>${u.rail}</td><td>${usd(u.usd)}</td><td style="text-align:left;white-space:normal">${u.why}</td></tr>`).join('') + '</tbody>' : '';
+  const g = r.ingest; $('ing').classList.toggle('hide', !g);
+  if (g) $('ing-body').innerHTML = `<p class="sub">${g.accepted.toLocaleString()} rows accepted, ${g.rejected_count.toLocaleString()} rejected.</p>` +
+    (g.assumptions.length ? '<b style="font-size:13px">Assumed (not in your file)</b><ul class="tight">' + g.assumptions.map(a => `<li>${a}</li>`).join('') + '</ul>' : '') +
+    (g.rejected.length ? '<b style="font-size:13px">Rejected rows</b><ul class="tight">' + g.rejected.slice(0, 8).map(x => `<li>row ${x.row ?? '?'}: ${x.reason}</li>`).join('') + '</ul>' : '');
+}
+
+async function run() {
+  if (!py) return; if (source === 'csv' && !csvText) { status('Choose a payments CSV first, or load the sample day.', true); return; }
+  $('run').disabled = true; $('run').textContent = 'Simulating…'; status('Simulating the day…');
+  await new Promise(r => setTimeout(r, 30));
+  const params = {banks:+$('banks').value, payments:+$('payments').value, instant:+$('instant').value, seed:+$('seed').value || 0, stress:$('stress').value, liquidity_pct:+$('liq').value,
+    policy:$('policy').value, controller:$('controller').value, auction:$('auction').value, shared_master:$('shared').checked};
+  try {
+    const out = JSON.parse(py.globals.get('lab_run')(JSON.stringify(params), source === 'csv' ? csvText : null));
+    if (out.error) { status(out.error, true); } else { last = out; render(out); status(`${STRESS[out.choices.stress]} simulated in ${out.integrity.runtime_s}s.`); $('pin').disabled = false; $('dl').disabled = false; }
+  } catch (e) { status('The simulator hit an error: ' + String(e).split('\n').slice(-2).join(' '), true); }
+  $('run').disabled = false; $('run').textContent = 'Run the day ▶';
+}
+$('run').onclick = run;
+$('pin').onclick = () => { pinned = last; render(last); status('Baseline pinned. Change a setting and run again to see the difference.'); };
+$('dl').onclick = () => save('atlas_run.json', JSON.stringify(last, null, 1), 'application/json');
+$('theme').onclick = () => { const r = document.documentElement; const dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = dark ? 'light' : 'dark'; if (last) render(last); };
+
+(async () => {
+  try {
+    py = await loadPyodide();
+    const buf = await (await fetch('atlas.zip')).arrayBuffer();
+    py.unpackArchive(buf, 'zip', {extractDir:'/atlas_bundle'});
+    py.runPython(`
+import sys, json, types, zoneinfo
+zoneinfo.reset_tzpath(to=['/atlas_bundle/tz'])
+sys.path.insert(0, '/atlas_bundle')
+try:
+    import sqlite3
+except ImportError:                       # the event store is not used in the browser
+    _s = types.ModuleType('sqlite3')
+    _s.Connection = _s.Row = _s.Cursor = object
+    _s.Error = _s.IntegrityError = _s.OperationalError = Exception
+    def _no(*a, **k): raise RuntimeError('sqlite3 is not available in the browser lab')
+    _s.connect = _no
+    sys.modules['sqlite3'] = _s
+from atlas.lab import run_lab
+from atlas.ingest import template_csv, export_scenario_csv, IngestError
+from atlas.scenario import generate_scenario
+def lab_run(params_json, csv_text=None):
+    try:
+        return json.dumps(run_lab(json.loads(params_json), csv_text))
+    except IngestError as exc:
+        return json.dumps({'error': 'Could not use that file: ' + str(exc)})
+def lab_template():
+    return template_csv()
+def lab_sample(seed=11):
+    return export_scenario_csv(generate_scenario(seed=int(seed)))
+`);
+    $('run').disabled = false; $('run').textContent = 'Run the day ▶'; status('Ready.'); run();
+  } catch (e) { status('Could not start the simulator in this browser: ' + e, true); }
+})();
+</script></body></html>

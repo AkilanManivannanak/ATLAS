@@ -1,6 +1,6 @@
 # Project status
 
-**Version:** 0.6.0 · **Stage:** all ten blueprint phases implemented to a research-grade increment, including the previously missing auction mechanism, safe RL, decision center and 100-bank scale. Remaining gaps are listed below and in `docs/20_known_limitations.md`.
+**Version:** 0.7.0 · **Stage:** all ten blueprint phases implemented to a research-grade increment, including the previously missing auction mechanism, safe RL, decision center and 100-bank scale. Remaining gaps are listed below and in `docs/20_known_limitations.md`.
 
 ## Blueprint coverage
 
@@ -17,8 +17,20 @@
 | 9. Product | Done: API (analyst, statements, counterfactuals), 9-screen Command Center, Docker, CI, GitHub Pages explorer |
 | 10. Validation | Done: standard (240 runs) and extended (1,320 runs, 11 stresses) benchmarks; headline result replicates in 11/11 stresses and 297/297 stress × cost-model cells; scaling to 669k payments |
 
-## Verification (2026-11-10, Python 3.13.18, Linux x86_64, 2 vCPUs)
-- `pytest -q`: **156 passed**. `ruff check src tests scripts`: clean. Frontend `tsc --noEmit` and `next build`: pass.
+## v0.7: usable on real data, and built to bank AI practice
+| Area | Status |
+|---|---|
+| Bring your own data | Done: CSV and ISO 20022 pacs.008/009 ingestion with row-level rejects and a list of assumptions; `atlas` CLI; API upload; counterfactuals on uploaded days |
+| Browser lab | Done: the stdlib core runs under Pyodide on GitHub Pages; upload stays on the device |
+| Supervisory reporting | Done: BCBS 248 tools A(i)-A(iv), C(i). Correspondent tools B(i)/(ii) not applicable |
+| Anomaly detection | Done on injected typologies: rule, isolation forest, gradient boosting, leave-one-pattern-out |
+| Model risk | Done: inventory, materiality tiers, automated checks, generated model cards (1 pass, 4 warn, 2 fail) |
+| Agents | Done: guarded tool layer, MCP server, OpenAI-compatible loop, evaluation harness with failing controls. No language model evaluated |
+| Calibration | Done: mean payment sizes fitted to Fedwire 2025 and FedNow/RTP 2026 published statistics |
+| Command Center | Not updated for v0.7: the new views are in the API and the browser lab only |
+
+## Verification (2026-11-16, Python 3.13.18, Linux x86_64)
+- `pytest -q`: **180 passed**. `ruff check src tests scripts`: clean. Frontend `tsc --noEmit` and `next build`: pass.
 - All benchmark, auction, RL, game and scaling runs replay-verified.
 - Not verified here: Docker image builds (no Docker daemon); CI builds them on push.
 
@@ -26,7 +38,7 @@
 Generator v2 (realism fixes, D-019), PSR fee (D-020), LSM closing funding, customer cutoff, exact performance work (D-021: ≈3× faster), new arms (auction, MPC + auction), benchmark v2 with cost sensitivity.
 
 ## Known gaps
-FedNow on its own pool by default (shared-master-account option available; controllers not yet aware of it); instant rails only inside the business day; no defaults, net debit caps or PSR waiver; LSTM/TFT absent; analyst is deterministic (no generative model); no PostgreSQL/ClickHouse/MLflow (deferred, D-016).
+FedNow on its own pool by default (shared-master-account option available; controllers not yet aware of it); instant rails only inside the business day; no defaults, net debit caps or PSR waiver; LSTM/TFT absent; analyst and reference agent are deterministic (no language model evaluated); anomaly labels are injected; no real institution has used the tool; no PostgreSQL/ClickHouse/MLflow (deferred, D-016).
 
 ## Next tasks
 1. Make MPC and the safe-RL controller aware of the shared FedNow master account (done: the option itself and the re-test, `results/shared_master.md`).
