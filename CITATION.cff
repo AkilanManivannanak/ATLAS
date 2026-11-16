@@ -11,6 +11,6 @@ authors:
   - family-names: Manivannan
     given-names: Akilan
 repository-code: "https://github.com/AkilanManivannanak/ATLAS"
-version: 0.7.0
+version: 0.8.0
 date-released: 2026-11-16
 keywords: [payments, RTGS, liquidity, settlement, digital twin, market design, safe reinforcement learning]

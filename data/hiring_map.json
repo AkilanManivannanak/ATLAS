@@ -1,0 +1,135 @@
+{
+ "postings": 14,
+ "banks": [
+  "JPMorgan",
+  "Bank of America",
+  "Citi",
+  "Goldman Sachs",
+  "Wells Fargo"
+ ],
+ "reviewed": "2026-11-16",
+ "levels": {
+  "junior": "analyst / associate (0-3 years)",
+  "senior": "VP / lead (5-8 years)",
+  "director": "principal, executive director, director (7-12+ years)"
+ },
+ "scale": {
+  "2": "required",
+  "1": "preferred",
+  "0": "not mentioned"
+ },
+ "rows": [
+  {
+   "skill": "Production Python, testing, CI/CD",
+   "junior": 2,
+   "senior": 2,
+   "director": 2,
+   "where": "tests, lint, CI, Docker"
+  },
+  {
+   "skill": "Statistics, time series, applied ML",
+   "junior": 2,
+   "senior": 2,
+   "director": 2,
+   "where": "8 forecasters, conformal intervals"
+  },
+  {
+   "skill": "Deep learning (PyTorch / TensorFlow)",
+   "junior": 1,
+   "senior": 2,
+   "director": 2,
+   "where": "GRU + Transformer trained in PyTorch"
+  },
+  {
+   "skill": "Experiment design, evaluation frameworks",
+   "junior": 2,
+   "senior": 2,
+   "director": 2,
+   "where": "paired benchmark, agent evals"
+  },
+  {
+   "skill": "LLM apps: tool calling, agents",
+   "junior": 1,
+   "senior": 2,
+   "director": 2,
+   "where": "tool layer + agent loop"
+  },
+  {
+   "skill": "Retrieval with citations (RAG)",
+   "junior": 1,
+   "senior": 2,
+   "director": 2,
+   "where": "rulebook retrieval, measured"
+  },
+  {
+   "skill": "Guardrails, red teaming, human in loop",
+   "junior": 1,
+   "senior": 2,
+   "director": 2,
+   "where": "read-only tools, injection tests"
+  },
+  {
+   "skill": "Agent interoperability (MCP, A2A)",
+   "junior": 0,
+   "senior": 2,
+   "director": 1,
+   "where": "MCP server (no A2A)"
+  },
+  {
+   "skill": "Model risk, validation, explainability",
+   "junior": 2,
+   "senior": 2,
+   "director": 2,
+   "where": "inventory, model cards, importance"
+  },
+  {
+   "skill": "Monitoring, tracing, risk indicators",
+   "junior": 1,
+   "senior": 2,
+   "director": 2,
+   "where": "automated checks, audit trace"
+  },
+  {
+   "skill": "Reinforcement learning, optimisation",
+   "junior": 1,
+   "senior": 1,
+   "director": 1,
+   "where": "constrained PPO, MPC, MILP"
+  },
+  {
+   "skill": "Payments and intraday liquidity domain",
+   "junior": 2,
+   "senior": 1,
+   "director": 1,
+   "where": "the twin itself, BCBS 248"
+  },
+  {
+   "skill": "Containers and Kubernetes",
+   "junior": 0,
+   "senior": 2,
+   "director": 2,
+   "where": "partial: manifests, not run on a cluster"
+  },
+  {
+   "skill": "Cloud ML platforms (SageMaker, Bedrock, Vertex)",
+   "junior": 1,
+   "senior": 1,
+   "director": 2,
+   "where": "gap: none"
+  },
+  {
+   "skill": "LLM fine-tuning, GPUs, distributed training",
+   "junior": 0,
+   "senior": 2,
+   "director": 1,
+   "where": "gap: CPU only, no fine-tuning"
+  },
+  {
+   "skill": "Leading teams, setting platform standards",
+   "junior": 0,
+   "senior": 1,
+   "director": 2,
+   "where": "gap: not a code feature"
+  }
+ ]
+}

@@ -305,49 +305,40 @@ def fig_replication(t, theme, ext):
 
 STATUS = {"light": {"pass": "#12855c", "warn": "#b7791f", "fail": "#d03b3a"}, "dark": {"pass": "#3fbf8f", "warn": "#e0a84a", "fail": "#e66767"}}
 
-# What nine AI/ML postings at five US banks ask for, by level (docs/25_industry_landscape.md lists the postings).
-# 2 = required at that level, 1 = preferred / nice to have, 0 = not mentioned. Last item: where the twin shows it, or the gap.
-HIRING = [
-    ("Production Python, testing, CI/CD", 2, 2, 2, "180 tests, lint, CI, Docker"),
-    ("Statistics, time series, applied ML", 2, 2, 2, "6 forecasters, conformal intervals"),
-    ("Evaluation frameworks, measured impact", 2, 2, 2, "paired benchmark, agent evals"),
-    ("LLM apps: tool calling, agents, RAG", 1, 2, 2, "tool layer + agent loop (no RAG)"),
-    ("Guardrails, least privilege, human in loop", 1, 2, 2, "read-only tools, safety controller"),
-    ("Agent interoperability (MCP)", 0, 2, 1, "MCP server over stdio"),
-    ("Model risk, audit-ready docs, model cards", 2, 1, 2, "inventory, tiers, model cards"),
-    ("Monitoring, drift, fallbacks, rollback", 1, 2, 2, "validation checks, PSI, metrics"),
-    ("Reinforcement learning, optimisation", 1, 1, 0, "constrained PPO, MPC, MILP"),
-    ("Cloud ML platforms (SageMaker, Bedrock, Vertex)", 1, 1, 1, "gap: Docker only"),
-    ("Kubernetes, IaC, distributed training, GPUs", 0, 2, 1, "gap: single machine"),
-    ("Leading teams, setting platform standards", 0, 1, 2, "gap: not a code feature"),
-]
+def _hiring():
+    return json.loads((ROOT / "data" / "hiring_map.json").read_text())
 
 
 def fig_hiring(t, theme):
-    fig, ax = plt.subplots(figsize=(10.5, 0.36 * len(HIRING) + 1.7))
+    H = _hiring()
+    rows = H["rows"]
+    fig, ax = plt.subplots(figsize=(10.5, 0.36 * len(rows) + 1.7))
     style(ax, t, "What bank AI/ML roles ask for, and where this project shows it",
-          "Nine postings, five US banks (JPMorgan, Bank of America, Citi, Goldman Sachs, Wells Fargo). Filled = required, ring = preferred.")
+          f"{H['postings']} postings, five US banks ({', '.join(H['banks'])}). Filled = required, ring = preferred.")
     ax.grid(False)
     for sp in ax.spines.values():
         sp.set_visible(False)
-    cols = [("Junior", 5.25), ("Senior", 6.05), ("Principal", 6.85)]
-    n = len(HIRING)
-    for i, (label, j, s_, p, where) in enumerate(HIRING):
+    cols = [("Junior", "junior", 5.25), ("Senior", "senior", 6.05), ("Director+", "director", 6.85)]
+    n = len(rows)
+    for i, r in enumerate(rows):
         y = n - 1 - i
         if i % 2 == 0:
             ax.add_patch(plt.Rectangle((0, y - 0.5), 10.5, 1, color=t["grid"], alpha=0.35, lw=0))
-        ax.text(0.12, y, label, va="center", ha="left", fontsize=9.3, color=t["ink"])
-        for (_, x), v in zip(cols, (j, s_, p)):
+        ax.text(0.12, y, r["skill"], va="center", ha="left", fontsize=9.3, color=t["ink"])
+        for _, key, x in cols:
+            v = r[key]
             if v == 2:
                 ax.scatter([x], [y], s=95, color=t["s"][0], zorder=3)
             elif v == 1:
                 ax.scatter([x], [y], s=85, facecolors="none", edgecolors=t["s"][0], linewidths=1.6, zorder=3)
             else:
                 ax.plot([x - 0.07, x + 0.07], [y, y], color=t["neutral"], lw=1.2)
-        gap = where.startswith("gap")
-        ax.text(7.55, y, ("✕  " if gap else "✓  ") + where.replace("gap: ", ""), va="center", ha="left", fontsize=9,
-                color=STATUS[theme]["fail"] if gap else t["ink"], fontweight="bold" if gap else "normal")
-    for name, x in cols:
+        where = r["where"]
+        gap, partial = where.startswith("gap"), where.startswith("partial")
+        mark = "✕  " if gap else "◐  " if partial else "✓  "
+        ax.text(7.55, y, mark + where.replace("gap: ", "").replace("partial: ", ""), va="center", ha="left", fontsize=9,
+                color=STATUS[theme]["fail"] if gap else STATUS[theme]["warn"] if partial else t["ink"], fontweight="bold" if gap or partial else "normal")
+    for name, _, x in cols:
         ax.text(x, n - 0.25, name, ha="center", va="bottom", fontsize=9, color=t["ink2"], fontweight="bold")
     ax.text(7.55, n - 0.25, "In ATLAS-Σ", ha="left", va="bottom", fontsize=9, color=t["ink2"], fontweight="bold")
     ax.set_xlim(0, 10.5)
@@ -476,6 +467,39 @@ def fig_agent(t, theme, ev):
     save(fig, "agent-evals", theme)
 
 
+def fig_deep(t, theme, dp):
+    big = max(dp["train_sizes_days"])
+    order = ["seasonal_naive", "ridge", "gradient_boosting", "transformer", "gru"]
+    nice = {"seasonal_naive": "Seasonal naive", "ridge": "Ridge", "gradient_boosting": "Gradient boosting", "transformer": "Transformer", "gru": "GRU"}
+    fig, axes = plt.subplots(1, 2, figsize=(10.5, 3.9), gridspec_kw={"width_ratios": [1.1, 1]})
+    ax = axes[0]
+    rows = {r["model"]: r for r in dp["results"] if r["train_days"] == big and r["horizon"] == "15m"}
+    vals = [rows[m]["mase"] for m in order]
+    ax.barh(range(len(order)), vals, height=0.6, color=[t["s"][0] if m in ("gru", "transformer") else t["neutral"] for m in order], edgecolor=t["bg"], linewidth=2)
+    for i, v in enumerate(vals):
+        ax.text(v, i, f"  {v:.3f}", va="center", fontsize=9, color=t["ink"])
+    ax.set_yticks(range(len(order)))
+    ax.set_yticklabels([nice[m] for m in order])
+    ax.set_xlim(0, max(vals) * 1.15)
+    ax.set_xlabel("forecast error (MASE, lower is better)")
+    ax.set_title(f"15 minutes ahead, {big} training days", color=t["ink"], fontsize=10, loc="left")
+    style(ax, t, "Deep-learning forecasters, trained and scored like everything else",
+          f"A GRU and a small Transformer in PyTorch against ridge and gradient boosting, on {dp['test_days']} held-out days.")
+    ax.grid(False, axis="y")
+    ax2 = axes[1]
+    for name, color in (("gru", t["s"][0]), ("transformer", t["s"][1])):
+        h = dp["training_curves"].get(f"{name}|{big}|15m")
+        if h:
+            ax2.plot([e["epoch"] for e in h], [e["holdout_loss"] for e in h], color=color, lw=2, label=f"{nice[name]}, held-out")
+            ax2.plot([e["epoch"] for e in h], [e["train_loss"] for e in h], color=color, lw=1.2, ls=":", label=f"{nice[name]}, training")
+    ax2.set_xlabel("epoch")
+    ax2.set_title("Loss during training (early stopping)", color=t["ink"], fontsize=10, loc="left")
+    style(ax2, t, "", "")
+    legend(ax2, t, loc="center right")
+    fig.subplots_adjust(top=0.76, wspace=0.22, bottom=0.15)
+    save(fig, "deep-forecasting", theme)
+
+
 def fig_bcbs(t, theme):
     from atlas.regulatory import intraday_liquidity_report
     from atlas.scenario import generate_scenario
@@ -549,7 +573,8 @@ def main() -> None:
         if want("hiring"):
             fig_hiring(t, theme)
         for key, artifact, fn in (("detect", "anomaly_detection.json", fig_detect), ("mrm", "model_inventory.json", fig_mrm),
-                                  ("calibration", "calibration.json", fig_calibration), ("agent", "agent_evals.json", fig_agent)):
+                                  ("calibration", "calibration.json", fig_calibration), ("agent", "agent_evals.json", fig_agent),
+                                  ("deep", "deep_forecasting.json", fig_deep)):
             data = load(artifact)
             if data and want(key):
                 fn(t, theme, data)

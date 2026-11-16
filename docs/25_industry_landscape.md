@@ -1,6 +1,6 @@
 # Industry landscape: what large US banks are doing with AI, and what they hire for
 
-Research date: 16 November 2026. Sources are linked inline; job postings change or close, so each is cited with what it said on that date. This document explains *why* v0.7 added what it added.
+Research date: 16 November 2026. Sources are linked inline; job postings change or close, so each is cited with what it said on that date. This document explains *why* v0.7 and v0.8 added what they added.
 
 ## 1. Where the banks are
 
@@ -31,23 +31,23 @@ On 17 April 2026 the Federal Reserve, OCC and FDIC replaced SR 11-7 with **SR 26
 * Stronger effective challenge and continuous monitoring for drift.
 * Generative and agentic AI are **outside** the guidance for now and are to be governed through enterprise AI, data, cyber and operational risk frameworks.
 
-## 4. What nine AI/ML postings ask for
+## 4. What fourteen AI/ML postings ask for
 
 | Level | Postings read | Experience | Pay shown |
 |---|---|---|---|
-| Junior | JPMorgan *Applied AI ML, Payments Machine Learning (Associate)*; Bank of America *AI Engineer, Data Scientist I* (Global Payments Solutions, New York) | 2+ years | $107k-$193k (BofA) |
-| Senior | Citi *Machine Learning Engineer, VP*; Goldman Sachs *VP, AI/ML Engineering* (two postings); JPMorgan *Applied AI ML Lead, AI Agents*; Bank of America *Senior AI Engineer* | 5-8 years | $142k-$213k (Citi), $130k-$250k (GS) |
-| Principal | JPMorgan *Applied AI ML Executive Director*; Wells Fargo *Principal AI Engineer*; Wells Fargo *Principal Engineer* | 7-12+ years | $159k-$305k (WF) |
+| Entry / junior | JPMorgan *Data & AI Program* (2027 graduates); JPMorgan *Applied AI ML, Payments Machine Learning (Associate)*; JPMorgan *Intraday Liquidity Management, Data Analytics and Forecasting (Associate)*; Bank of America *AI Engineer, Data Scientist I* (Global Payments Solutions) | 0-3 years | $95k-$115k (JPM program), $107k-$193k (BofA) |
+| Senior | Citi *Machine Learning Engineer, VP*; Goldman Sachs *VP, AI/ML Engineering* (two postings); Goldman Sachs *Risk, AI Model Validation, VP*; JPMorgan *Applied AI ML Lead, AI Agents*; Bank of America *Senior AI Engineer* | 5-8 years | $142k-$213k (Citi), $130k-$250k (GS) |
+| Director and above | Citi *Director, Applied AI Engineering*; Citi *Director, AI Risk Monitoring Lead*; JPMorgan *Applied AI ML Executive Director*; JPMorgan *Applied ML and Generative AI Leader, Executive Director*; Wells Fargo *Principal AI Engineer*; Wells Fargo *Principal Engineer* | 7-15 years | $159k-$305k (WF) |
 
-Links: [JPM Associate](https://www.oneroadmap.io/jobs/6abd1f8d36c2e1375dc8ec99) · [BofA DS I](https://freehire.me/jobs/ai-engineer-data-scientist-i-bank-of-america-rv3vzgf7) · [Citi VP](https://jobs.citi.com/job/jersey-city/machine-learning-engineer-vice-president/287/89702719056) · [GS VP](https://jobs.wallstreetfriends.org/companies/goldman-sachs/jobs/64776056-engineering-vice-president-ai-ml-engineering) · [GS VP (Richardson)](https://jobs.wallstreetfriends.org/companies/goldman-sachs/jobs/64776396-ai-ml-engineering-dallas-associate) · [JPM Lead](https://zapply.jobs/jobs/bfbe8988-adfe-4454-adaf-fe5ede639e0e/) · [BofA Senior](https://simplify.jobs/p/16fa7177-2344-4201-ad8a-8d4507fd5777/Senior-AI-Engineer) · [JPM ED](https://www.builtinnyc.com/job/applied-ai-ml-executive-director-chief-data-analytics-office/10669590) · [WF Principal AI](https://jobs.anitab.org/companies/wells-fargo/jobs/91419497-principal-ai-engineer) · [WF Principal](https://www.builtinnyc.com/job/principal-engineer/9951411). Several were read on job-board mirrors and some have since closed.
+Links: [JPM Data & AI Program](https://simplify.jobs/p/2f5f6d1a-1591-4d2b-9eea-c4a0fbe02433/Data--AI-Program) · [JPM Payments ML Associate](https://www.oneroadmap.io/jobs/6abd1f8d36c2e1375dc8ec99) · [JPM Intraday Liquidity Associate](https://www.dice.com/job-detail/3dde72f5-24fe-45e2-a7e3-3a094d4844d2) · [BofA DS I](https://freehire.me/jobs/ai-engineer-data-scientist-i-bank-of-america-rv3vzgf7) · [Citi VP](https://jobs.citi.com/job/jersey-city/machine-learning-engineer-vice-president/287/89702719056) · [GS VP](https://jobs.wallstreetfriends.org/companies/goldman-sachs/jobs/64776056-engineering-vice-president-ai-ml-engineering) · [GS VP (Richardson)](https://jobs.wallstreetfriends.org/companies/goldman-sachs/jobs/64776396-ai-ml-engineering-dallas-associate) · [GS AI Model Validation](https://higher.gs.com/roles/137676) · [JPM Lead, Agents](https://zapply.jobs/jobs/bfbe8988-adfe-4454-adaf-fe5ede639e0e/) · [BofA Senior](https://simplify.jobs/p/16fa7177-2344-4201-ad8a-8d4507fd5777/Senior-AI-Engineer) · [Citi Director, Applied AI](https://jobs.citi.com/job/jersey-city/director-applied-artificial-intelligence-engineering/287/96344791488) · [Citi Director, AI Risk Monitoring](https://jobs.technyc.org/companies/citi-2-db90f7f6-7bfb-4128-83f9-bb534f36fcb7/jobs/68240034-director-ai-risk-monitoring-lead) · [JPM ED](https://www.builtinnyc.com/job/applied-ai-ml-executive-director-chief-data-analytics-office/10669590) · [JPM ED, GenAI Leader](https://zapply.jobs/jobs/f75f702a-0c4b-4d45-9726-fc4f3e9a88d3/) · [WF Principal AI](https://jobs.anitab.org/companies/wells-fargo/jobs/91419497-principal-ai-engineer) · [WF Principal](https://www.builtinnyc.com/job/principal-engineer/9951411). Several were read on job-board mirrors and some have since closed. Sixteen links are listed; fourteen had enough detail to code into the matrix (`data/hiring_map.json`). No managing-director posting with a public description was found.
 
 **What separates the levels**
 
-* **Junior:** build and evaluate. Python, statistics, time series, "rigorous evaluation frameworks", deploying and monitoring a model, model cards and audit-ready documentation. Agents and RL are nice-to-have.
-* **Senior:** make agents safe in production. Tool-calling agents with guardrails and least-privilege access (Goldman names MCP), evaluation frameworks, validators, fallbacks, circuit breakers, rollbacks, cost and latency, CI/CD, Kubernetes, infrastructure as code.
-* **Principal:** make it reusable. Multi-agent platforms, shared frameworks and standards, benchmarks for agents, governance, mentoring, measurable business outcomes.
+* **Entry / junior:** build, measure, document. Python and SQL, statistics, time series, experiment design (KPIs, uplift), deploying and monitoring a model, model cards and audit-ready documentation. The JPMorgan intraday-liquidity role asks for exactly this project's subject: forecasting intraday liquidity and turning it into decisions.
+* **Senior:** make AI safe in production. Tool-calling agents with guardrails and least privilege (Goldman names MCP), retrieval, deep-learning frameworks, evaluation frameworks, validators, fallbacks and rollbacks, CI/CD, Kubernetes. Model validators are asked for benchmark models, explainability and robustness tests.
+* **Director and above:** make it governable and reusable. Multi-agent platforms and shared standards, red teaming, tracing and observability, risk indicators with thresholds and escalation, MLOps pipelines, fine-tuning, mentoring, measurable business outcomes.
 
-Nine postings is a sample, not a survey. The matrix in the README (`scripts/make_figures.py`, `HIRING`) is a reading of these nine.
+Fourteen postings is a sample, not a survey.
 
 ## 5. What v0.7 built in response
 
@@ -60,10 +60,21 @@ Nine postings is a sample, not a survey. The matrix in the README (`scripts/make
 | Tools must work on a bank's own data | CSV and ISO 20022 ingestion, CLI, API upload, in-browser lab | `atlas.ingest`, `atlas.cli`, `atlas.lab` |
 | Synthetic data should be anchored to published facts | Mean payment sizes fitted to Fedwire and FedNow statistics | `atlas.calibration`, `data/public/` |
 
-## 6. Where this goes next (not built)
+## 6. What v0.8 added after the director-level postings
 
-1. **24/7 days.** Instant rails and tokenized deposits settle on weekends; the twin still runs one business day.
-2. **Tokenized-deposit rail** with programmable, atomic settlement, to test whether it reduces intraday liquidity needs.
-3. **Agent-to-agent treasury:** a corporate's agent negotiating payment timing with a bank's agent, under limits.
-4. **Retrieval over policy documents** (limits, playbooks) so an agent's proposal cites the rule it relies on.
-5. **Cloud deployment** of the scoring and tool services (the gap every senior posting names).
+| Asked for | Built | Where |
+|---|---|---|
+| An interface people can actually use and review | Streamlit app: animated day, what-if, upload, risk views, agent chat, public reviews | `streamlit_app.py`, `atlas.insight` |
+| Retrieval with citations | BM25 over the project's own rulebook, measured on labelled questions, exposed as an agent tool | `atlas.knowledge` |
+| Deep-learning frameworks, training | GRU and Transformer forecasters trained in PyTorch with early stopping and saved checkpoints | `atlas.forecast.deep` |
+| Red teaming, guardrails | Prompt-injection and budget-flood tasks in the agent evaluation | `atlas.agent.evals` |
+| Explainability and robustness in validation | Permutation importance and input-noise test for the anomaly model | `atlas.detect` |
+| Tracing | Per-call latency on the hash-chained tool audit | `atlas.agent.tools` |
+| Kubernetes | Hardened manifests for the API and the app (schema-tested, not applied to a cluster) | `deploy/k8s/` |
+
+## 7. Still open
+
+1. **A language model run.** The harness scores any OpenAI-compatible endpoint (`atlas evals --llm`); the build environment had no model to call.
+2. **Real fraud labels.** Anomaly incidents are injected; no public interbank fraud data exists.
+3. **Cloud ML platforms, LLM fine-tuning, GPUs.** Not present.
+4. **24/7 days, a tokenized-deposit rail, agent-to-agent treasury.** The direction the industry is moving; not modeled yet.

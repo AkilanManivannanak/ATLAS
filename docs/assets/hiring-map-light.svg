@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="766.8pt" height="435.5208pt" viewBox="0 0 766.8 435.5208" xmlns="http://www.w3.org/2000/svg" version="1.1">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="766.8pt" height="533.4984pt" viewBox="0 0 766.8 533.4984" xmlns="http://www.w3.org/2000/svg" version="1.1">
  <metadata>
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2026-11-16T01:03:01.525843</dc:date>
+    <dc:date>2026-11-16T01:39:06.608755</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
@@ -21,8 +21,8 @@
  </defs>
  <g id="figure_1">
   <g id="patch_1">
-   <path d="M 0 435.5208 
-L 766.8 435.5208 
+   <path d="M 0 533.4984 
+L 766.8 533.4984 
 L 766.8 0 
 L 0 0 
 z
@@ -30,89 +30,105 @@ z
   </g>
   <g id="axes_1">
    <g id="patch_2">
-    <path d="M 12.96 422.5608 
-L 753.84 422.5608 
-L 753.84 73.3896 
-L 12.96 73.3896 
+    <path d="M 12.96 520.5384 
+L 753.84 520.5384 
+L 753.84 69.7608 
+L 12.96 69.7608 
 z
 " style="fill: #fcfcfb"/>
    </g>
    <g id="matplotlib.axis_1"/>
    <g id="matplotlib.axis_2"/>
    <g id="patch_3">
-    <path d="M 12.96 119.7639 
-L 753.84 119.7639 
-L 753.84 92.4849 
-L 12.96 92.4849 
+    <path d="M 12.96 115.3752 
+L 753.84 115.3752 
+L 753.84 88.5432 
+L 12.96 88.5432 
 z
-" clip-path="url(#p6d35ad6650)" style="fill: #e4e3df; opacity: 0.35"/>
+" clip-path="url(#p5d8bd86b20)" style="fill: #e4e3df; opacity: 0.35"/>
    </g>
    <g id="patch_4">
-    <path d="M 12.96 174.3219 
-L 753.84 174.3219 
-L 753.84 147.0429 
-L 12.96 147.0429 
+    <path d="M 12.96 169.0392 
+L 753.84 169.0392 
+L 753.84 142.2072 
+L 12.96 142.2072 
 z
-" clip-path="url(#p6d35ad6650)" style="fill: #e4e3df; opacity: 0.35"/>
+" clip-path="url(#p5d8bd86b20)" style="fill: #e4e3df; opacity: 0.35"/>
    </g>
    <g id="patch_5">
-    <path d="M 12.96 228.8799 
-L 753.84 228.8799 
-L 753.84 201.6009 
-L 12.96 201.6009 
+    <path d="M 12.96 222.7032 
+L 753.84 222.7032 
+L 753.84 195.8712 
+L 12.96 195.8712 
 z
-" clip-path="url(#p6d35ad6650)" style="fill: #e4e3df; opacity: 0.35"/>
+" clip-path="url(#p5d8bd86b20)" style="fill: #e4e3df; opacity: 0.35"/>
    </g>
    <g id="patch_6">
-    <path d="M 12.96 283.4379 
-L 753.84 283.4379 
-L 753.84 256.1589 
-L 12.96 256.1589 
+    <path d="M 12.96 276.3672 
+L 753.84 276.3672 
+L 753.84 249.5352 
+L 12.96 249.5352 
 z
-" clip-path="url(#p6d35ad6650)" style="fill: #e4e3df; opacity: 0.35"/>
+" clip-path="url(#p5d8bd86b20)" style="fill: #e4e3df; opacity: 0.35"/>
    </g>
    <g id="patch_7">
-    <path d="M 12.96 337.9959 
-L 753.84 337.9959 
-L 753.84 310.7169 
-L 12.96 310.7169 
+    <path d="M 12.96 330.0312 
+L 753.84 330.0312 
+L 753.84 303.1992 
+L 12.96 303.1992 
 z
-" clip-path="url(#p6d35ad6650)" style="fill: #e4e3df; opacity: 0.35"/>
+" clip-path="url(#p5d8bd86b20)" style="fill: #e4e3df; opacity: 0.35"/>
    </g>
    <g id="patch_8">
-    <path d="M 12.96 392.5539 
-L 753.84 392.5539 
-L 753.84 365.2749 
-L 12.96 365.2749 
+    <path d="M 12.96 383.6952 
+L 753.84 383.6952 
+L 753.84 356.8632 
+L 12.96 356.8632 
 z
-" clip-path="url(#p6d35ad6650)" style="fill: #e4e3df; opacity: 0.35"/>
+" clip-path="url(#p5d8bd86b20)" style="fill: #e4e3df; opacity: 0.35"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 12.96 437.3592 
+L 753.84 437.3592 
+L 753.84 410.5272 
+L 12.96 410.5272 
+z
+" clip-path="url(#p5d8bd86b20)" style="fill: #e4e3df; opacity: 0.35"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 12.96 491.0232 
+L 753.84 491.0232 
+L 753.84 464.1912 
+L 12.96 464.1912 
+z
+" clip-path="url(#p5d8bd86b20)" style="fill: #e4e3df; opacity: 0.35"/>
    </g>
    <g id="line2d_1">
-    <path d="M 378.4608 242.5194 
-L 388.3392 242.5194 
-" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #a8a7a2; stroke-width: 1.2; stroke-linecap: square"/>
+    <path d="M 378.4608 289.7832 
+L 388.3392 289.7832 
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #a8a7a2; stroke-width: 1.2; stroke-linecap: square"/>
    </g>
    <g id="line2d_2">
-    <path d="M 491.3568 324.3564 
-L 501.2352 324.3564 
-" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #a8a7a2; stroke-width: 1.2; stroke-linecap: square"/>
+    <path d="M 378.4608 423.9432 
+L 388.3392 423.9432 
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #a8a7a2; stroke-width: 1.2; stroke-linecap: square"/>
    </g>
    <g id="line2d_3">
-    <path d="M 378.4608 378.9144 
-L 388.3392 378.9144 
-" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #a8a7a2; stroke-width: 1.2; stroke-linecap: square"/>
+    <path d="M 378.4608 477.6072 
+L 388.3392 477.6072 
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #a8a7a2; stroke-width: 1.2; stroke-linecap: square"/>
    </g>
    <g id="line2d_4">
-    <path d="M 378.4608 406.1934 
-L 388.3392 406.1934 
-" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #a8a7a2; stroke-width: 1.2; stroke-linecap: square"/>
+    <path d="M 378.4608 504.4392 
+L 388.3392 504.4392 
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #a8a7a2; stroke-width: 1.2; stroke-linecap: square"/>
    </g>
    <g id="text_1">
-    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="108.540584" transform="rotate(-0 21.4272 108.540584)">Production Python, testing, CI/CD</text>
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="104.375384" transform="rotate(-0 21.4272 104.375384)">Production Python, testing, CI/CD</text>
    </g>
    <g id="PathCollection_1">
     <defs>
-     <path id="m20ac617b9d" d="M 0 4.873397 
+     <path id="m476d429eb9" d="M 0 4.873397 
 C 1.29244 4.873397 2.532119 4.359905 3.446012 3.446012 
 C 4.359905 2.532119 4.873397 1.29244 4.873397 0 
 C 4.873397 -1.29244 4.359905 -2.532119 3.446012 -3.446012 
@@ -124,365 +140,476 @@ C -2.532119 4.359905 -1.29244 4.873397 0 4.873397
 z
 " style="stroke: #2a78d6"/>
     </defs>
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="383.4" y="106.1244" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="383.4" y="101.9592" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
    </g>
    <g id="PathCollection_2">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="439.848" y="106.1244" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="439.848" y="101.9592" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
    </g>
    <g id="PathCollection_3">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="496.296" y="106.1244" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="496.296" y="101.9592" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
    </g>
    <g id="text_2">
-    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="108.462642" transform="rotate(-0 545.688 108.462642)">✓  180 tests, lint, CI, Docker</text>
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="104.297442" transform="rotate(-0 545.688 104.297442)">✓  tests, lint, CI, Docker</text>
    </g>
    <g id="text_3">
-    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="135.819584" transform="rotate(-0 21.4272 135.819584)">Statistics, time series, applied ML</text>
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="131.207384" transform="rotate(-0 21.4272 131.207384)">Statistics, time series, applied ML</text>
    </g>
    <g id="PathCollection_4">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="383.4" y="133.4034" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="383.4" y="128.7912" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
    </g>
    <g id="PathCollection_5">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="439.848" y="133.4034" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="439.848" y="128.7912" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
    </g>
    <g id="PathCollection_6">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="496.296" y="133.4034" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="496.296" y="128.7912" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
    </g>
    <g id="text_4">
-    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="135.741642" transform="rotate(-0 545.688 135.741642)">✓  6 forecasters, conformal intervals</text>
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="131.129442" transform="rotate(-0 545.688 131.129442)">✓  8 forecasters, conformal intervals</text>
    </g>
    <g id="text_5">
-    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="163.098584" transform="rotate(-0 21.4272 163.098584)">Evaluation frameworks, measured impact</text>
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="158.039384" transform="rotate(-0 21.4272 158.039384)">Deep learning (PyTorch / TensorFlow)</text>
    </g>
    <g id="PathCollection_7">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="383.4" y="160.6824" style="fill: #2a78d6; stroke: #2a78d6"/>
-    </g>
+    <path d="M 383.4 160.232972 
+C 384.622526 160.232972 385.795145 159.747258 386.659601 158.882801 
+C 387.524058 158.018345 388.009772 156.845726 388.009772 155.6232 
+C 388.009772 154.400674 387.524058 153.228055 386.659601 152.363599 
+C 385.795145 151.499142 384.622526 151.013428 383.4 151.013428 
+C 382.177474 151.013428 381.004855 151.499142 380.140399 152.363599 
+C 379.275942 153.228055 378.790228 154.400674 378.790228 155.6232 
+C 378.790228 156.845726 379.275942 158.018345 380.140399 158.882801 
+C 381.004855 159.747258 382.177474 160.232972 383.4 160.232972 
+L 383.4 160.232972 
+z
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
    </g>
    <g id="PathCollection_8">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="439.848" y="160.6824" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="439.848" y="155.6232" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
    </g>
    <g id="PathCollection_9">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="496.296" y="160.6824" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="496.296" y="155.6232" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
    </g>
    <g id="text_6">
-    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="163.020642" transform="rotate(-0 545.688 163.020642)">✓  paired benchmark, agent evals</text>
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="157.961442" transform="rotate(-0 545.688 157.961442)">✓  GRU + Transformer trained in PyTorch</text>
    </g>
    <g id="text_7">
-    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="190.377584" transform="rotate(-0 21.4272 190.377584)">LLM apps: tool calling, agents, RAG</text>
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="184.871384" transform="rotate(-0 21.4272 184.871384)">Experiment design, evaluation frameworks</text>
    </g>
    <g id="PathCollection_10">
-    <path d="M 383.4 192.571172 
-C 384.622526 192.571172 385.795145 192.085458 386.659601 191.221001 
-C 387.524058 190.356545 388.009772 189.183926 388.009772 187.9614 
-C 388.009772 186.738874 387.524058 185.566255 386.659601 184.701799 
-C 385.795145 183.837342 384.622526 183.351628 383.4 183.351628 
-C 382.177474 183.351628 381.004855 183.837342 380.140399 184.701799 
-C 379.275942 185.566255 378.790228 186.738874 378.790228 187.9614 
-C 378.790228 189.183926 379.275942 190.356545 380.140399 191.221001 
-C 381.004855 192.085458 382.177474 192.571172 383.4 192.571172 
-L 383.4 192.571172 
-z
-" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="383.4" y="182.4552" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
    </g>
    <g id="PathCollection_11">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="439.848" y="187.9614" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="439.848" y="182.4552" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
    </g>
    <g id="PathCollection_12">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="496.296" y="187.9614" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="496.296" y="182.4552" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
    </g>
    <g id="text_8">
-    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="190.299642" transform="rotate(-0 545.688 190.299642)">✓  tool layer + agent loop (no RAG)</text>
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="184.793442" transform="rotate(-0 545.688 184.793442)">✓  paired benchmark, agent evals</text>
    </g>
    <g id="text_9">
-    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="217.656584" transform="rotate(-0 21.4272 217.656584)">Guardrails, least privilege, human in loop</text>
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="211.703384" transform="rotate(-0 21.4272 211.703384)">LLM apps: tool calling, agents</text>
    </g>
    <g id="PathCollection_13">
-    <path d="M 383.4 219.850172 
-C 384.622526 219.850172 385.795145 219.364458 386.659601 218.500001 
-C 387.524058 217.635545 388.009772 216.462926 388.009772 215.2404 
-C 388.009772 214.017874 387.524058 212.845255 386.659601 211.980799 
-C 385.795145 211.116342 384.622526 210.630628 383.4 210.630628 
-C 382.177474 210.630628 381.004855 211.116342 380.140399 211.980799 
-C 379.275942 212.845255 378.790228 214.017874 378.790228 215.2404 
-C 378.790228 216.462926 379.275942 217.635545 380.140399 218.500001 
-C 381.004855 219.364458 382.177474 219.850172 383.4 219.850172 
-L 383.4 219.850172 
+    <path d="M 383.4 213.896972 
+C 384.622526 213.896972 385.795145 213.411258 386.659601 212.546801 
+C 387.524058 211.682345 388.009772 210.509726 388.009772 209.2872 
+C 388.009772 208.064674 387.524058 206.892055 386.659601 206.027599 
+C 385.795145 205.163142 384.622526 204.677428 383.4 204.677428 
+C 382.177474 204.677428 381.004855 205.163142 380.140399 206.027599 
+C 379.275942 206.892055 378.790228 208.064674 378.790228 209.2872 
+C 378.790228 210.509726 379.275942 211.682345 380.140399 212.546801 
+C 381.004855 213.411258 382.177474 213.896972 383.4 213.896972 
+L 383.4 213.896972 
 z
-" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
    </g>
    <g id="PathCollection_14">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="439.848" y="215.2404" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="439.848" y="209.2872" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
    </g>
    <g id="PathCollection_15">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="496.296" y="215.2404" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="496.296" y="209.2872" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
    </g>
    <g id="text_10">
-    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="217.578642" transform="rotate(-0 545.688 217.578642)">✓  read-only tools, safety controller</text>
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="211.625442" transform="rotate(-0 545.688 211.625442)">✓  tool layer + agent loop</text>
    </g>
    <g id="text_11">
-    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="244.935584" transform="rotate(-0 21.4272 244.935584)">Agent interoperability (MCP)</text>
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="238.535384" transform="rotate(-0 21.4272 238.535384)">Retrieval with citations (RAG)</text>
    </g>
    <g id="PathCollection_16">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="439.848" y="242.5194" style="fill: #2a78d6; stroke: #2a78d6"/>
-    </g>
+    <path d="M 383.4 240.728972 
+C 384.622526 240.728972 385.795145 240.243258 386.659601 239.378801 
+C 387.524058 238.514345 388.009772 237.341726 388.009772 236.1192 
+C 388.009772 234.896674 387.524058 233.724055 386.659601 232.859599 
+C 385.795145 231.995142 384.622526 231.509428 383.4 231.509428 
+C 382.177474 231.509428 381.004855 231.995142 380.140399 232.859599 
+C 379.275942 233.724055 378.790228 234.896674 378.790228 236.1192 
+C 378.790228 237.341726 379.275942 238.514345 380.140399 239.378801 
+C 381.004855 240.243258 382.177474 240.728972 383.4 240.728972 
+L 383.4 240.728972 
+z
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
    </g>
    <g id="PathCollection_17">
-    <path d="M 496.296 247.129172 
-C 497.518526 247.129172 498.691145 246.643458 499.555601 245.779001 
-C 500.420058 244.914545 500.905772 243.741926 500.905772 242.5194 
-C 500.905772 241.296874 500.420058 240.124255 499.555601 239.259799 
-C 498.691145 238.395342 497.518526 237.909628 496.296 237.909628 
-C 495.073474 237.909628 493.900855 238.395342 493.036399 239.259799 
-C 492.171942 240.124255 491.686228 241.296874 491.686228 242.5194 
-C 491.686228 243.741926 492.171942 244.914545 493.036399 245.779001 
-C 493.900855 246.643458 495.073474 247.129172 496.296 247.129172 
-L 496.296 247.129172 
-z
-" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
-   </g>
-   <g id="text_12">
-    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="244.857642" transform="rotate(-0 545.688 244.857642)">✓  MCP server over stdio</text>
-   </g>
-   <g id="text_13">
-    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="272.214584" transform="rotate(-0 21.4272 272.214584)">Model risk, audit-ready docs, model cards</text>
-   </g>
-   <g id="PathCollection_18">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="383.4" y="269.7984" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="439.848" y="236.1192" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
    </g>
+   <g id="PathCollection_18">
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="496.296" y="236.1192" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="238.457442" transform="rotate(-0 545.688 238.457442)">✓  rulebook retrieval, measured</text>
+   </g>
+   <g id="text_13">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="265.367384" transform="rotate(-0 21.4272 265.367384)">Guardrails, red teaming, human in loop</text>
+   </g>
    <g id="PathCollection_19">
-    <path d="M 439.848 274.408172 
-C 441.070526 274.408172 442.243145 273.922458 443.107601 273.058001 
-C 443.972058 272.193545 444.457772 271.020926 444.457772 269.7984 
-C 444.457772 268.575874 443.972058 267.403255 443.107601 266.538799 
-C 442.243145 265.674342 441.070526 265.188628 439.848 265.188628 
-C 438.625474 265.188628 437.452855 265.674342 436.588399 266.538799 
-C 435.723942 267.403255 435.238228 268.575874 435.238228 269.7984 
-C 435.238228 271.020926 435.723942 272.193545 436.588399 273.058001 
-C 437.452855 273.922458 438.625474 274.408172 439.848 274.408172 
-L 439.848 274.408172 
+    <path d="M 383.4 267.560972 
+C 384.622526 267.560972 385.795145 267.075258 386.659601 266.210801 
+C 387.524058 265.346345 388.009772 264.173726 388.009772 262.9512 
+C 388.009772 261.728674 387.524058 260.556055 386.659601 259.691599 
+C 385.795145 258.827142 384.622526 258.341428 383.4 258.341428 
+C 382.177474 258.341428 381.004855 258.827142 380.140399 259.691599 
+C 379.275942 260.556055 378.790228 261.728674 378.790228 262.9512 
+C 378.790228 264.173726 379.275942 265.346345 380.140399 266.210801 
+C 381.004855 267.075258 382.177474 267.560972 383.4 267.560972 
+L 383.4 267.560972 
 z
-" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
    </g>
    <g id="PathCollection_20">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="496.296" y="269.7984" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="439.848" y="262.9512" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="PathCollection_21">
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="496.296" y="262.9512" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
    </g>
    <g id="text_14">
-    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="272.136642" transform="rotate(-0 545.688 272.136642)">✓  inventory, tiers, model cards</text>
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="265.289442" transform="rotate(-0 545.688 265.289442)">✓  read-only tools, injection tests</text>
    </g>
    <g id="text_15">
-    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="299.493584" transform="rotate(-0 21.4272 299.493584)">Monitoring, drift, fallbacks, rollback</text>
-   </g>
-   <g id="PathCollection_21">
-    <path d="M 383.4 301.687172 
-C 384.622526 301.687172 385.795145 301.201458 386.659601 300.337001 
-C 387.524058 299.472545 388.009772 298.299926 388.009772 297.0774 
-C 388.009772 295.854874 387.524058 294.682255 386.659601 293.817799 
-C 385.795145 292.953342 384.622526 292.467628 383.4 292.467628 
-C 382.177474 292.467628 381.004855 292.953342 380.140399 293.817799 
-C 379.275942 294.682255 378.790228 295.854874 378.790228 297.0774 
-C 378.790228 298.299926 379.275942 299.472545 380.140399 300.337001 
-C 381.004855 301.201458 382.177474 301.687172 383.4 301.687172 
-L 383.4 301.687172 
-z
-" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="292.199384" transform="rotate(-0 21.4272 292.199384)">Agent interoperability (MCP, A2A)</text>
    </g>
    <g id="PathCollection_22">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="439.848" y="297.0774" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="439.848" y="289.7832" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
    </g>
    <g id="PathCollection_23">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="496.296" y="297.0774" style="fill: #2a78d6; stroke: #2a78d6"/>
-    </g>
+    <path d="M 496.296 294.392972 
+C 497.518526 294.392972 498.691145 293.907258 499.555601 293.042801 
+C 500.420058 292.178345 500.905772 291.005726 500.905772 289.7832 
+C 500.905772 288.560674 500.420058 287.388055 499.555601 286.523599 
+C 498.691145 285.659142 497.518526 285.173428 496.296 285.173428 
+C 495.073474 285.173428 493.900855 285.659142 493.036399 286.523599 
+C 492.171942 287.388055 491.686228 288.560674 491.686228 289.7832 
+C 491.686228 291.005726 492.171942 292.178345 493.036399 293.042801 
+C 493.900855 293.907258 495.073474 294.392972 496.296 294.392972 
+L 496.296 294.392972 
+z
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
    </g>
    <g id="text_16">
-    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="299.415642" transform="rotate(-0 545.688 299.415642)">✓  validation checks, PSI, metrics</text>
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="292.121091" transform="rotate(-0 545.688 292.121091)">✓  MCP server (no A2A)</text>
    </g>
    <g id="text_17">
-    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="326.772584" transform="rotate(-0 21.4272 326.772584)">Reinforcement learning, optimisation</text>
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="319.031384" transform="rotate(-0 21.4272 319.031384)">Model risk, validation, explainability</text>
    </g>
    <g id="PathCollection_24">
-    <path d="M 383.4 328.966172 
-C 384.622526 328.966172 385.795145 328.480458 386.659601 327.616001 
-C 387.524058 326.751545 388.009772 325.578926 388.009772 324.3564 
-C 388.009772 323.133874 387.524058 321.961255 386.659601 321.096799 
-C 385.795145 320.232342 384.622526 319.746628 383.4 319.746628 
-C 382.177474 319.746628 381.004855 320.232342 380.140399 321.096799 
-C 379.275942 321.961255 378.790228 323.133874 378.790228 324.3564 
-C 378.790228 325.578926 379.275942 326.751545 380.140399 327.616001 
-C 381.004855 328.480458 382.177474 328.966172 383.4 328.966172 
-L 383.4 328.966172 
-z
-" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="383.4" y="316.6152" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
    </g>
    <g id="PathCollection_25">
-    <path d="M 439.848 328.966172 
-C 441.070526 328.966172 442.243145 328.480458 443.107601 327.616001 
-C 443.972058 326.751545 444.457772 325.578926 444.457772 324.3564 
-C 444.457772 323.133874 443.972058 321.961255 443.107601 321.096799 
-C 442.243145 320.232342 441.070526 319.746628 439.848 319.746628 
-C 438.625474 319.746628 437.452855 320.232342 436.588399 321.096799 
-C 435.723942 321.961255 435.238228 323.133874 435.238228 324.3564 
-C 435.238228 325.578926 435.723942 326.751545 436.588399 327.616001 
-C 437.452855 328.480458 438.625474 328.966172 439.848 328.966172 
-L 439.848 328.966172 
-z
-" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
-   </g>
-   <g id="text_18">
-    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="326.694642" transform="rotate(-0 545.688 326.694642)">✓  constrained PPO, MPC, MILP</text>
-   </g>
-   <g id="text_19">
-    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="354.051584" transform="rotate(-0 21.4272 354.051584)">Cloud ML platforms (SageMaker, Bedrock, Vertex)</text>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="439.848" y="316.6152" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
    </g>
    <g id="PathCollection_26">
-    <path d="M 383.4 356.245172 
-C 384.622526 356.245172 385.795145 355.759458 386.659601 354.895001 
-C 387.524058 354.030545 388.009772 352.857926 388.009772 351.6354 
-C 388.009772 350.412874 387.524058 349.240255 386.659601 348.375799 
-C 385.795145 347.511342 384.622526 347.025628 383.4 347.025628 
-C 382.177474 347.025628 381.004855 347.511342 380.140399 348.375799 
-C 379.275942 349.240255 378.790228 350.412874 378.790228 351.6354 
-C 378.790228 352.857926 379.275942 354.030545 380.140399 354.895001 
-C 381.004855 355.759458 382.177474 356.245172 383.4 356.245172 
-L 383.4 356.245172 
-z
-" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="496.296" y="316.6152" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="text_18">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="318.953442" transform="rotate(-0 545.688 318.953442)">✓  inventory, model cards, importance</text>
+   </g>
+   <g id="text_19">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="345.863384" transform="rotate(-0 21.4272 345.863384)">Monitoring, tracing, risk indicators</text>
    </g>
    <g id="PathCollection_27">
-    <path d="M 439.848 356.245172 
-C 441.070526 356.245172 442.243145 355.759458 443.107601 354.895001 
-C 443.972058 354.030545 444.457772 352.857926 444.457772 351.6354 
-C 444.457772 350.412874 443.972058 349.240255 443.107601 348.375799 
-C 442.243145 347.511342 441.070526 347.025628 439.848 347.025628 
-C 438.625474 347.025628 437.452855 347.511342 436.588399 348.375799 
-C 435.723942 349.240255 435.238228 350.412874 435.238228 351.6354 
-C 435.238228 352.857926 435.723942 354.030545 436.588399 354.895001 
-C 437.452855 355.759458 438.625474 356.245172 439.848 356.245172 
-L 439.848 356.245172 
+    <path d="M 383.4 348.056972 
+C 384.622526 348.056972 385.795145 347.571258 386.659601 346.706801 
+C 387.524058 345.842345 388.009772 344.669726 388.009772 343.4472 
+C 388.009772 342.224674 387.524058 341.052055 386.659601 340.187599 
+C 385.795145 339.323142 384.622526 338.837428 383.4 338.837428 
+C 382.177474 338.837428 381.004855 339.323142 380.140399 340.187599 
+C 379.275942 341.052055 378.790228 342.224674 378.790228 343.4472 
+C 378.790228 344.669726 379.275942 345.842345 380.140399 346.706801 
+C 381.004855 347.571258 382.177474 348.056972 383.4 348.056972 
+L 383.4 348.056972 
 z
-" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
    </g>
    <g id="PathCollection_28">
-    <path d="M 496.296 356.245172 
-C 497.518526 356.245172 498.691145 355.759458 499.555601 354.895001 
-C 500.420058 354.030545 500.905772 352.857926 500.905772 351.6354 
-C 500.905772 350.412874 500.420058 349.240255 499.555601 348.375799 
-C 498.691145 347.511342 497.518526 347.025628 496.296 347.025628 
-C 495.073474 347.025628 493.900855 347.511342 493.036399 348.375799 
-C 492.171942 349.240255 491.686228 350.412874 491.686228 351.6354 
-C 491.686228 352.857926 492.171942 354.030545 493.036399 354.895001 
-C 493.900855 355.759458 495.073474 356.245172 496.296 356.245172 
-L 496.296 356.245172 
-z
-" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
-   </g>
-   <g id="text_20">
-    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #d03b3a" x="545.688" y="353.973642" transform="rotate(-0 545.688 353.973642)">✕  Docker only</text>
-   </g>
-   <g id="text_21">
-    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="381.330584" transform="rotate(-0 21.4272 381.330584)">Kubernetes, IaC, distributed training, GPUs</text>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="439.848" y="343.4472" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
    </g>
    <g id="PathCollection_29">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="439.848" y="378.9144" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="496.296" y="343.4472" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
+   </g>
+   <g id="text_20">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="345.785442" transform="rotate(-0 545.688 345.785442)">✓  automated checks, audit trace</text>
+   </g>
+   <g id="text_21">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="372.695384" transform="rotate(-0 21.4272 372.695384)">Reinforcement learning, optimisation</text>
    </g>
    <g id="PathCollection_30">
-    <path d="M 496.296 383.524172 
-C 497.518526 383.524172 498.691145 383.038458 499.555601 382.174001 
-C 500.420058 381.309545 500.905772 380.136926 500.905772 378.9144 
-C 500.905772 377.691874 500.420058 376.519255 499.555601 375.654799 
-C 498.691145 374.790342 497.518526 374.304628 496.296 374.304628 
-C 495.073474 374.304628 493.900855 374.790342 493.036399 375.654799 
-C 492.171942 376.519255 491.686228 377.691874 491.686228 378.9144 
-C 491.686228 380.136926 492.171942 381.309545 493.036399 382.174001 
-C 493.900855 383.038458 495.073474 383.524172 496.296 383.524172 
-L 496.296 383.524172 
+    <path d="M 383.4 374.888972 
+C 384.622526 374.888972 385.795145 374.403258 386.659601 373.538801 
+C 387.524058 372.674345 388.009772 371.501726 388.009772 370.2792 
+C 388.009772 369.056674 387.524058 367.884055 386.659601 367.019599 
+C 385.795145 366.155142 384.622526 365.669428 383.4 365.669428 
+C 382.177474 365.669428 381.004855 366.155142 380.140399 367.019599 
+C 379.275942 367.884055 378.790228 369.056674 378.790228 370.2792 
+C 378.790228 371.501726 379.275942 372.674345 380.140399 373.538801 
+C 381.004855 374.403258 382.177474 374.888972 383.4 374.888972 
+L 383.4 374.888972 
 z
-" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
-   </g>
-   <g id="text_22">
-    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #d03b3a" x="545.688" y="381.252642" transform="rotate(-0 545.688 381.252642)">✕  single machine</text>
-   </g>
-   <g id="text_23">
-    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="408.609584" transform="rotate(-0 21.4272 408.609584)">Leading teams, setting platform standards</text>
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
    </g>
    <g id="PathCollection_31">
-    <path d="M 439.848 410.803172 
-C 441.070526 410.803172 442.243145 410.317458 443.107601 409.453001 
-C 443.972058 408.588545 444.457772 407.415926 444.457772 406.1934 
-C 444.457772 404.970874 443.972058 403.798255 443.107601 402.933799 
-C 442.243145 402.069342 441.070526 401.583628 439.848 401.583628 
-C 438.625474 401.583628 437.452855 402.069342 436.588399 402.933799 
-C 435.723942 403.798255 435.238228 404.970874 435.238228 406.1934 
-C 435.238228 407.415926 435.723942 408.588545 436.588399 409.453001 
-C 437.452855 410.317458 438.625474 410.803172 439.848 410.803172 
-L 439.848 410.803172 
+    <path d="M 439.848 374.888972 
+C 441.070526 374.888972 442.243145 374.403258 443.107601 373.538801 
+C 443.972058 372.674345 444.457772 371.501726 444.457772 370.2792 
+C 444.457772 369.056674 443.972058 367.884055 443.107601 367.019599 
+C 442.243145 366.155142 441.070526 365.669428 439.848 365.669428 
+C 438.625474 365.669428 437.452855 366.155142 436.588399 367.019599 
+C 435.723942 367.884055 435.238228 369.056674 435.238228 370.2792 
+C 435.238228 371.501726 435.723942 372.674345 436.588399 373.538801 
+C 437.452855 374.403258 438.625474 374.888972 439.848 374.888972 
+L 439.848 374.888972 
 z
-" clip-path="url(#p6d35ad6650)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
    </g>
    <g id="PathCollection_32">
-    <g clip-path="url(#p6d35ad6650)">
-     <use xlink:href="#m20ac617b9d" x="496.296" y="406.1934" style="fill: #2a78d6; stroke: #2a78d6"/>
+    <path d="M 496.296 374.888972 
+C 497.518526 374.888972 498.691145 374.403258 499.555601 373.538801 
+C 500.420058 372.674345 500.905772 371.501726 500.905772 370.2792 
+C 500.905772 369.056674 500.420058 367.884055 499.555601 367.019599 
+C 498.691145 366.155142 497.518526 365.669428 496.296 365.669428 
+C 495.073474 365.669428 493.900855 366.155142 493.036399 367.019599 
+C 492.171942 367.884055 491.686228 369.056674 491.686228 370.2792 
+C 491.686228 371.501726 492.171942 372.674345 493.036399 373.538801 
+C 493.900855 374.403258 495.073474 374.888972 496.296 374.888972 
+L 496.296 374.888972 
+z
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="text_22">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="372.617442" transform="rotate(-0 545.688 372.617442)">✓  constrained PPO, MPC, MILP</text>
+   </g>
+   <g id="text_23">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="399.527384" transform="rotate(-0 21.4272 399.527384)">Payments and intraday liquidity domain</text>
+   </g>
+   <g id="PathCollection_33">
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="383.4" y="397.1112" style="fill: #2a78d6; stroke: #2a78d6"/>
     </g>
    </g>
+   <g id="PathCollection_34">
+    <path d="M 439.848 401.720972 
+C 441.070526 401.720972 442.243145 401.235258 443.107601 400.370801 
+C 443.972058 399.506345 444.457772 398.333726 444.457772 397.1112 
+C 444.457772 395.888674 443.972058 394.716055 443.107601 393.851599 
+C 442.243145 392.987142 441.070526 392.501428 439.848 392.501428 
+C 438.625474 392.501428 437.452855 392.987142 436.588399 393.851599 
+C 435.723942 394.716055 435.238228 395.888674 435.238228 397.1112 
+C 435.238228 398.333726 435.723942 399.506345 436.588399 400.370801 
+C 437.452855 401.235258 438.625474 401.720972 439.848 401.720972 
+L 439.848 401.720972 
+z
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="PathCollection_35">
+    <path d="M 496.296 401.720972 
+C 497.518526 401.720972 498.691145 401.235258 499.555601 400.370801 
+C 500.420058 399.506345 500.905772 398.333726 500.905772 397.1112 
+C 500.905772 395.888674 500.420058 394.716055 499.555601 393.851599 
+C 498.691145 392.987142 497.518526 392.501428 496.296 392.501428 
+C 495.073474 392.501428 493.900855 392.987142 493.036399 393.851599 
+C 492.171942 394.716055 491.686228 395.888674 491.686228 397.1112 
+C 491.686228 398.333726 492.171942 399.506345 493.036399 400.370801 
+C 493.900855 401.235258 495.073474 401.720972 496.296 401.720972 
+L 496.296 401.720972 
+z
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
    <g id="text_24">
-    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #d03b3a" x="545.688" y="408.531642" transform="rotate(-0 545.688 408.531642)">✕  not a code feature</text>
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="545.688" y="399.449442" transform="rotate(-0 545.688 399.449442)">✓  the twin itself, BCBS 248</text>
    </g>
    <g id="text_25">
-    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #52514e" x="383.4" y="83.503041" transform="rotate(-0 383.4 83.503041)">Junior</text>
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="426.359384" transform="rotate(-0 21.4272 426.359384)">Containers and Kubernetes</text>
+   </g>
+   <g id="PathCollection_36">
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="439.848" y="423.9432" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="PathCollection_37">
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="496.296" y="423.9432" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
    </g>
    <g id="text_26">
-    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #52514e" x="439.848" y="83.503041" transform="rotate(-0 439.848 83.503041)">Senior</text>
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #b7791f" x="545.688" y="426.281442" transform="rotate(-0 545.688 426.281442)">◐  manifests, not run on a cluster</text>
    </g>
    <g id="text_27">
-    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #52514e" x="496.296" y="83.503041" transform="rotate(-0 496.296 83.503041)">Principal</text>
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="453.191384" transform="rotate(-0 21.4272 453.191384)">Cloud ML platforms (SageMaker, Bedrock, Vertex)</text>
+   </g>
+   <g id="PathCollection_38">
+    <path d="M 383.4 455.384972 
+C 384.622526 455.384972 385.795145 454.899258 386.659601 454.034801 
+C 387.524058 453.170345 388.009772 451.997726 388.009772 450.7752 
+C 388.009772 449.552674 387.524058 448.380055 386.659601 447.515599 
+C 385.795145 446.651142 384.622526 446.165428 383.4 446.165428 
+C 382.177474 446.165428 381.004855 446.651142 380.140399 447.515599 
+C 379.275942 448.380055 378.790228 449.552674 378.790228 450.7752 
+C 378.790228 451.997726 379.275942 453.170345 380.140399 454.034801 
+C 381.004855 454.899258 382.177474 455.384972 383.4 455.384972 
+L 383.4 455.384972 
+z
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="PathCollection_39">
+    <path d="M 439.848 455.384972 
+C 441.070526 455.384972 442.243145 454.899258 443.107601 454.034801 
+C 443.972058 453.170345 444.457772 451.997726 444.457772 450.7752 
+C 444.457772 449.552674 443.972058 448.380055 443.107601 447.515599 
+C 442.243145 446.651142 441.070526 446.165428 439.848 446.165428 
+C 438.625474 446.165428 437.452855 446.651142 436.588399 447.515599 
+C 435.723942 448.380055 435.238228 449.552674 435.238228 450.7752 
+C 435.238228 451.997726 435.723942 453.170345 436.588399 454.034801 
+C 437.452855 454.899258 438.625474 455.384972 439.848 455.384972 
+L 439.848 455.384972 
+z
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="PathCollection_40">
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="496.296" y="450.7752" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
    </g>
    <g id="text_28">
-    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52514e" x="545.688" y="83.503041" transform="rotate(-0 545.688 83.503041)">In ATLAS-Σ</text>
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #d03b3a" x="545.688" y="453.113091" transform="rotate(-0 545.688 453.113091)">✕  none</text>
+   </g>
+   <g id="text_29">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="480.023384" transform="rotate(-0 21.4272 480.023384)">LLM fine-tuning, GPUs, distributed training</text>
+   </g>
+   <g id="PathCollection_41">
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="439.848" y="477.6072" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="PathCollection_42">
+    <path d="M 496.296 482.216972 
+C 497.518526 482.216972 498.691145 481.731258 499.555601 480.866801 
+C 500.420058 480.002345 500.905772 478.829726 500.905772 477.6072 
+C 500.905772 476.384674 500.420058 475.212055 499.555601 474.347599 
+C 498.691145 473.483142 497.518526 472.997428 496.296 472.997428 
+C 495.073474 472.997428 493.900855 473.483142 493.036399 474.347599 
+C 492.171942 475.212055 491.686228 476.384674 491.686228 477.6072 
+C 491.686228 478.829726 492.171942 480.002345 493.036399 480.866801 
+C 493.900855 481.731258 495.073474 482.216972 496.296 482.216972 
+L 496.296 482.216972 
+z
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="text_30">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #d03b3a" x="545.688" y="479.945442" transform="rotate(-0 545.688 479.945442)">✕  CPU only, no fine-tuning</text>
+   </g>
+   <g id="text_31">
+    <text style="font-size: 9.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="21.4272" y="506.855384" transform="rotate(-0 21.4272 506.855384)">Leading teams, setting platform standards</text>
+   </g>
+   <g id="PathCollection_43">
+    <path d="M 439.848 509.048972 
+C 441.070526 509.048972 442.243145 508.563258 443.107601 507.698801 
+C 443.972058 506.834345 444.457772 505.661726 444.457772 504.4392 
+C 444.457772 503.216674 443.972058 502.044055 443.107601 501.179599 
+C 442.243145 500.315142 441.070526 499.829428 439.848 499.829428 
+C 438.625474 499.829428 437.452855 500.315142 436.588399 501.179599 
+C 435.723942 502.044055 435.238228 503.216674 435.238228 504.4392 
+C 435.238228 505.661726 435.723942 506.834345 436.588399 507.698801 
+C 437.452855 508.563258 438.625474 509.048972 439.848 509.048972 
+L 439.848 509.048972 
+z
+" clip-path="url(#p5d8bd86b20)" style="fill: none; stroke: #2a78d6; stroke-width: 1.6"/>
+   </g>
+   <g id="PathCollection_44">
+    <g clip-path="url(#p5d8bd86b20)">
+     <use xlink:href="#m476d429eb9" x="496.296" y="504.4392" style="fill: #2a78d6; stroke: #2a78d6"/>
+    </g>
+   </g>
+   <g id="text_32">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #d03b3a" x="545.688" y="506.777442" transform="rotate(-0 545.688 506.777442)">✕  not a code feature</text>
+   </g>
+   <g id="text_33">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #52514e" x="383.4" y="79.673091" transform="rotate(-0 383.4 79.673091)">Junior</text>
+   </g>
+   <g id="text_34">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #52514e" x="439.848" y="79.673091" transform="rotate(-0 439.848 79.673091)">Senior</text>
+   </g>
+   <g id="text_35">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #52514e" x="496.296" y="79.673091" transform="rotate(-0 496.296 79.673091)">Director+</text>
+   </g>
+   <g id="text_36">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52514e" x="545.688" y="79.673091" transform="rotate(-0 545.688 79.673091)">In ATLAS-Σ</text>
    </g>
   </g>
-  <g id="text_29">
+  <g id="text_37">
    <text style="font-weight: 700; font-size: 12.5px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b0b0b" x="14.472" y="22.458047" transform="rotate(-0 14.472 22.458047)">What bank AI/ML roles ask for, and where this project shows it</text>
   </g>
-  <g id="text_30">
-   <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52514e" x="14.472" y="45.804994" transform="rotate(-0 14.472 45.804994)">Nine postings, five US banks (JPMorgan, Bank of America, Citi, Goldman Sachs, Wells Fargo). Filled = required, ring = preferred.</text>
+  <g id="text_38">
+   <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52514e" x="14.472" y="52.025794" transform="rotate(-0 14.472 52.025794)">14 postings, five US banks (JPMorgan, Bank of America, Citi, Goldman Sachs, Wells Fargo). Filled = required, ring = preferred.</text>
   </g>
  </g>
  <defs>
-  <clipPath id="p6d35ad6650">
-   <rect x="12.96" y="73.3896" width="740.88" height="349.1712"/>
+  <clipPath id="p5d8bd86b20">
+   <rect x="12.96" y="69.7608" width="740.88" height="450.7776"/>
   </clipPath>
  </defs>
 </svg>

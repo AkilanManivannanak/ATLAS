@@ -123,3 +123,18 @@ Acceptance: 152 tests pass; every published run replay-verified; every source-ba
 - [ ] 24/7 days, tokenized-deposit rail, retrieval over policy documents, cloud deployment.
 
 Acceptance: 180 tests pass; lab verified in headless Chromium; MCP server verified with the official Python client.
+
+## v0.8 — an app people can use and review (2026-11-16)
+- [x] Streamlit app (seven pages) with animated day, what-if, upload, risk and controls, agent chat, evidence, reviews.
+- [x] Review channel: issue form + pre-filled link + published reviews listed in the app.
+- [x] Rulebook retrieval with citations; `search_rulebook` agent tool; labelled evaluation.
+- [x] GRU and Transformer forecasters in PyTorch; training study; checkpoints.
+- [x] Red-team tasks in the agent evaluation; tool-call timing on the audit trail.
+- [x] Permutation importance and noise robustness for the anomaly model.
+- [x] Kubernetes manifests and an app image.
+- [x] Job-posting review widened to 14 postings including director level.
+- [ ] Deploy the app on Streamlit Community Cloud and add its URL to the README (needs the owner's account).
+- [ ] Collect reviews from real users.
+- [ ] Score a real language model.
+
+Acceptance: 191 tests pass; app verified in a headless browser on all seven pages.

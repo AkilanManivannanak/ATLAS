@@ -6,15 +6,15 @@
 
 [![ci](https://github.com/AkilanManivannanak/ATLAS/actions/workflows/ci.yml/badge.svg)](https://github.com/AkilanManivannanak/ATLAS/actions/workflows/ci.yml)
 ![python](https://img.shields.io/badge/python-3.12%20%7C%203.13-2a78d6)
-![tests](https://img.shields.io/badge/tests-180%20passing-1baf7a)
+![tests](https://img.shields.io/badge/tests-191%20passing-1baf7a)
 ![replay](https://img.shields.io/badge/every%20run-replay--verified-1baf7a)
 ![deps](https://img.shields.io/badge/simulator%20core-zero%20dependencies-2a78d6)
 
-## [▶ Run it in your browser](https://akilanmanivannanak.github.io/ATLAS/lab.html) &nbsp;·&nbsp; [📊 Explore the results](https://akilanmanivannanak.github.io/ATLAS/)
+## [▶ Run it in your browser](https://akilanmanivannanak.github.io/ATLAS/lab.html) &nbsp;·&nbsp; [📊 Explore the results](https://akilanmanivannanak.github.io/ATLAS/) &nbsp;·&nbsp; [⭐ Review it](https://github.com/AkilanManivannanak/ATLAS/issues/new?template=review.yml)
 
-<a href="https://akilanmanivannanak.github.io/ATLAS/lab.html"><img src="docs/assets/lab.gif" alt="The live lab: a settlement day simulated in the browser, then re-run under stress with a treasury policy and a liquidity auction" width="100%"></a>
+<img src="docs/assets/app.gif" alt="The ATLAS app: a stressed settlement day played as an animated bank network, re-run with an optimiser and a liquidity auction, a ledger tamper test, and an agent that refuses to move money" width="100%">
 
-<sub>The whole simulator runs in the page. No install, no server, nothing uploaded.</sub>
+<sub>The app: play a settlement day, break it, fix it, try to tamper with the ledger, ask the agent. <code>streamlit run streamlit_app.py</code></sub>
 
 </div>
 
@@ -28,6 +28,38 @@
 <td width="25%" align="center"><h2>0</h2>tools that can execute anything<br><sub>agents analyse and propose; people decide</sub></td>
 </tr>
 </table>
+
+---
+
+## Try it, then tell me what broke
+
+| | |
+|---|---|
+| **The app** (everything, live) | `pip install -r requirements.txt && streamlit run streamlit_app.py` |
+| **The browser lab** (no install) | [akilanmanivannanak.github.io/ATLAS/lab.html](https://akilanmanivannanak.github.io/ATLAS/lab.html) |
+| **Leave a review** (public, under your name) | [open the review form](https://github.com/AkilanManivannanak/ATLAS/issues/new?template=review.yml) · [read the reviews](https://github.com/AkilanManivannanak/ATLAS/issues?q=label%3Areview) |
+
+<details>
+<summary><b>Seven things to do in the app</b></summary>
+
+1. **Live day:** press *Combined stress*, then ▶ to watch banks turn red as payments queue.
+2. Pin it as the baseline, press *Stress + optimiser + auction*, and read the green arrows.
+3. **What if:** compare any two responses, then sweep liquidity from 6% to 30%.
+4. **Your payments:** load the sample day or drop your own CSV; every page then runs on it.
+5. **Risk & controls → Tamper with the ledger:** change one payment by 1% and see the hash chain and the replay both catch it.
+6. **Ask:** ask which bank is most stretched, what the rulebook says about FedNow limits, then tell it to move $50 million.
+7. **Evidence:** the same comparisons over 1,320 simulated days, the trained deep-learning forecasters, and the job-posting map.
+</details>
+
+<details>
+<summary><b>Put the app online (Streamlit Community Cloud, free)</b></summary>
+
+1. Sign in at [share.streamlit.io](https://share.streamlit.io) with GitHub.
+2. *Create app* → repository `AkilanManivannanak/ATLAS`, branch `main`, main file `streamlit_app.py`.
+3. *Advanced settings* → Python 3.12 → *Deploy*.
+
+It needs no secrets and no database. `requirements.txt` at the repository root is what the platform installs.
+</details>
 
 ---
 
@@ -67,7 +99,7 @@ Also reads ISO 20022 `pacs.008` / `pacs.009`.
   "args": ["mcp", "--payments", "day.csv"]
 }}}
 ```
-Eight read-only tools. Every call is logged to a hash chain.
+Nine read-only tools. Every call is logged to a hash chain.
 
 </td>
 </tr>
@@ -141,7 +173,7 @@ A trained model catches 77% of the patterns it has seen and at most 13% of ones 
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/model-risk-dark.svg">
-  <img alt="Model inventory with validation checks: one model passes, four warn, two fail" src="docs/assets/model-risk-light.svg" width="100%">
+  <img alt="Model inventory with validation checks: three models pass, four warn, two fail" src="docs/assets/model-risk-light.svg" width="100%">
 </picture>
 
 The inventory follows the 2026 US model-risk guidance (SR 26-2). The failures are real and left visible: [model cards](docs/model_cards/README.md).
@@ -153,7 +185,16 @@ The inventory follows the 2026 US model-risk guidance (SR 26-2). The failures ar
   <img alt="Three agents scored on tool use, correctness, grounding and safety; the two broken control agents fail" src="docs/assets/agent-evals-light.svg" width="100%">
 </picture>
 
-No language model is bundled. Point `atlas evals --llm` at any OpenAI-compatible endpoint to score one.
+Fifteen tasks, including prompt injection and a request far beyond the budget. No language model is bundled: point `atlas evals --llm`, or the app's Ask page, at any OpenAI-compatible endpoint.
+
+### Deep learning, held to the same test
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/deep-forecasting-dark.svg">
+  <img alt="Forecast error of a GRU and a Transformer against ridge and gradient boosting, and their training curves" src="docs/assets/deep-forecasting-light.svg" width="100%">
+</picture>
+
+A GRU trained in PyTorch is the best forecaster here, about 6% ahead of ridge. A modest gain, reported as one.
 
 <details>
 <summary><b>More results: safe RL · auction incentives · forecasting · scaling · calibration · netting</b></summary>
@@ -204,7 +245,7 @@ No language model is bundled. Point `atlas evals --llm` at any OpenAI-compatible
   <img alt="Skills asked for in nine bank AI/ML job postings by level, and where the project shows each one" src="docs/assets/hiring-map-light.svg" width="100%">
 </picture>
 
-Based on nine current postings and the banks' own AI announcements: [industry landscape and sources](docs/25_industry_landscape.md).
+Based on fourteen current postings, from graduate programme to director, and the banks' own AI announcements: [industry landscape and sources](docs/25_industry_landscape.md).
 
 ---
 
@@ -218,7 +259,8 @@ Based on nine current postings and the banks' own AI announcements: [industry la
 ```bash
 python3 -m venv .venv && source .venv/bin/activate          # Python 3.12+
 pip install -r requirements-lock.txt && pip install --no-deps -e .
-pytest -q                                                   # 180 tests
+pytest -q                                                   # 191 tests
+streamlit run streamlit_app.py                              # app  → http://localhost:8501
 atlas run --stress combined --controller mpc --auction uniform
 uvicorn atlas.api.app:app --port 8000                       # API  → http://localhost:8000/docs
 cd frontend && npm ci && npm run dev                        # UI   → http://localhost:3000
@@ -234,6 +276,8 @@ python -m atlas.benchmark --preset standard     # policy comparison, 240 runs
 python -m atlas.benchmark --preset extended     # 11 stresses, 1,320 runs
 python scripts/anomaly_study.py                 # anomaly detection
 python -m atlas.agent.evals                     # agent evaluation
+python scripts/deep_forecast_study.py           # GRU and Transformer training (needs torch)
+python scripts/retrieval_study.py               # rulebook retrieval
 python scripts/calibration_study.py             # published-statistics calibration
 python scripts/build_model_inventory.py         # model inventory + cards
 python scripts/auction_study.py && python scripts/train_safe_rl.py && python scripts/generate_research_artifacts.py && python scripts/scaling_study.py
@@ -250,10 +294,10 @@ python scripts/make_figures.py && python scripts/build_site.py
 | Mean payment size matched to published Fedwire and FedNow statistics | Cost weights (checked under 27 alternatives) |
 | Your own file, if you supply one | Opening balances and credit lines when your file does not include them |
 
-- No real bank has used this. It is built so one could: real formats in, supervisory report out, nothing leaves the machine.
-- Anomaly labels are injected, not observed fraud. No language model was evaluated.
-- The browser lab runs the rule-based treasury; MPC, the learned controller and the ML detectors need the Python package.
-- Not covered: cloud ML platforms, Kubernetes, distributed training, retrieval (RAG), defaults, overnight markets.
+- No bank has used this, and there are no published reviews yet. The [review form](https://github.com/AkilanManivannanak/ATLAS/issues/new?template=review.yml) is how that changes.
+- Anomaly labels are injected, not observed fraud. No language model has been evaluated.
+- Kubernetes manifests exist but have not been applied to a cluster. No cloud ML platform, GPU training or LLM fine-tuning.
+- The browser lab runs the rule-based treasury; the app and the Python package run everything.
 
 Full list: [limitations](docs/20_known_limitations.md) · [realism and sources](docs/23_realism_and_calibration.md)
 </details>
@@ -262,9 +306,11 @@ Full list: [limitations](docs/20_known_limitations.md) · [realism and sources](
 <summary><b>Repository map</b></summary>
 
 ```text
+streamlit_app.py   the interactive app
 src/atlas/   sim · rails · ledger · store · iso20022 · scenario · settlement · market · stress · network
-             control (safety, MPC, safe RL) · forecast · detect · regulatory · governance · agent (tools, MCP, evals)
-             ingest · calibration · lab · cli · api
+             control (safety, MPC, safe RL) · forecast (classical + PyTorch) · detect · regulatory · governance
+             agent (tools, MCP, evals) · knowledge (retrieval) · ingest · calibration · insight · lab · cli · api
+deploy/k8s/  Kubernetes manifests
 frontend/    Next.js Command Center          site/  results explorer + live lab (built by CI)
 results/     every artifact behind every figure    docs/  specifications 01-25, model cards
 data/public/ published Fed statistics used for calibration

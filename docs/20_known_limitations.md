@@ -21,9 +21,16 @@
 | No real institution has used the tool | "Usable on real data" is a capability, not a track record | Ingest tested by round-trip and malformed-row tests; real formats in, assumptions listed. |
 | Uploaded files rarely include opening balances | Results depend on the assumed balances | Optional balances file; otherwise the assumption is printed with the result. |
 | Anomaly labels are injected typologies | Detection figures do not transfer to real fraud | Stated in every artifact; leave-one-pattern-out shows the supervised model's blind spot. |
-| No language model evaluated | Agent results cover a deterministic reference and two failing controls only | `atlas evals --llm` scores any OpenAI-compatible endpoint. |
+| No language model evaluated | Agent results cover a deterministic reference and two failing controls only | `atlas evals --llm` and the app's Ask page accept any OpenAI-compatible endpoint; none was reachable when this was built. |
 | Grounding check is numeric and refusal check is keyword-based | A model could pass with a wrong non-numeric claim | Documented as heuristics; correctness is checked separately against recomputed truth. |
-| Browser lab excludes MPC, safe RL and ML detectors | The lab cannot show the headline MPC + auction arm | Rule-based treasury + auction is offered; stated on the page. |
+| Browser lab excludes MPC, safe RL and ML detectors | The lab cannot show the headline MPC + auction arm | The Streamlit app runs MPC + auction live; the browser lab offers rule-based treasury + auction. |
 | BCBS 248 correspondent tools B(i)/(ii) not implemented | No customer-bank view | The twin has direct participants only. |
 | Model inventory is not a compliance attestation | Could be misread as regulatory sign-off | Disclaimer in the artifact and model cards. |
 | Calibration matches means only | Size distribution shape, network and timing are still assumed | Listed under `not_identified_by_public_data` in `results/calibration.json`. |
+
+| Streamlit app not deployed or load-tested by the author | Behaviour on Streamlit Community Cloud (memory, cold start) is unverified | Verified locally in a headless browser and with `AppTest`; simulations are cached and sized for one CPU. |
+| Zero published reviews | "Used by real users" is not yet true | The review channel is public and attributable (GitHub issues); the app shows the real count. |
+| Retrieval is lexical and extractive | Paraphrased questions with no shared terms can miss | Measured on labelled questions; a small synonym map; the limitation is stated in the module. |
+| Retrieval labels revised once after inspection | Reported hit rates are optimistic | Stated next to the figures. |
+| Deep forecasters: one seed, CPU, no shift test | The 6% gain over ridge may not be stable | Stated in the model cards; scored by the same code as every other model. |
+| Kubernetes manifests never applied | They may need changes for a given cluster (ingress class, storage) | Structure and hardening are tested; the file says so at the top. |

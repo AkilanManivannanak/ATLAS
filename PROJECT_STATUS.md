@@ -1,6 +1,6 @@
 # Project status
 
-**Version:** 0.7.0 · **Stage:** all ten blueprint phases implemented to a research-grade increment, including the previously missing auction mechanism, safe RL, decision center and 100-bank scale. Remaining gaps are listed below and in `docs/20_known_limitations.md`.
+**Version:** 0.8.0 · **Stage:** all ten blueprint phases implemented to a research-grade increment, including the previously missing auction mechanism, safe RL, decision center and 100-bank scale. Remaining gaps are listed below and in `docs/20_known_limitations.md`.
 
 ## Blueprint coverage
 
@@ -27,10 +27,22 @@
 | Model risk | Done: inventory, materiality tiers, automated checks, generated model cards (1 pass, 4 warn, 2 fail) |
 | Agents | Done: guarded tool layer, MCP server, OpenAI-compatible loop, evaluation harness with failing controls. No language model evaluated |
 | Calibration | Done: mean payment sizes fitted to Fedwire 2025 and FedNow/RTP 2026 published statistics |
-| Command Center | Not updated for v0.7: the new views are in the API and the browser lab only |
+| Command Center | Superseded for the v0.7+ views by the Streamlit app; the Next.js app still covers the v0.6 screens |
 
-## Verification (2026-11-16, Python 3.13.18, Linux x86_64)
-- `pytest -q`: **180 passed**. `ruff check src tests scripts`: clean. Frontend `tsc --noEmit` and `next build`: pass.
+## v0.8: an app people can use and review, and four closed gaps
+| Area | Status |
+|---|---|
+| Interactive app | Done: Streamlit, seven pages, every v0.7 view, upload, agent chat with grounding badges, tamper demo. Verified locally (headless browser and `AppTest`); **not yet deployed** by the author |
+| Reviews from real users | Channel done: in-app form opens a pre-filled public GitHub issue; published reviews are listed in the app. **Zero reviews so far** |
+| Retrieval (RAG) | Done: extractive BM25 with citations, measured, exposed as an agent tool |
+| Deep learning | Done: GRU and Transformer in PyTorch, trained here on CPU; GRU is the best forecaster at 60 training days |
+| Red teaming | Done for the reference agent: injection and budget-flood tasks |
+| Kubernetes | Manifests written and schema-tested; never applied to a cluster |
+| Language model evaluation | **Still not done**: no model was reachable from the build environment |
+| Real fraud data | **Still not available** |
+
+## Verification (2026-11-16, Python 3.13.18, Linux x86_64, torch 2.x CPU)
+- `pytest -q`: **191 passed**. `ruff check src tests scripts`: clean. Frontend `tsc --noEmit` and `next build`: pass.
 - All benchmark, auction, RL, game and scaling runs replay-verified.
 - Not verified here: Docker image builds (no Docker daemon); CI builds them on push.
 

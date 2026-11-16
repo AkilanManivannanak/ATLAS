@@ -154,5 +154,42 @@ Re-running three arms under the calibrated sizes leaves the headline unchanged (
 ### Browser lab
 `atlas.lab.run_lab` under Pyodide 0.27.7 in headless Chromium: a 12-bank, 2,424-payment day in 1.1-1.4 s; a 4,855-payment uploaded CSV in 2.2 s; ledger replay verified in the page.
 
+## v0.8 additions
+
+### Deep-learning forecasters (`results/deep_forecasting.json`)
+GRU and a 2-layer Transformer encoder in PyTorch 2.15.0+cu132 on CPU; same splits, scoring and conformal intervals as the classical models; 8 test days. MASE is scaled within each training size, so compare down a column, not across.
+
+| Model | 15 min, 12 training days | 15 min, 60 training days | 1 h, 60 days | 90% PI coverage (1 h) |
+|---|---|---|---|---|
+| GRU (PyTorch) | 0.698 | 0.702 | 0.761 | 88.8% |
+| Transformer (PyTorch) | 0.705 | 0.711 | 0.758 | 89.1% |
+| Gradient boosting | 0.746 | 0.726 | 0.782 | 89.1% |
+| Ridge | 0.743 | 0.745 | 0.787 | 88.9% |
+| Seasonal naive | 0.965 | 1.332 | 1.373 | 88.7% |
+
+* With 60 training days the GRU is the best model at both horizons, about 6% better than ridge at 15 minutes. With 12 days the margin is smaller. The gain is real but modest.
+* Held-out loss is nearly flat while training loss falls: the models extract little beyond the first epochs. Early stopping uses held-out training days only.
+* Single seed, CPU, synthetic days from one topology, not tested under distribution shift.
+
+### Rulebook retrieval (`results/retrieval_eval.json`)
+170 passages from the specifications, decisions, model cards and data notes; 20 labelled questions (file-level relevance).
+
+| Method | Right source first | In top 3 | MRR |
+|---|---|---|---|
+| BM25 (used) | 80% | 90% | 0.854 |
+| Term overlap baseline | 75% | 100% | 0.850 |
+
+The labels were revised once after the first run showed correct answers in files the first labelling had missed, so these figures are optimistic. BM25 and plain overlap are close on a corpus this small; BM25 is kept because it ranks short exact passages (the glossary) higher. Retrieval is extractive: passages are quoted with file, heading and line.
+
+### Agent evaluation, with red-team tasks (`results/agent_evals.json`)
+15 tasks: 9 analysis (one inside a prompt-injection wrapper), 1 rulebook citation, 3 execution requests (one with a fake "system override"), 1 budget flood, 1 out of scope. Planner 100%; fabricating control 53%; over-reaching control 80%. **Still no language model evaluated.**
+
+### Anomaly model validation extras (`results/anomaly_detection.json`)
+* Permutation importance (drop in PR-AUC): limit_proximity 0.60, time_surprise 0.27, log_amount 0.25. The model leans heavily on one feature that only two typologies exercise.
+* Robustness: PR-AUC 0.71 clean, 0.62 with 5% input noise, 0.53 with 10%, 0.36 with 20%. It degrades quickly.
+
+### Model inventory
+9 models: 3 pass (GRU, Transformer, constrained PPO), 4 warn, 2 fail.
+
 ## Not yet run
 E3 (speed vs stability frontier as a dedicated sweep), cost-model calibration against observed data (none available by design), controllers that are aware of the shared FedNow master account.

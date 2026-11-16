@@ -185,3 +185,19 @@
 ## D-032 — Calibrate only what public data identifies
 
 **Decision:** mean payment sizes are fitted to published Fedwire and FedNow/RTP aggregates as an optional preset; defaults are unchanged so earlier results stay reproducible. Distribution shape, network and timing remain assumptions because no operator publishes them.
+
+## D-033 — The interactive app is Streamlit over the same functions as everything else
+
+**Decision:** `streamlit_app.py` calls `atlas.lab.run_lab` and `atlas.insight`; it holds no simulation logic of its own and shows nothing that is not computed live or read from `results/`. **Why Streamlit:** it deploys from the repository with no server to run, which is what lets other people try it. The Next.js Command Center stays for the v0.6 screens.
+
+## D-034 — Reviews are public GitHub issues, never stored by the app
+
+**Decision:** the app's review form opens the repository's Review issue form pre-filled; the reviewer submits under their own account. The app lists what is published and shows zero when there are none. **Why:** a review that anyone can trace to a real account is worth more than a rating stored where nobody can check it, and the app needs no database or secret.
+
+## D-035 — Retrieval is lexical and extractive
+
+**Decision:** BM25 over heading-level passages, quoted with file, heading and line. No embedding model. **Why:** the corpus is a few hundred passages of exact domain terms; the result is explainable, has no model download, and runs anywhere. A generative layer can sit on top through the agent loop and must cite the same passages.
+
+## D-036 — Deep models enter through the same interface and the same inventory
+
+**Decision:** the GRU and Transformer implement the classical forecasters' `fit`/`predict`, are scored by the same `evaluate`, and are listed in the model inventory with ridge as challenger. PyTorch is an optional extra; nothing else imports it.
