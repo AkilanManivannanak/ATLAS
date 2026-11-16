@@ -45,7 +45,7 @@
    "junior": 2,
    "senior": 2,
    "director": 2,
-   "where": "paired benchmark, agent evals"
+   "where": "paired benchmark, agent evals; reverse stress test by bisection in the Stress lab"
   },
   {
    "skill": "LLM apps: tool calling, agents",
@@ -66,7 +66,7 @@
    "junior": 1,
    "senior": 2,
    "director": 2,
-   "where": "read-only tools, injection tests"
+   "where": "read-only tools, injection tests; app Alerts & cases: people decide every alert, decisions logged"
   },
   {
    "skill": "Agent interoperability (MCP, A2A)",
@@ -87,7 +87,7 @@
    "junior": 1,
    "senior": 2,
    "director": 2,
-   "where": "automated checks, audit trace"
+   "where": "automated checks, audit trace; live-feed freshness checks and a reserve-tightness indicator (atlas.live)"
   },
   {
    "skill": "Reinforcement learning, optimisation",
@@ -101,7 +101,7 @@
    "junior": 2,
    "senior": 1,
    "director": 1,
-   "where": "the twin itself, BCBS 248"
+   "where": "the twin itself, BCBS 248; live SOFR, EFFR, reverse repo and TGA drive the simulated day"
   },
   {
    "skill": "Containers and Kubernetes",

@@ -156,9 +156,11 @@ def test_streamlit_app_runs_and_reacts_to_a_preset():
     from streamlit.testing.v1 import AppTest
     at = AppTest.from_file(str(ROOT / "streamlit_app.py"), default_timeout=120).run()
     assert not at.exception, at.exception
-    assert at.title[0].value == "One settlement day"
+    assert at.title[0].value == "Settlement command center"
     assert at.session_state["stress"] == "baseline"
     next(b for b in at.button if b.label == "Combined stress").click().run()
     assert not at.exception and at.session_state["stress"] == "combined"
-    at.sidebar.selectbox[1].set_value("multilateral").run()
+    next(s for s in at.sidebar.selectbox if s.key == "policy").set_value("multilateral").run()
     assert not at.exception and at.session_state["policy"] == "multilateral"
+    next(b for b in at.button if "Today's market" in b.label).click().run()
+    assert not at.exception and 6 <= at.session_state["liq"] <= 26

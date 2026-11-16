@@ -1,6 +1,6 @@
 # Project status
 
-**Version:** 0.9.0 · **Stage:** all ten blueprint phases implemented to a research-grade increment, including the previously missing auction mechanism, safe RL, decision center and 100-bank scale. Remaining gaps are listed below and in `docs/20_known_limitations.md`.
+**Version:** 1.0.0 · **Stage:** all ten blueprint phases implemented to a research-grade increment, including the previously missing auction mechanism, safe RL, decision center and 100-bank scale. Remaining gaps are listed below and in `docs/20_known_limitations.md`.
 
 ## Blueprint coverage
 
@@ -16,6 +16,16 @@
 | 8. Safe RL | Done: constrained PPO (v2) ties MPC on held-out days with 0% safety rejections; v1 failure documented |
 | 9. Product | Done: API (analyst, statements, counterfactuals), 9-screen Command Center, Docker, CI, GitHub Pages explorer |
 | 10. Validation | Done: standard (240 runs) and extended (1,320 runs, 11 stresses) benchmarks; headline result replicates in 11/11 stresses and 297/297 stress × cost-model cells; scaling to 669k payments |
+
+## v1.0: live markets, a team desk, and a light app
+
+- **Live funding-market data** (`atlas.live`): SOFR with its 1st/99th percentiles, EFFR and reverse-repo take-up from the New York Fed Markets API, and the Treasury General Account from the Daily Treasury Statement. Keyless, schema- and range-checked, freshness checked against each publisher's lag, and falling back per feed to a dated snapshot that is labelled as such.
+- **Reserve-tightness indicator** and a documented rule that turns it into the simulator's opening liquidity and stress. Any past market day can be replayed using only data published up to it.
+- **Reverse stress test**: bisects for the least opening liquidity at which a response still settles a target share.
+- **Alerts & cases**: alert queue, case file with evidence and a ledger-only narrative, and Clear / Escalate / File report decisions shared by the team.
+- **Team workspace** (`atlas.workspace`): SQLite, hash-chained activity log, case decisions, in-app reviews, JSON export.
+- **App rebuilt**: ten pages in three groups, light themes in three bank colour families, animated particle network with pause, replay, speed and click-to-pin, count-up tiles, animated agent pipeline, live-market ticker and gauge. Demo video in `docs/assets/`.
+- 216 tests pass (17 new). Limits: the tightness-to-simulation mapping is a rule of thumb, not an estimated model; the workspace resets when the hosted container is redeployed.
 
 ## v0.7: usable on real data, and built to bank AI practice
 | Area | Status |

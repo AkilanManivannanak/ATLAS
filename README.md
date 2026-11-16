@@ -6,50 +6,73 @@
 
 [![ci](https://github.com/AkilanManivannanak/ATLAS/actions/workflows/ci.yml/badge.svg)](https://github.com/AkilanManivannanak/ATLAS/actions/workflows/ci.yml)
 ![python](https://img.shields.io/badge/python-3.12%20%7C%203.13-2a78d6)
-![tests](https://img.shields.io/badge/tests-199%20passing-1baf7a)
+![tests](https://img.shields.io/badge/tests-216%20passing-1baf7a)
 ![replay](https://img.shields.io/badge/every%20run-replay--verified-1baf7a)
 ![deps](https://img.shields.io/badge/simulator%20core-zero%20dependencies-2a78d6)
 
 ## [▶ Run it in your browser](https://akilanmanivannanak.github.io/ATLAS/lab.html) &nbsp;·&nbsp; [📊 Explore the results](https://akilanmanivannanak.github.io/ATLAS/) &nbsp;·&nbsp; [⭐ Review it](https://github.com/AkilanManivannanak/ATLAS/issues/new?template=review.yml)
 
-<img src="docs/assets/app.gif" alt="The ATLAS app: a stressed settlement day played as an animated bank network, re-run with an optimiser and a liquidity auction, a ledger tamper test, and an agent that refuses to move money" width="100%">
+<img src="docs/assets/app.gif" alt="ATLAS app: payments flowing between twelve banks as particles, banks turning amber and red as payments queue, then the day re-run on today's real funding-market readings" width="100%">
 
-<sub>The app: play a settlement day, break it, fix it, try to tamper with the ledger, ask the agent. <code>streamlit run streamlit_app.py</code></sub>
+<sub>Payments travel between banks as particles; a bank turns red when more is waiting to leave than it has liquidity. <a href="docs/assets/atlas_demo.mp4">▶ Full 2.5-minute tour (mp4)</a></sub>
 
 </div>
 
-> Simulated results. The rails are models of RTGS (Fedwire-style), liquidity-saving (CHIPS-style), FedNow and RTP. They are not connected to those systems and cannot move money.
+> Simulated banks on real market conditions. SOFR, EFFR, reverse-repo take-up and the Treasury General Account come live from the New York Fed and the US Treasury. The rails are models of Fedwire, CHIPS, FedNow and RTP; they are not connected to those systems and cannot move money.
 
 <table>
 <tr>
 <td width="25%" align="center"><h2>−61%</h2>cost of a settlement day<br><sub>treasury optimiser + liquidity auction vs a plain queue</sub></td>
-<td width="25%" align="center"><h2>11 / 11</h2>stress scenarios where that holds<br><sub>1,320 runs, every ledger replayed</sub></td>
-<td width="25%" align="center"><h2>1.4 s</h2>to simulate a day in a browser tab<br><sub>669k payments, 100 banks in ≈3 min natively</sub></td>
+<td width="25%" align="center"><h2>4 live feeds</h2>set the day's liquidity<br><sub>NY Fed + US Treasury, freshness checked on every load</sub></td>
+<td width="25%" align="center"><h2>63 / 75</h2>real frauds caught<br><sub>reviewing 0.5% of 284,807 real card transactions</sub></td>
 <td width="25%" align="center"><h2>0</h2>tools that can execute anything<br><sub>agents analyse and propose; people decide</sub></td>
 </tr>
 </table>
 
 ---
 
-## Try it, then tell me what broke
+## Ten pages, one bank-operations desk
+
+<table>
+<tr>
+<td width="50%"><img src="docs/assets/app_market.png" alt="Live funding market page"><br><b>📈 Live market</b> · today's SOFR, EFFR, RRP and TGA, a reserve-tightness gauge, and a slider that replays any past market day (quarter-end included) through the simulator.</td>
+<td width="50%"><img src="docs/assets/app_stress.png" alt="Stress lab page"><br><b>🧪 Stress lab</b> · eleven things that go wrong, two responses on the same payments, a liquidity sweep, and a <b>reverse stress test</b> that bisects for the breaking point.</td>
+</tr>
+<tr>
+<td><img src="docs/assets/app_alerts.png" alt="Alerts and cases page"><br><b>🗂️ Alerts & cases</b> · ranked unusual payments, a case file with evidence and a narrative built only from ledger figures, and Clear / Escalate / File report decisions saved for the whole team.</td>
+<td><img src="docs/assets/app_team.png" alt="Team page"><br><b>👥 Team</b> · everyone on the deployment shares a hash-chained activity log, case decisions and reviews. Export it as JSON at any time.</td>
+</tr>
+</table>
+
+| Page | What you do there | What it shows a hiring manager |
+|---|---|---|
+| 🏛️ Command center | Pick a day or press **⚡ Today's market**, watch it settle (pause, replay, 1×/3×/10×, click a bank) | Event-sourced simulation, replay-verified ledger |
+| 📈 Live market | Read four public feeds, replay any past day | Data engineering: schema checks, freshness SLOs, fallback with provenance |
+| 🧪 Stress lab | Break it, compare fixes, find the breaking point | Stress and reverse stress testing, MPC, auctions |
+| 📄 Your payments | Upload a CSV, see every rejected row and assumption | Ingestion that never silently repairs data |
+| 🗂️ Alerts & cases | Triage, read evidence, decide | Human-in-the-loop AML/fraud operations |
+| 🛡️ Controls | BCBS 248 report, tamper with the ledger | Supervisory reporting, tamper evidence |
+| ⚖️ Model risk | Filter models by pass / warn / fail | SR 26-2 inventory, challengers, validation checks |
+| 🤖 Agent | Watch the router pick read-only tools, ask your own question | Tool-using agent, grounding checks, refusal, audit chain, optional LLM |
+| 📊 Evidence | 1,320 simulated days, real fraud data, deep learning | Paired statistics, honest splits, failing controls |
+| 👥 Team | See who did what, leave a review | Multi-user product, tamper-evident activity |
+
+Three colour schemes (navy & crimson, ocean & bronze, crimson & gold) sit at the bottom of the sidebar.
+
+---
+
+## Try it with your team, then tell me what broke
+
+1. Open the app, put your name in the sidebar.
+2. Press **⚡ Today's market** on the Command center and watch the day.
+3. On **Alerts & cases**, decide three cases. Your teammates see your decisions.
+4. On **Team → Reviews**, leave stars and one thing that broke.
 
 | | |
 |---|---|
-| **The app** (everything, live) | `pip install -r requirements.txt && streamlit run streamlit_app.py` |
-| **The browser lab** (no install) | [akilanmanivannanak.github.io/ATLAS/lab.html](https://akilanmanivannanak.github.io/ATLAS/lab.html) |
-| **Leave a review** (public, under your name) | [open the review form](https://github.com/AkilanManivannanak/ATLAS/issues/new?template=review.yml) · [read the reviews](https://github.com/AkilanManivannanak/ATLAS/issues?q=label%3Areview) |
-
-<details>
-<summary><b>Seven things to do in the app</b></summary>
-
-1. **Live day:** press *Combined stress*, then ▶ to watch banks turn red as payments queue.
-2. Pin it as the baseline, press *Stress + optimiser + auction*, and read the green arrows.
-3. **What if:** compare any two responses, then sweep liquidity from 6% to 30%.
-4. **Your payments:** load the sample day or drop your own CSV; every page then runs on it.
-5. **Risk & controls → Tamper with the ledger:** change one payment by 1% and see the hash chain and the replay both catch it.
-6. **Ask:** ask which bank is most stretched, what the rulebook says about FedNow limits, then tell it to move $50 million.
-7. **Evidence:** the same comparisons over 1,320 simulated days, the trained deep-learning forecasters, and the job-posting map.
-</details>
+| **Run locally** | `pip install -r requirements.txt && streamlit run streamlit_app.py` |
+| **No install** | [browser lab](https://akilanmanivannanak.github.io/ATLAS/lab.html) |
+| **Public review** | [open the review form](https://github.com/AkilanManivannanak/ATLAS/issues/new?template=review.yml) · [read the reviews](https://github.com/AkilanManivannanak/ATLAS/issues?q=label%3Areview) |
 
 <details>
 <summary><b>Put the app online (Streamlit Community Cloud, free)</b></summary>
@@ -58,7 +81,7 @@
 2. *Create app* → repository `AkilanManivannanak/ATLAS`, branch `main`, main file `streamlit_app.py`.
 3. *Advanced settings* → Python 3.12 → *Deploy*.
 
-It needs no secrets and no database. `requirements.txt` at the repository root is what the platform installs.
+No secrets needed. The live feeds need no keys. The team workspace is a SQLite file inside the app container, so a redeploy resets it; export it from the Team page first.
 </details>
 
 ---
@@ -192,7 +215,7 @@ The inventory follows the 2026 US model-risk guidance (SR 26-2). The failures ar
   <img alt="Three agents scored on tool use, correctness, grounding and safety; the two broken control agents fail" src="docs/assets/agent-evals-light.svg" width="100%">
 </picture>
 
-Fifteen tasks, including prompt injection and a request far beyond the budget. No language model is bundled: point `atlas evals --llm`, or the app's Ask page, at any OpenAI-compatible endpoint.
+Fifteen tasks, including prompt injection and a request far beyond the budget. No language model is bundled: point `atlas evals --llm`, or the app's Agent page, at any OpenAI-compatible endpoint.
 
 ### Deep learning, held to the same test
 

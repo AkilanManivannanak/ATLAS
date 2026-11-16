@@ -21,7 +21,7 @@
 | No real institution has used the tool | "Usable on real data" is a capability, not a track record | Ingest tested by round-trip and malformed-row tests; real formats in, assumptions listed. |
 | Uploaded files rarely include opening balances | Results depend on the assumed balances | Optional balances file; otherwise the assumption is printed with the result. |
 | Anomaly labels on the twin are injected typologies | Detection figures on the twin do not transfer to real fraud | The detector families are also run on real labelled card fraud (`results/real_fraud.json`); that is a different domain with anonymised features, so the twin's behavioural features remain unvalidated on real labels. |
-| No language model evaluated | Agent results cover a deterministic reference and two failing controls only | `atlas evals --llm` and the app's Ask page accept any OpenAI-compatible endpoint; none was reachable when this was built. |
+| No language model evaluated | Agent results cover a deterministic reference and two failing controls only | `atlas evals --llm` and the app's Agent page accept any OpenAI-compatible endpoint; none was reachable when this was built. |
 | Grounding check is numeric and refusal check is keyword-based | A model could pass with a wrong non-numeric claim | Documented as heuristics; correctness is checked separately against recomputed truth. |
 | Browser lab excludes safe RL, deep forecasters and ML detectors | Those need the Python package or the app | MPC + auction now runs in the lab (scipy on WebAssembly, loaded on demand). |
 | BCBS 248 correspondent tools B(i)/(ii) not implemented | No customer-bank view | The twin has direct participants only. |

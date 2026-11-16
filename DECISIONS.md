@@ -217,3 +217,11 @@
 ## D-040 — The browser lab loads the optimiser on demand
 
 **Decision:** MPC needs numpy and scipy; the lab fetches their WebAssembly builds only when the optimiser is selected, so the default page stays about 10 MB.
+
+## D-041 — Live market data is shown with its provenance or not at all
+
+Each feed is fetched independently and validated; a feed that fails falls back to the dated snapshot and every screen that uses it says "snapshot" and when it was taken. Nothing is interpolated. The mapping from readings to simulator inputs is a published rule of thumb, labelled as such, because no estimated model links public rates to one bank's intraday liquidity.
+
+## D-042 — The team workspace is tamper-evident, not authenticated
+
+Names are typed, not verified, so the workspace never holds anything secret and every row is hash-chained like the ledger. The aim is that a group of reviewers can see each other's work and edits are detectable, not access control.
