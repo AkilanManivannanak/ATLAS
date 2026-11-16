@@ -285,9 +285,90 @@
    "robust_z_recall": 1.0
   }
  },
+ "explainability": {
+  "method": "permutation importance on held-out days (drop in PR-AUC when one feature is shuffled)",
+  "gbt": [
+   {
+    "feature": "limit_proximity",
+    "drop_in_pr_auc": 0.6032,
+    "sd": 0.0104
+   },
+   {
+    "feature": "time_surprise",
+    "drop_in_pr_auc": 0.273,
+    "sd": 0.0107
+   },
+   {
+    "feature": "log_amount",
+    "drop_in_pr_auc": 0.2484,
+    "sd": 0.0226
+   },
+   {
+    "feature": "corridor_novelty",
+    "drop_in_pr_auc": 0.2076,
+    "sd": 0.009
+   },
+   {
+    "feature": "sender_z",
+    "drop_in_pr_auc": 0.1627,
+    "sd": 0.0182
+   },
+   {
+    "feature": "sender_value_5m",
+    "drop_in_pr_auc": 0.0986,
+    "sd": 0.0172
+   },
+   {
+    "feature": "receiver_fan_in_30m",
+    "drop_in_pr_auc": 0.0862,
+    "sd": 0.0065
+   },
+   {
+    "feature": "sender_burst_5m",
+    "drop_in_pr_auc": 0.0282,
+    "sd": 0.0069
+   },
+   {
+    "feature": "corridor_z",
+    "drop_in_pr_auc": 0.0038,
+    "sd": 0.0036
+   },
+   {
+    "feature": "repeat_60s",
+    "drop_in_pr_auc": 0.0,
+    "sd": 0.0
+   },
+   {
+    "feature": "is_instant",
+    "drop_in_pr_auc": 0.0,
+    "sd": 0.0
+   }
+  ]
+ },
+ "robustness": {
+  "method": "multiplicative Gaussian noise on every feature at scoring time",
+  "gbt": [
+   {
+    "feature_noise_sd": 0.0,
+    "pr_auc": 0.7081
+   },
+   {
+    "feature_noise_sd": 0.05,
+    "pr_auc": 0.6249
+   },
+   {
+    "feature_noise_sd": 0.1,
+    "pr_auc": 0.5278
+   },
+   {
+    "feature_noise_sd": 0.2,
+    "pr_auc": 0.3616
+   }
+  ]
+ },
  "manifest": {
-  "created_at": "2026-11-16T05:43:02.109896+00:00",
-  "runtime_s": 14.75,
+  "created_at": "2026-11-16T06:35:31.916308+00:00",
+  "runtime_s": 17.52,
   "python": "3.13.18",
   "platform": "Linux-6.18.44-fc-v470-x86_64-with-glibc2.39",
   "data_origin": "synthetic"

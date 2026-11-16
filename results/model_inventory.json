@@ -3,8 +3,8 @@
  "framework": "SR 26-2 structure (inventory, materiality = exposure x purpose, effective challenge, monitoring)",
  "disclaimer": "Engineering implementation on synthetic data; not a compliance attestation.",
  "summary": {
-  "models": 7,
-  "pass": 1,
+  "models": 9,
+  "pass": 3,
   "warn": 4,
   "fail": 2,
   "non_model_tools": 5,
@@ -217,6 +217,102 @@
     "tier": "moderate"
    },
    "status": "warn",
+   "data_origin": "synthetic"
+  },
+  {
+   "id": "forecast.gru",
+   "name": "GRU sequence forecaster (PyTorch)",
+   "class": "deep learning",
+   "in_mrm_scope": true,
+   "purpose": "Forecast each bank's large-value outflow per 15 minutes from the recent sequence of flows",
+   "exposure": 2,
+   "purpose_score": 2,
+   "version": "atlas-forecast-deep-v1",
+   "artifact": "results/deep_forecasting.json",
+   "inputs": "last 16 buckets of own and system flow, time of day, tier, horizon",
+   "challenger": "ridge regression (MASE 0.745)",
+   "checks": [
+    {
+     "check": "beats the ridge challenger (MASE, 15 min)",
+     "value": 0.702,
+     "status": "pass",
+     "rule": "lower MASE than ridge"
+    },
+    {
+     "check": "90% interval coverage, in distribution (1 h)",
+     "value": 0.888,
+     "status": "pass",
+     "rule": "within 3 pp of nominal"
+    },
+    {
+     "check": "early stopping used held-out training days only",
+     "value": "33 epochs",
+     "status": "pass",
+     "rule": "no validation or test day seen in training"
+    }
+   ],
+   "validated_at": "2026-11-16T06:22:36.149632+00:00",
+   "limitations": [
+    "synthetic days from one topology",
+    "not yet tested under distribution shift",
+    "gain over ridge is a few percent",
+    "CPU training, single seed"
+   ],
+   "materiality": {
+    "exposure": 2,
+    "purpose": 2,
+    "score": 4,
+    "tier": "moderate"
+   },
+   "status": "pass",
+   "data_origin": "synthetic"
+  },
+  {
+   "id": "forecast.transformer",
+   "name": "Transformer sequence forecaster (PyTorch)",
+   "class": "deep learning",
+   "in_mrm_scope": true,
+   "purpose": "Forecast each bank's large-value outflow per 15 minutes from the recent sequence of flows",
+   "exposure": 2,
+   "purpose_score": 2,
+   "version": "atlas-forecast-deep-v1",
+   "artifact": "results/deep_forecasting.json",
+   "inputs": "last 16 buckets of own and system flow, time of day, tier, horizon",
+   "challenger": "ridge regression (MASE 0.745)",
+   "checks": [
+    {
+     "check": "beats the ridge challenger (MASE, 15 min)",
+     "value": 0.711,
+     "status": "pass",
+     "rule": "lower MASE than ridge"
+    },
+    {
+     "check": "90% interval coverage, in distribution (1 h)",
+     "value": 0.891,
+     "status": "pass",
+     "rule": "within 3 pp of nominal"
+    },
+    {
+     "check": "early stopping used held-out training days only",
+     "value": "15 epochs",
+     "status": "pass",
+     "rule": "no validation or test day seen in training"
+    }
+   ],
+   "validated_at": "2026-11-16T06:22:36.149632+00:00",
+   "limitations": [
+    "synthetic days from one topology",
+    "not yet tested under distribution shift",
+    "gain over ridge is a few percent",
+    "CPU training, single seed"
+   ],
+   "materiality": {
+    "exposure": 2,
+    "purpose": 2,
+    "score": 4,
+    "tier": "moderate"
+   },
+   "status": "pass",
    "data_origin": "synthetic"
   },
   {

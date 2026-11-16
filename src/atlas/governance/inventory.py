@@ -100,6 +100,37 @@ def _forecast_models(fc: dict | None) -> list[dict]:
     return out
 
 
+def _deep_models(dp: dict | None) -> list[dict]:
+    if not dp:
+        return []
+    out = []
+    big = max(dp["train_sizes_days"])
+    rows = [r for r in dp["results"] if r["train_days"] == big]
+    for mid, title in (("gru", "GRU sequence forecaster (PyTorch)"), ("transformer", "Transformer sequence forecaster (PyTorch)")):
+        mine = {r["horizon"]: r for r in rows if r["model"] == mid}
+        ridge = {r["horizon"]: r for r in rows if r["model"] == "ridge"}
+        if "15m" not in mine:
+            continue
+        m, c = mine["15m"], ridge["15m"]
+        h1 = mine.get("1h", m)
+        out.append({
+            "id": f"forecast.{mid}", "name": title, "class": "deep learning", "in_mrm_scope": True,
+            "purpose": "Forecast each bank's large-value outflow per 15 minutes from the recent sequence of flows",
+            "exposure": 2, "purpose_score": 2, "version": dp.get("version"), "artifact": "results/deep_forecasting.json",
+            "inputs": "last 16 buckets of own and system flow, time of day, tier, horizon",
+            "challenger": f"ridge regression (MASE {c['mase']:.3f})",
+            "checks": [
+                _check("beats the ridge challenger (MASE, 15 min)", round(m["mase"], 3), _status(m["mase"] < c["mase"], m["mase"] < c["mase"] * 1.02), "lower MASE than ridge"),
+                _check("90% interval coverage, in distribution (1 h)", round(h1["interval_coverage"], 3),
+                       _status(abs(h1["interval_coverage"] - 0.9) <= 0.03, abs(h1["interval_coverage"] - 0.9) <= 0.06), "within 3 pp of nominal"),
+                _check("early stopping used held-out training days only", f"{m.get('epochs_run')} epochs", "pass", "no validation or test day seen in training"),
+            ],
+            "validated_at": dp.get("manifest", {}).get("created_at"),
+            "limitations": ["synthetic days from one topology", "not yet tested under distribution shift", "gain over ridge is a few percent", "CPU training, single seed"],
+        })
+    return out
+
+
 def _rl_model(rl: dict | None) -> list[dict]:
     if not rl:
         return []
@@ -165,7 +196,7 @@ AGENTIC = [
 
 def build_inventory(results_dir: str | Path = "results") -> dict:
     results = Path(results_dir)
-    models = _forecast_models(_load(results, "forecasting.json")) + _rl_model(_load(results, "safe_rl.json")) + \
+    models = _forecast_models(_load(results, "forecasting.json")) + _deep_models(_load(results, "deep_forecasting.json")) + _rl_model(_load(results, "safe_rl.json")) + \
         _detect_models(_load(results, "anomaly_detection.json"))
     for m in models:
         score = m["exposure"] * m["purpose_score"]

@@ -307,6 +307,17 @@ def run_detection_experiment(config: NexusPayConfig = NexusPayConfig(), *, histo
     gbt = HistGradientBoostingClassifier(max_iter=200, learning_rate=0.08, max_leaf_nodes=15, class_weight="balanced", random_state=0).fit(X_tr, y_tr)
     results["gbt"] = _metrics(y_te, gbt.predict_proba(X_te)[:, 1], t_te, alert_rate)
 
+    # Explainability and robustness for the supervised model (what a model validator asks first).
+    from sklearn.inspection import permutation_importance
+    imp = permutation_importance(gbt, X_te, y_te, scoring="average_precision", n_repeats=5, random_state=0)
+    importance = sorted(({"feature": f, "drop_in_pr_auc": round(float(m), 4), "sd": round(float(sd), 4)}
+                         for f, m, sd in zip(FEATURES, imp.importances_mean, imp.importances_std)), key=lambda r: -r["drop_in_pr_auc"])
+    rng = np.random.default_rng(0)
+    robustness = []
+    for noise in (0.0, 0.05, 0.1, 0.2):
+        Xn = X_te * (1 + rng.normal(0, noise, X_te.shape)) if noise else X_te
+        robustness.append({"feature_noise_sd": noise, "pr_auc": round(average_precision(y_te, gbt.predict_proba(Xn)[:, 1]), 4)})
+
     loto = {}
     for held in TYPOLOGIES:
         keep = (t_tr != held)
@@ -326,6 +337,8 @@ def run_detection_experiment(config: NexusPayConfig = NexusPayConfig(), *, histo
                    "incidents_per_type_per_day": incidents_per_type, "test_payments": int(len(y_te)), "test_anomalies": int(y_te.sum()),
                    "alert_rate": alert_rate},
         "detectors": results, "leave_one_typology_out": loto,
+        "explainability": {"method": "permutation importance on held-out days (drop in PR-AUC when one feature is shuffled)", "gbt": importance},
+        "robustness": {"method": "multiplicative Gaussian noise on every feature at scoring time", "gbt": robustness},
     }
 
 
