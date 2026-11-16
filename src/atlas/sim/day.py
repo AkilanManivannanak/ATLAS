@@ -1174,18 +1174,20 @@ class DaySimulator:
                 "peak_credit_minor": sum(self.peak_credit[a.account_id] for a in accts),
                 "daylight_overdraft_fee_minor": self._psr_fee(sum(self.uncollat_by.get(a.account_id, 0) for a in accts)),
                 "opening_minor": {a.payment_rail_id: a.ledger_balance_minor for a in accts},
+                "credit_limit_minor": sum(a.credit_limit_minor for a in accts if a.payment_rail_id in LARGE_VALUE),
                 "closing_minor": {a.payment_rail_id: self.ledger.account(a.account_id).ledger_balance_minor for a in accts},
                 "received_value_minor": sum(m["amount"] for m in lv if m["receiver"] == inst and m["status"] == "settled"),
             })
         payments = [{"payment_id": pid, "rail": m["rail"], "sender": m["sender"], "receiver": m["receiver"], "amount_minor": m["amount"],
                      "priority": m["priority"], "arrival": m["arrival"].isoformat(), "due": m["due"].isoformat(), "status": m["status"],
-                     "settled_at": m["settled_at"].isoformat() if m.get("settled_at") else None, "reason": m.get("reason")}
+                     "settled_at": m["settled_at"].isoformat() if m.get("settled_at") else None, "reason": m.get("reason"),
+                     "kind": m.get("kind")}
                     for pid, m in metas.items()]
         manifest = {
             "simulator_version": SIMULATOR_VERSION, "event_ordering": "atlas-event-order-v1",
             "scenario_fingerprint": self.sc.fingerprint(), "generator_version": self.sc.generator_version, "seed": self.sc.seed,
             "python": platform.python_version(), "platform": platform.platform(), "machine": platform.machine(),
-            "controller": getattr(self.controller, "name", None), "data_origin": "synthetic",
+            "controller": getattr(self.controller, "name", None), "data_origin": self.sc.labels.get("data_origin", "synthetic"),
         }
         return SimulationResult(
             self.simulation_id, self.sc.summary(), self.settings.to_dict() | {"strategy": self.settings.strategy},
