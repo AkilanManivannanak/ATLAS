@@ -472,6 +472,36 @@ def anomalies(run_id: str, top: int = Query(25, ge=1, le=200), _=Depends(require
     return score_payments(r.payments, top=top)
 
 
+# ---- Hosted-inference contract -------------------------------------------------------------------------------
+# Managed model-hosting services that run a customer's container (Amazon SageMaker "bring your own container",
+# and Vertex AI / Azure ML custom containers with their routes pointed here) expect a health route and a single
+# scoring route. Implementing the two below makes this API image deployable as a real-time anomaly-scoring
+# endpoint without any cloud SDK in the code base. Not deployed to a cloud account by the authors.
+class ScoringRequest(BaseModel):
+    payments: list[dict] = Field(..., min_length=1, max_length=200_000, description="rows with payment_id, rail, sender, receiver, amount_minor, arrival")
+    history: list[list[dict]] | None = Field(None, max_length=60, description="optional prior days, same row shape")
+    top: int = Field(50, ge=1, le=1000)
+
+
+@app.get("/ping", include_in_schema=False)
+def hosted_ping() -> dict:
+    return {"status": "ok"}
+
+
+@app.post("/invocations")
+def hosted_invocations(req: ScoringRequest, _=Depends(require("read"))) -> dict:
+    """Score a batch of payments for review. Stateless: nothing is stored."""
+    from atlas.detect import score_payments
+    need = {"payment_id", "rail", "sender", "receiver", "amount_minor", "arrival"}
+    for i, row in enumerate(req.payments[:50]):
+        if not need <= set(row):
+            raise HTTPException(422, f"payments[{i}] is missing {sorted(need - set(row))}")
+    try:
+        return score_payments(req.payments, history=req.history, top=req.top) | {"model": "detect.robust_z", "contract": "ping/invocations"}
+    except (KeyError, ValueError, TypeError) as exc:
+        raise HTTPException(422, f"could not score: {exc}") from exc
+
+
 @app.get("/api/v1/governance/models")
 def model_inventory(_=Depends(require("read"))) -> dict:
     """Model inventory with materiality tiers and validation checks, rebuilt from the results artifacts."""

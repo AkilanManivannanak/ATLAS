@@ -63,7 +63,7 @@ th:first-child,td:first-child{text-align:left}th{font-size:11px;text-transform:u
   <label>Opening liquidity, % of each bank's outflow <span class="rv" id="v-liq"></span></label><input type="range" id="liq" min="4" max="40" value="18">
   <h2>How the system responds</h2>
   <label>Queue policy</label><select id="policy"><option value="priority">Priority queue</option><option value="fifo">First in, first out</option><option value="bilateral">Bilateral offsetting</option><option value="multilateral">Multilateral netting</option></select>
-  <label>Bank treasury</label><select id="controller"><option value="none">Passive (no rebalancing)</option><option value="rule">Rule-based rebalancing across rails</option></select>
+  <label>Bank treasury</label><select id="controller"><option value="none">Passive (no rebalancing)</option><option value="rule">Rule-based rebalancing across rails</option><option value="mpc">Optimiser (MPC), loads 23 MB once</option></select>
   <label>Interbank liquidity auction</label><select id="auction"><option value="none">Off</option><option value="uniform">Uniform price</option><option value="pay_as_bid">Pay as bid</option></select>
   <label class="chk"><input type="checkbox" id="shared"><span>FedNow shares the Fed master account with Fedwire (as in reality)</span></label>
   <button class="go" id="run" disabled>Loading simulator…</button>
@@ -87,7 +87,7 @@ th:first-child,td:first-child{text-align:left}th{font-size:11px;text-transform:u
       <div class="panel"><h3>Largest payments that did not settle</h3><p class="sub" id="uns-sub"></p><div class="scroll"><table id="t-uns"></table></div></div>
       <div class="panel" id="ing"><h3>Your file</h3><div id="ing-body"></div></div>
     </div>
-    <p class="note">Simulated results. Rails are models of RTGS (Fedwire-style), a liquidity-saving mechanism (CHIPS-style), FedNow and RTP; they are not connected to those systems. The browser lab runs the rule-based treasury; the optimisation-based controller (MPC), the learned controller and the anomaly models run in the Python package.</p>
+    <p class="note">Simulated results. Rails are models of RTGS (Fedwire-style), a liquidity-saving mechanism (CHIPS-style), FedNow and RTP; they are not connected to those systems. The optimiser (MPC) runs here too, on scipy compiled to WebAssembly. The learned controller, the deep-learning forecasters and the anomaly models run in the Python package and the Streamlit app.</p>
   </div>
 </main></div>
 <script>
@@ -98,9 +98,10 @@ Object.entries(STRESS).forEach(([k, v]) => $('stress').append(new Option(v, k)))
 const PRESETS = [['Normal day', {stress:'baseline', policy:'priority', controller:'none', auction:'none', liq:18}],
   ['Combined stress', {stress:'combined', policy:'priority', controller:'none', auction:'none', liq:18}],
   ['Stress + treasury + auction', {stress:'combined', policy:'multilateral', controller:'rule', auction:'uniform', liq:18}],
+  ['Stress + optimiser + auction', {stress:'combined', policy:'multilateral', controller:'mpc', auction:'uniform', liq:18}],
   ['Liquidity squeeze', {stress:'liquidity_hoarding', policy:'priority', controller:'none', auction:'none', liq:8}],
   ['Squeeze + netting', {stress:'liquidity_hoarding', policy:'multilateral', controller:'none', auction:'none', liq:8}]];
-let py = null, last = null, pinned = null, csvText = null, source = 'syn';
+let py = null, last = null, pinned = null, csvText = null, source = 'syn', sci = false;
 const usd = v => { const a = Math.abs(v); return (v < 0 ? '−' : '') + '$' + (a >= 1e9 ? (a / 1e9).toFixed(2) + 'B' : a >= 1e6 ? (a / 1e6).toFixed(2) + 'M' : a >= 1e3 ? (a / 1e3).toFixed(1) + 'k' : a.toFixed(0)); };
 const sliders = [['banks', 'v-banks', v => v], ['payments', 'v-payments', v => (+v).toLocaleString()], ['instant', 'v-instant', v => (+v).toLocaleString()], ['liq', 'v-liq', v => v + '%']];
 sliders.forEach(([id, out, f]) => { const u = () => $(out).textContent = f($(id).value); $(id).oninput = u; u(); });
@@ -162,7 +163,13 @@ function render(r) {
 
 async function run() {
   if (!py) return; if (source === 'csv' && !csvText) { status('Choose a payments CSV first, or load the sample day.', true); return; }
-  $('run').disabled = true; $('run').textContent = 'Simulating…'; status('Simulating the day…');
+  $('run').disabled = true; $('run').textContent = 'Simulating…';
+  if ($('controller').value === 'mpc' && !sci) {
+    status('Loading the optimiser (numpy and scipy, about 23 MB, cached after the first time)…');
+    try { await py.loadPackage(['numpy', 'scipy']); sci = true; }
+    catch (e) { status('Could not load the optimiser in this browser: ' + e, true); $('run').disabled = false; $('run').textContent = 'Run the day ▶'; return; }
+  }
+  status('Simulating the day…');
   await new Promise(r => setTimeout(r, 30));
   const params = {banks:+$('banks').value, payments:+$('payments').value, instant:+$('instant').value, seed:+$('seed').value || 0, stress:$('stress').value, liquidity_pct:+$('liq').value,
     policy:$('policy').value, controller:$('controller').value, auction:$('auction').value, shared_master:$('shared').checked};

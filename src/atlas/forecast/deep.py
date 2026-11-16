@@ -31,6 +31,18 @@ def _torch():
     return torch
 
 
+def pick_device(prefer: str = "auto") -> str:
+    """``auto`` uses a CUDA GPU or Apple-silicon GPU when PyTorch can see one, otherwise the CPU."""
+    torch = _torch()
+    if prefer != "auto":
+        return prefer
+    if torch.cuda.is_available():
+        return "cuda"
+    if getattr(torch.backends, "mps", None) is not None and torch.backends.mps.is_available():
+        return "mps"
+    return "cpu"
+
+
 def _windows(panel: dict, day_idx: Sequence[int], h: int, scale: dict[int, float], window: int):
     days = panel["days"]
     n_b = days.shape[2]
@@ -63,7 +75,8 @@ class _TorchForecaster(_Base):
     kind = "gru"
 
     def __init__(self, seed: int = 0, window: int = 16, hidden: int = 32, epochs: int = 60, patience: int = 8, lr: float = 3e-3,
-                 batch: int = 256) -> None:
+                 batch: int = 256, device: str = "cpu") -> None:
+        self.device = device           # "cpu" (default, reproducible), "cuda", "mps" or "auto"
         self.seed, self.window, self.hidden, self.epochs, self.patience, self.lr, self.batch = seed, window, hidden, epochs, patience, lr, batch
         self.history: list[dict] = []
 
@@ -104,9 +117,10 @@ class _TorchForecaster(_Base):
         fit_days, hold_days = train[:-n_hold], train[-n_hold:]
         Xs, Xc, y, _ = _windows(panel, fit_days, h, self.scale, self.window)
         Hs, Hc, hy, _ = _windows(panel, hold_days, h, self.scale, self.window)
-        t = lambda a: torch.from_numpy(a)
+        self.device = pick_device(self.device)
+        t = lambda a: torch.from_numpy(a).to(self.device)
         Xs, Xc, y, Hs, Hc, hy = t(Xs), t(Xc), t(y), t(Hs), t(Hc), t(hy)
-        self.model = self._net()
+        self.model = self._net().to(self.device)
         opt = torch.optim.Adam(self.model.parameters(), lr=self.lr, weight_decay=1e-4)
         loss_fn = torch.nn.HuberLoss(delta=1.0)
         gen = torch.Generator().manual_seed(self.seed)
@@ -114,7 +128,7 @@ class _TorchForecaster(_Base):
         self.history = []
         for epoch in range(self.epochs):
             self.model.train()
-            perm = torch.randperm(len(y), generator=gen)
+            perm = torch.randperm(len(y), generator=gen).to(self.device)
             total = 0.0
             for s in range(0, len(y), self.batch):
                 b = perm[s:s + self.batch]
@@ -145,7 +159,7 @@ class _TorchForecaster(_Base):
         Xs, Xc, _, keys = _windows(panel, day_idx, h, self.scale, self.window)
         self.model.eval()
         with torch.no_grad():
-            pred = self.model(torch.from_numpy(Xs), torch.from_numpy(Xc)).numpy()
+            pred = self.model(torch.from_numpy(Xs).to(self.device), torch.from_numpy(Xc).to(self.device)).cpu().numpy()
         return np.array([pred[k] * self.scale[key[1]] for k, key in enumerate(keys)]), keys
 
     def save(self, path) -> None:

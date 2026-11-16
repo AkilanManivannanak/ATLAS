@@ -19,7 +19,7 @@ from atlas.stress import build_scenario
 
 LAB_VERSION = "atlas-lab-v1"
 LAB_POLICIES = ("fifo", "priority", "bilateral", "multilateral")
-LAB_CONTROLLERS = ("none", "rule", "mpc")      # "mpc" needs numpy and scipy (not offered in the browser lab)
+LAB_CONTROLLERS = ("none", "rule", "mpc")      # "mpc" needs numpy and scipy (the browser lab loads them on demand)
 _NY = "America/New_York"
 
 
