@@ -191,5 +191,42 @@ The labels were revised once after the first run showed correct answers in files
 ### Model inventory
 9 models: 3 pass (GRU, Transformer, constrained PPO), 4 warn, 2 fail.
 
+## v0.9 additions
+
+### Detectors on real labelled fraud (`results/real_fraud.json`)
+ULB credit-card fraud dataset: 284,807 transactions over two days, 492 confirmed frauds (0.173%). Time-ordered split; test = last 20% (56,962 transactions, 75 frauds); alert budget 0.5% (285 alerts).
+
+| Detector | PR-AUC | Frauds caught | Precision of alerts |
+|---|---|---|---|
+| Gradient boosting | 0.810 | 63 of 75 | 22.1% |
+| Logistic regression | 0.747 | 64 of 75 | 22.5% |
+| Isolation forest (unsupervised) | 0.042 | 13 of 75 | 4.6% |
+| Rule: largest amounts | 0.001 | 1 of 75 | 0.4% |
+
+* Supervised models catch about 84% of real frauds while a person reviews 0.5% of transactions (about 4.5 alerts per fraud caught). The unsupervised isolation forest catches 17%, and amount alone is useless.
+* **Split optimism:** the same gradient-boosting model scores PR-AUC 0.846 on a shuffled split against 0.810 when tested on the future: +0.036 from leakage across time.
+* **Drift:** feature V1 has PSI 1.46 between train and test (above 0.25 counts as shifted), inside two days.
+* **Robustness:** PR-AUC 0.810 clean, 0.797 with noise of 0.25 standard deviations on every feature, 0.768 at 0.5.
+* **Scope:** card fraud with PCA-anonymised features, from 2013. It validates the detector families and the evaluation method on real labels. It does not validate the twin's corridor, burst and fan-in features, which cannot be built on this data. Only 75 frauds are in the test window, so one fraud is 1.3 points of recall.
+
+### A language model trained from scratch as tool router (`results/tool_router.json`)
+Byte-level Transformer encoder, 95,192 parameters, trained on CPU in 15 minutes on 10,000 template-generated questions with noise. Test A: 1,500 questions from templates held out of training. Test B: 42 hand-written questions, six of them using synonyms the training data never contains.
+
+| Router | A: intent | A: exact route | B: intent | B: exact route |
+|---|---|---|---|---|
+| Transformer (trained here) | 77% | 71% | 74% | 71% |
+| TF-IDF + logistic regression | 96% | 90% | 86% | 81% |
+| Keyword rules | 91% | 69% | 86% | 79% |
+
+* **The trained Transformer is the worst of the three.** A character n-gram model with logistic regression is clearly the best on unseen templates and slightly the best on hand-written questions. At this data size, learned byte embeddings generalise worse than n-gram counts.
+* As an agent on the 15 tasks: learned router 87% (fails settled_normal, injection_in_data), keyword planner 100%. Safety stays at 100% because no tool can execute, not because the router is right.
+* All three routers were written or trained by the same author as both test sets, so even test B is not independent. No pretrained language model is involved.
+
+### Optimiser in the browser lab
+MPC + uniform-price auction under combined stress, 12 banks, in headless Chromium on Pyodide 0.27.7 with scipy 1.14 (WebAssembly): 5 s for the day, ledger replay verified, cost −67% against the priority queue on that day. numpy and scipy (about 23 MB) load only when the optimiser is selected.
+
+### Hosted-inference contract
+`GET /ping` and `POST /invocations` score a batch of payments statelessly (tested in `tests/test_v09.py`). Not deployed to a cloud account.
+
 ## Not yet run
 E3 (speed vs stability frontier as a dedicated sweep), cost-model calibration against observed data (none available by design), controllers that are aware of the shared FedNow master account.

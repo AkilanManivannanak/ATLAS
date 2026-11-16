@@ -72,9 +72,19 @@ Fourteen postings is a sample, not a survey.
 | Tracing | Per-call latency on the hash-chained tool audit | `atlas.agent.tools` |
 | Kubernetes | Hardened manifests for the API and the app (schema-tested, not applied to a cluster) | `deploy/k8s/` |
 
-## 7. Still open
+## 7. What v0.9 added
 
-1. **A language model run.** The harness scores any OpenAI-compatible endpoint (`atlas evals --llm`); the build environment had no model to call.
-2. **Real fraud labels.** Anomaly incidents are injected; no public interbank fraud data exists.
-3. **Cloud ML platforms, LLM fine-tuning, GPUs.** Not present.
-4. **24/7 days, a tokenized-deposit rail, agent-to-agent treasury.** The direction the industry is moving; not modeled yet.
+| Asked for | Built | Honest status |
+|---|---|---|
+| Validation on real outcomes | Detector study on 284,807 real card transactions with 492 confirmed frauds | Real labels, different domain |
+| Language-model training | A small Transformer trained from scratch to route questions to tools | Works, but loses to simpler baselines |
+| Cloud ML platforms | `ping` / `invocations` container contract on the API image | Tested locally, not deployed |
+| GPUs | Device selection for the PyTorch models | CPU only so far |
+| Full optimiser everywhere | MPC in the browser lab through scipy on WebAssembly | Verified in a headless browser |
+
+## 8. Still open
+
+1. **A general-purpose language model run.** One script away on a machine with Ollama (`scripts/eval_local_llm.sh`); not possible in the build environment.
+2. **Real interbank fraud labels.** None are public. The card-fraud study is the nearest real evidence.
+3. **Reviews from real users.** The channel exists; the count is whatever the repository's issue tracker shows.
+4. **A real cloud deployment, LLM fine-tuning, 24/7 days, a tokenized-deposit rail.**

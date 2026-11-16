@@ -1,6 +1,6 @@
 # Project status
 
-**Version:** 0.8.0 · **Stage:** all ten blueprint phases implemented to a research-grade increment, including the previously missing auction mechanism, safe RL, decision center and 100-bank scale. Remaining gaps are listed below and in `docs/20_known_limitations.md`.
+**Version:** 0.9.0 · **Stage:** all ten blueprint phases implemented to a research-grade increment, including the previously missing auction mechanism, safe RL, decision center and 100-bank scale. Remaining gaps are listed below and in `docs/20_known_limitations.md`.
 
 ## Blueprint coverage
 
@@ -41,8 +41,18 @@
 | Language model evaluation | **Still not done**: no model was reachable from the build environment |
 | Real fraud data | **Still not available** |
 
+## v0.9: real labels, a trained language model, and the last two technical gaps
+| Area | Status |
+|---|---|
+| Real fraud data | Done as far as public data allows: detectors validated on 284,807 real card transactions (492 frauds). Interbank fraud labels do not exist publicly |
+| Language model | A small Transformer trained here routes questions to tools; it loses to TF-IDF and keyword rules. **A general-purpose LLM is still not evaluated** (unreachable from the build environment; one script on a machine with Ollama) |
+| Browser lab optimiser | Done: MPC runs in the page |
+| Cloud hosting | Container contract implemented and tested locally; **not deployed** |
+| GPU | Device selection added; **only CPU has been run** |
+| Real users | **Zero reviews so far** |
+
 ## Verification (2026-11-16, Python 3.13.18, Linux x86_64, torch 2.x CPU)
-- `pytest -q`: **191 passed**. `ruff check src tests scripts`: clean. Frontend `tsc --noEmit` and `next build`: pass.
+- `pytest -q`: **199 passed**. `ruff check src tests scripts`: clean. Frontend `tsc --noEmit` and `next build`: pass.
 - All benchmark, auction, RL, game and scaling runs replay-verified.
 - Not verified here: Docker image builds (no Docker daemon); CI builds them on push.
 

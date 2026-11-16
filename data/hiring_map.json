@@ -80,7 +80,7 @@
    "junior": 2,
    "senior": 2,
    "director": 2,
-   "where": "inventory, model cards, importance"
+   "where": "inventory, model cards, real-data validation"
   },
   {
    "skill": "Monitoring, tracing, risk indicators",
@@ -115,14 +115,14 @@
    "junior": 1,
    "senior": 1,
    "director": 2,
-   "where": "gap: none"
+   "where": "partial: hosted-inference contract, not deployed"
   },
   {
    "skill": "LLM fine-tuning, GPUs, distributed training",
    "junior": 0,
    "senior": 2,
    "director": 1,
-   "where": "gap: CPU only, no fine-tuning"
+   "where": "partial: language model trained from scratch"
   },
   {
    "skill": "Leading teams, setting platform standards",

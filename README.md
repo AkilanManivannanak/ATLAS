@@ -6,7 +6,7 @@
 
 [![ci](https://github.com/AkilanManivannanak/ATLAS/actions/workflows/ci.yml/badge.svg)](https://github.com/AkilanManivannanak/ATLAS/actions/workflows/ci.yml)
 ![python](https://img.shields.io/badge/python-3.12%20%7C%203.13-2a78d6)
-![tests](https://img.shields.io/badge/tests-191%20passing-1baf7a)
+![tests](https://img.shields.io/badge/tests-199%20passing-1baf7a)
 ![replay](https://img.shields.io/badge/every%20run-replay--verified-1baf7a)
 ![deps](https://img.shields.io/badge/simulator%20core-zero%20dependencies-2a78d6)
 
@@ -167,13 +167,20 @@ Cash sits on the **wrong rail** and at the **wrong bank**. Fixing either helps; 
   <img alt="Share of injected incidents caught by a hand-written rule, an isolation forest and a supervised model, by incident type" src="docs/assets/anomaly-detection-light.svg" width="100%">
 </picture>
 
-A trained model catches 77% of the patterns it has seen and at most 13% of ones it has not. Rules still catch what it misses. Incidents are injected; there is no real fraud data here.
+On the twin, incidents are injected: a trained model catches 77% of the patterns it has seen and at most 13% of ones it has not, so rules stay in place next to it.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/real-fraud-dark.svg">
+  <img alt="Real frauds caught by four detectors on the ULB credit card dataset, and the same model scored on a time-ordered versus a shuffled split" src="docs/assets/real-fraud-light.svg" width="100%">
+</picture>
+
+On real labels (card fraud, a different domain), the same method catches 63 of 75 frauds while reviewing 0.5% of transactions. Testing on a shuffled split instead of the future would have flattered the model.
 
 ### Every model gets checked, and some fail
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/model-risk-dark.svg">
-  <img alt="Model inventory with validation checks: three models pass, four warn, two fail" src="docs/assets/model-risk-light.svg" width="100%">
+  <img alt="Model inventory with validation checks: three models pass, four warn, three fail" src="docs/assets/model-risk-light.svg" width="100%">
 </picture>
 
 The inventory follows the 2026 US model-risk guidance (SR 26-2). The failures are real and left visible: [model cards](docs/model_cards/README.md).
@@ -259,7 +266,7 @@ Based on fourteen current postings, from graduate programme to director, and the
 ```bash
 python3 -m venv .venv && source .venv/bin/activate          # Python 3.12+
 pip install -r requirements-lock.txt && pip install --no-deps -e .
-pytest -q                                                   # 191 tests
+pytest -q                                                   # 199 tests
 streamlit run streamlit_app.py                              # app  → http://localhost:8501
 atlas run --stress combined --controller mpc --auction uniform
 uvicorn atlas.api.app:app --port 8000                       # API  → http://localhost:8000/docs
@@ -278,6 +285,9 @@ python scripts/anomaly_study.py                 # anomaly detection
 python -m atlas.agent.evals                     # agent evaluation
 python scripts/deep_forecast_study.py           # GRU and Transformer training (needs torch)
 python scripts/retrieval_study.py               # rulebook retrieval
+python scripts/real_fraud_study.py              # detectors on real card fraud (downloads about 100 MB)
+python scripts/train_tool_router.py             # tool-routing language model (needs torch)
+./scripts/eval_local_llm.sh                     # score a real LLM through a local Ollama
 python scripts/calibration_study.py             # published-statistics calibration
 python scripts/build_model_inventory.py         # model inventory + cards
 python scripts/auction_study.py && python scripts/train_safe_rl.py && python scripts/generate_research_artifacts.py && python scripts/scaling_study.py
@@ -292,12 +302,13 @@ python scripts/make_figures.py && python scripts/build_site.py
 |---|---|
 | FedNow and RTP $10M limits, the Fed daylight-overdraft fee formula, ISO 20022 message formats, BCBS 248 definitions | Who pays whom, payment timing and the shape of payment sizes (operators publish none of these) |
 | Mean payment size matched to published Fedwire and FedNow statistics | Cost weights (checked under 27 alternatives) |
+| 492 confirmed card frauds in 284,807 transactions (detector validation only) | Fraud typologies on the twin's own payments |
 | Your own file, if you supply one | Opening balances and credit lines when your file does not include them |
 
 - No bank has used this, and there are no published reviews yet. The [review form](https://github.com/AkilanManivannanak/ATLAS/issues/new?template=review.yml) is how that changes.
-- Anomaly labels are injected, not observed fraud. No language model has been evaluated.
-- Kubernetes manifests exist but have not been applied to a cluster. No cloud ML platform, GPU training or LLM fine-tuning.
-- The browser lab runs the rule-based treasury; the app and the Python package run everything.
+- On the twin, anomaly labels are injected. Real labelled fraud is used only in the card-fraud study, which is a different domain.
+- No general-purpose language model has been evaluated: none was reachable where this was built. `./scripts/eval_local_llm.sh` scores one with a local Ollama. A small language model trained here routes questions, and it loses to simpler baselines.
+- Kubernetes manifests and the hosted-inference contract exist but have not been deployed to a cluster or a cloud account. Training ran on CPU; the GPU path is untested.
 
 Full list: [limitations](docs/20_known_limitations.md) · [realism and sources](docs/23_realism_and_calibration.md)
 </details>

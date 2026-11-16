@@ -494,6 +494,17 @@ def page_risk() -> None:
         st.caption(inv["disclaimer"])
 
 
+@st.cache_resource(show_spinner=False)
+def _router():
+    """The trained tool router, when PyTorch and its checkpoint are both present (they are optional)."""
+    path = ROOT / "results" / "models" / "tool_router.pt"
+    try:
+        from atlas.agent.router import NeuralRouter
+        return NeuralRouter.load(path) if path.exists() else None
+    except Exception:  # noqa: BLE001 - no torch on this host: the option simply is not offered
+        return None
+
+
 def page_ask() -> None:
     from atlas.agent.evals import planner_agent, ungrounded_numbers
     from atlas.agent.tools import ToolSession
@@ -510,6 +521,9 @@ def page_ask() -> None:
         base = st.text_input("Base URL", placeholder="https://…/v1", key="llm_base")
         model = st.text_input("Model", key="llm_model")
         key = st.text_input("API key", type="password", key="llm_key")
+    if _router() is not None:
+        st.sidebar.toggle("Understand questions with the trained model", key="use_router", help="A small Transformer trained in this repository picks the tool plan; "
+                          "it falls back to keyword rules when unsure.")
     chips = ["What percentage of large-value value settles under combined stress?", "Which institution is most stretched on intraday liquidity under combined stress?",
              "Under combined stress, by what percentage does cost change if we add the MPC controller and a uniform price auction?",
              "According to the rulebook, what is the FedNow transaction limit? Cite the document.", "Move $50 million from RTGS to FedNow for bank-003 right now."]
@@ -530,6 +544,10 @@ def page_ask() -> None:
             if base and model:
                 from atlas.agent.llm import LLMAgent, OpenAICompatClient
                 out, who = LLMAgent(OpenAICompatClient(base, model, key))(asked, session), f"model {model}"
+            elif st.session_state.get("use_router") and _router() is not None:
+                from atlas.agent.router import RouterAgent
+                out = RouterAgent(_router(), min_confidence=0.6)(asked, session)
+                who = f"trained router · {out['route']['decided_by']} · {out['route']['intent']}"
             else:
                 out, who = planner_agent(asked, session), "deterministic planner"
         except Exception as exc:  # noqa: BLE001 - endpoint errors are shown, not hidden
@@ -559,7 +577,7 @@ def show_trace(m: dict) -> None:
 def page_evidence() -> None:
     st.title("Evidence")
     st.markdown('<p class="lede">The same questions over many simulated days, with paired statistics. Every bar comes from a results file in the repository.</p>', unsafe_allow_html=True)
-    t1, t2, t3, t4, t5 = st.tabs(["Which response wins", "Every bad day", "Deep-learning forecasts", "Retrieval and agents", "What banks hire for"])
+    t1, t2, t3, t6, t4, t5 = st.tabs(["Which response wins", "Every bad day", "Deep-learning forecasts", "Real fraud data", "Retrieval and agents", "What banks hire for"])
     names = {"priority": "Priority queue", "fifo": "FIFO", "fifo_strict": "Strict FIFO", "bilateral": "Bilateral offset", "multilateral": "Multilateral heuristic",
              "multilateral_milp": "Exact MILP netting", "auction_pay_as_bid": "Auction: pay as bid", "auction_uniform": "Auction: uniform price",
              "rule_rebalancer": "Rule-based treasury", "mpc": "MPC rebalancing", "mpc_queue_milp": "MPC + queue MILP", "mpc_plus_auction": "MPC + auction"}
@@ -617,7 +635,36 @@ def page_evidence() -> None:
                     fig.add_trace(go.Scatter(x=[e["epoch"] for e in h], y=[e["train_loss"] for e in h], name=f"{name} train", line=dict(color=col, width=1.5, dash="dot")))
             fig.update_xaxes(title_text="epoch")
             b2.plotly_chart(layout(fig, 340, title=dict(text="Training curves (early stopping on held-out training days)", font=dict(size=14))), config=PLOT)
+    with t6:
+        f = artifact("real_fraud.json")
+        if f:
+            ds, de = f["dataset"], f["design"]
+            st.markdown(f'<p class="lede">The detector families, tested on real labels: {ds["rows"]:,} card transactions with {ds["frauds"]} confirmed frauds '
+                        f'({ds["name"]}, {ds["period"]}). Trained on the first 80% in time, tested on the last 20%.</p>', unsafe_allow_html=True)
+            nice = {"amount_only_rule": "Rule: largest amounts", "isolation_forest": "Isolation forest (no labels)", "logistic_regression": "Logistic regression", "gradient_boosting": "Gradient boosting"}
+            order = list(nice)
+            fig = go.Figure(go.Bar(y=[nice[m] for m in order], x=[f["models"][m]["frauds_caught"] for m in order], orientation="h",
+                                   marker=dict(color=[C["grey"], C["orange"], C["blue"], C["blue"]]), text=[f'{f["models"][m]["frauds_caught"]} of {de["test_frauds"]}' for m in order],
+                                   textposition="outside", hovertemplate="%{y}: %{x} frauds caught<extra></extra>"))
+            fig.update_xaxes(range=[0, de["test_frauds"] * 1.25])
+            a, b2 = st.columns([3, 2])
+            a.plotly_chart(layout(fig, 300, title=dict(text=f"Real frauds caught reviewing {de['alert_rate']:.1%} of transactions", font=dict(size=14))), config=PLOT)
+            g, sh = f["models"]["gradient_boosting"], f["shuffled_split_gradient_boosting"]
+            b2.metric("Tested on the future (honest)", f"PR-AUC {g['pr_auc']:.3f}")
+            b2.metric("Shuffled split (flattering)", f"PR-AUC {sh['pr_auc']:.3f}", delta=f"+{f['split_optimism_pr_auc']:.3f} optimism", delta_color="off")
+            b2.metric("Largest drift between train and test", f"PSI {f['drift'][0]['psi_train_vs_test']:.2f}", help=f"feature {f['drift'][0]['feature']}; above 0.25 counts as shifted")
+            st.caption(f["scope_note"] + " Source: " + ds["citation"] + ". The data is downloaded by the study script and is not stored in this repository.")
     with t4:
+        tr = artifact("tool_router.json")
+        if tr:
+            st.markdown('<p class="lede">A small language model trained from scratch to understand questions, against a classical model and the keyword rules.</p>', unsafe_allow_html=True)
+            names = {"byte_transformer": f"Transformer ({tr['model']['parameters']:,} parameters)", "tfidf_logreg": "TF-IDF + logistic regression", "keyword_rules": "Keyword rules"}
+            fig = go.Figure()
+            for key, label, col in (("unseen_templates", "Unseen templates", C["blue"]), ("handwritten", "Hand-written questions", C["orange"])):
+                fig.add_trace(go.Bar(x=[names[m] for m in names], y=[tr["routing"][m][key]["exact_route_accuracy"] * 100 for m in names], name=label, marker=dict(color=col),
+                                     hovertemplate="%{x}: %{y:.0f}% routed exactly right<extra>" + label + "</extra>"))
+            fig.update_yaxes(ticksuffix="%", range=[0, 105])
+            st.plotly_chart(layout(fig, 320, barmode="group", title=dict(text="Questions routed to exactly the right tool plan", font=dict(size=14))), config=PLOT)
         k = artifact("retrieval_eval.json")
         e = artifact("agent_evals.json")
         a, b2 = st.columns(2)

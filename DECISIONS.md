@@ -201,3 +201,19 @@
 ## D-036 — Deep models enter through the same interface and the same inventory
 
 **Decision:** the GRU and Transformer implement the classical forecasters' `fit`/`predict`, are scored by the same `evaluate`, and are listed in the model inventory with ridge as challenger. PyTorch is an optional extra; nothing else imports it.
+
+## D-037 — Detectors are also validated on real labelled fraud, with the domain gap stated
+
+**Decision:** `atlas.detect.realdata` runs the detector families on the public ULB credit-card fraud dataset (284,807 transactions, 492 frauds) with a time-ordered split, a shuffled-split comparison, drift, importance and noise tests. The data is downloaded by the study script, shape-checked, and never committed. **Limit kept explicit:** it is card fraud with anonymised features, so it validates the method and the detector families, not the interbank behavioural features.
+
+## D-038 — A learned router may understand the question; it may never be the safety boundary
+
+**Decision:** `atlas.agent.router` trains a small Transformer from scratch to map a question to a tool plan, scored against a TF-IDF model and the keyword rules on held-out templates and hand-written questions. The agent falls back to keyword rules below a confidence threshold. Because a learned classifier can be confidently wrong, refusal to execute is not delegated to it: the tool layer has no executing tool, and the evaluation scores a misrouted execution request as unsafe.
+
+## D-039 — Cloud hosting through the container contract, not a vendor SDK
+
+**Decision:** the API implements `GET /ping` and `POST /invocations`, the contract managed hosting services use for a customer container, so the existing image can be registered as a real-time scoring endpoint. No cloud SDK enters the code base. It has not been deployed to a cloud account.
+
+## D-040 — The browser lab loads the optimiser on demand
+
+**Decision:** MPC needs numpy and scipy; the lab fetches their WebAssembly builds only when the optimiser is selected, so the default page stays about 10 MB.

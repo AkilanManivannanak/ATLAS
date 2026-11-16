@@ -138,3 +138,12 @@ Acceptance: 180 tests pass; lab verified in headless Chromium; MCP server verifi
 - [ ] Score a real language model.
 
 Acceptance: 191 tests pass; app verified in a headless browser on all seven pages.
+
+## v0.9 — real labels and remaining gaps (2026-11-16)
+- [x] Detector study on the ULB real card-fraud dataset (time-ordered split, split optimism, drift, importance, robustness).
+- [x] Tool-routing language model trained from scratch; scored against TF-IDF and keyword routers; usable in the app's Ask page.
+- [x] MPC in the browser lab (scipy on WebAssembly, loaded on demand).
+- [x] Hosted-inference contract (`/ping`, `/invocations`).
+- [x] Device selection for PyTorch models.
+- [ ] Run `scripts/eval_local_llm.sh` on a machine with Ollama and commit the result.
+- [ ] Deploy the app; collect reviews.

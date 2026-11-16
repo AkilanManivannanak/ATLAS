@@ -500,6 +500,40 @@ def fig_deep(t, theme, dp):
     save(fig, "deep-forecasting", theme)
 
 
+def fig_real_fraud(t, theme, d):
+    order = ["amount_only_rule", "isolation_forest", "logistic_regression", "gradient_boosting"]
+    nice = {"amount_only_rule": "Rule: largest amounts", "isolation_forest": "Isolation forest (no labels)", "logistic_regression": "Logistic regression",
+            "gradient_boosting": "Gradient boosting"}
+    fig, axes = plt.subplots(1, 2, figsize=(10.5, 3.7), gridspec_kw={"width_ratios": [1.5, 1]})
+    ax = axes[0]
+    total = d["design"]["test_frauds"]
+    vals = [d["models"][m]["frauds_caught"] for m in order]
+    ax.barh(range(len(order)), [total] * len(order), height=0.6, color=t["grid"], edgecolor=t["bg"], linewidth=2)
+    ax.barh(range(len(order)), vals, height=0.6, color=[t["neutral"], t["s"][1], t["s"][0], t["s"][0]], edgecolor=t["bg"], linewidth=2)
+    for i, v in enumerate(vals):
+        ax.text(total + 1, i, f"{v} of {total}", va="center", fontsize=9.5, color=t["ink"])
+    ax.set_yticks(range(len(order)))
+    ax.set_yticklabels([nice[m] for m in order])
+    ax.set_xlim(0, total * 1.22)
+    ax.set_xlabel(f"real frauds caught when reviewing {d['design']['alert_rate']:.1%} of transactions ({d['models']['gradient_boosting']['alerts']} alerts)")
+    style(ax, t, "On real fraud: 284,807 card transactions, 492 confirmed frauds",
+          "ULB credit card dataset. Trained on the first 80% in time, tested on the last 20%. Card fraud, not interbank payments.")
+    ax.grid(False, axis="y")
+    ax2 = axes[1]
+    a, b = d["models"]["gradient_boosting"]["pr_auc"], d["shuffled_split_gradient_boosting"]["pr_auc"]
+    ax2.bar([0, 1], [a, b], width=0.55, color=[t["s"][0], t["neutral"]], edgecolor=t["bg"], linewidth=2)
+    for i, v in enumerate((a, b)):
+        ax2.text(i, v, f"{v:.3f}", ha="center", va="bottom", fontsize=9.5, color=t["ink"])
+    ax2.set_xticks([0, 1])
+    ax2.set_xticklabels(["Tested on the future\n(honest)", "Shuffled split\n(flattering)"], color=t["ink2"], fontsize=9)
+    ax2.set_ylim(0, 1)
+    ax2.set_title("Same model, two ways to test it (PR-AUC)", color=t["ink"], fontsize=10, loc="left")
+    style(ax2, t, "", "")
+    ax2.grid(False, axis="x")
+    fig.subplots_adjust(top=0.78, wspace=0.28, bottom=0.2, left=0.2)
+    save(fig, "real-fraud", theme)
+
+
 def fig_bcbs(t, theme):
     from atlas.regulatory import intraday_liquidity_report
     from atlas.scenario import generate_scenario
@@ -574,7 +608,7 @@ def main() -> None:
             fig_hiring(t, theme)
         for key, artifact, fn in (("detect", "anomaly_detection.json", fig_detect), ("mrm", "model_inventory.json", fig_mrm),
                                   ("calibration", "calibration.json", fig_calibration), ("agent", "agent_evals.json", fig_agent),
-                                  ("deep", "deep_forecasting.json", fig_deep)):
+                                  ("deep", "deep_forecasting.json", fig_deep), ("realfraud", "real_fraud.json", fig_real_fraud)):
             data = load(artifact)
             if data and want(key):
                 fn(t, theme, data)

@@ -20,10 +20,10 @@
 | Float use | Analytics and costs use floats | Authoritative ledger state is integer-only and validated; floats appear only in metrics, sampling and solvers, and solver output is re-verified in integers. |
 | No real institution has used the tool | "Usable on real data" is a capability, not a track record | Ingest tested by round-trip and malformed-row tests; real formats in, assumptions listed. |
 | Uploaded files rarely include opening balances | Results depend on the assumed balances | Optional balances file; otherwise the assumption is printed with the result. |
-| Anomaly labels are injected typologies | Detection figures do not transfer to real fraud | Stated in every artifact; leave-one-pattern-out shows the supervised model's blind spot. |
+| Anomaly labels on the twin are injected typologies | Detection figures on the twin do not transfer to real fraud | The detector families are also run on real labelled card fraud (`results/real_fraud.json`); that is a different domain with anonymised features, so the twin's behavioural features remain unvalidated on real labels. |
 | No language model evaluated | Agent results cover a deterministic reference and two failing controls only | `atlas evals --llm` and the app's Ask page accept any OpenAI-compatible endpoint; none was reachable when this was built. |
 | Grounding check is numeric and refusal check is keyword-based | A model could pass with a wrong non-numeric claim | Documented as heuristics; correctness is checked separately against recomputed truth. |
-| Browser lab excludes MPC, safe RL and ML detectors | The lab cannot show the headline MPC + auction arm | The Streamlit app runs MPC + auction live; the browser lab offers rule-based treasury + auction. |
+| Browser lab excludes safe RL, deep forecasters and ML detectors | Those need the Python package or the app | MPC + auction now runs in the lab (scipy on WebAssembly, loaded on demand). |
 | BCBS 248 correspondent tools B(i)/(ii) not implemented | No customer-bank view | The twin has direct participants only. |
 | Model inventory is not a compliance attestation | Could be misread as regulatory sign-off | Disclaimer in the artifact and model cards. |
 | Calibration matches means only | Size distribution shape, network and timing are still assumed | Listed under `not_identified_by_public_data` in `results/calibration.json`. |
@@ -34,3 +34,8 @@
 | Retrieval labels revised once after inspection | Reported hit rates are optimistic | Stated next to the figures. |
 | Deep forecasters: one seed, CPU, no shift test | The 6% gain over ridge may not be stable | Stated in the model cards; scored by the same code as every other model. |
 | Kubernetes manifests never applied | They may need changes for a given cluster (ingress class, storage) | Structure and hardening are tested; the file says so at the top. |
+| Real fraud study is card fraud from 2013 with 75 test frauds | Not evidence about interbank payment fraud; per-model differences of one or two frauds are noise | Scope note in the artifact, figure and README. |
+| The trained tool router is a small model on template-generated questions | It knows no wording it has not seen and loses to TF-IDF and keyword rules on hand-written questions | Reported as such; the agent falls back to keyword rules below a confidence threshold; safety does not depend on it. |
+| No general-purpose language model evaluated | The agent harness has been exercised by a deterministic planner, two failing controls and the small trained router only | `scripts/eval_local_llm.sh` runs the same tasks against a local model; hosted and local models were unreachable in the build environment. |
+| Hosted-inference contract and Kubernetes manifests never deployed | Cloud behaviour (auth, scaling, cold start) is unverified | Contract tested locally; manifests schema-tested. |
+| GPU training path untested | `device="auto"` selects CUDA or Apple GPU but has only run on CPU | Stated; CPU is the default for reproducibility. |
