@@ -1,0 +1,136 @@
+# ATLAS-Σ on Kubernetes: API and interactive app, two replicas each, autoscaled, non-root, read-only root filesystem.
+# Apply:  kubectl apply -f deploy/k8s/atlas.yaml     (set the two image names first)
+# Not applied to a cluster by the authors; the manifests are schema-checked in tests/test_deploy.py.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: atlas
+  labels: {app.kubernetes.io/part-of: atlas, pod-security.kubernetes.io/enforce: restricted}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata: {name: atlas-config, namespace: atlas}
+data:
+  ATLAS_DEMO_RUNS: "1"
+  ATLAS_DATA_DIR: /data
+  ATLAS_RESULTS_DIR: /app/results
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atlas-api
+  namespace: atlas
+  labels: {app.kubernetes.io/name: atlas-api, app.kubernetes.io/part-of: atlas}
+spec:
+  replicas: 2
+  selector: {matchLabels: {app.kubernetes.io/name: atlas-api}}
+  strategy: {type: RollingUpdate, rollingUpdate: {maxUnavailable: 0, maxSurge: 1}}
+  template:
+    metadata:
+      labels: {app.kubernetes.io/name: atlas-api, app.kubernetes.io/part-of: atlas}
+      annotations: {prometheus.io/scrape: "true", prometheus.io/port: "8000", prometheus.io/path: /metrics}
+    spec:
+      automountServiceAccountToken: false
+      securityContext: {runAsNonRoot: true, runAsUser: 10001, fsGroup: 10001, seccompProfile: {type: RuntimeDefault}}
+      containers:
+        - name: api
+          image: ghcr.io/akilanmanivannanak/atlas-api:0.8.0
+          imagePullPolicy: IfNotPresent
+          ports: [{name: http, containerPort: 8000}]
+          envFrom: [{configMapRef: {name: atlas-config}}]
+          env:
+            - name: ATLAS_API_KEYS
+              valueFrom: {secretKeyRef: {name: atlas-api-keys, key: keys, optional: true}}
+          resources: {requests: {cpu: 250m, memory: 384Mi}, limits: {cpu: "1", memory: 1Gi}}
+          readinessProbe: {httpGet: {path: /api/v1/health, port: http}, initialDelaySeconds: 10, periodSeconds: 10}
+          livenessProbe: {httpGet: {path: /api/v1/health, port: http}, initialDelaySeconds: 30, periodSeconds: 20}
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+          volumeMounts: [{name: data, mountPath: /data}, {name: tmp, mountPath: /tmp}]
+      volumes: [{name: data, emptyDir: {sizeLimit: 2Gi}}, {name: tmp, emptyDir: {sizeLimit: 256Mi}}]
+---
+apiVersion: v1
+kind: Service
+metadata: {name: atlas-api, namespace: atlas}
+spec:
+  selector: {app.kubernetes.io/name: atlas-api}
+  ports: [{name: http, port: 80, targetPort: http}]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atlas-app
+  namespace: atlas
+  labels: {app.kubernetes.io/name: atlas-app, app.kubernetes.io/part-of: atlas}
+spec:
+  replicas: 2
+  selector: {matchLabels: {app.kubernetes.io/name: atlas-app}}
+  template:
+    metadata:
+      labels: {app.kubernetes.io/name: atlas-app, app.kubernetes.io/part-of: atlas}
+    spec:
+      automountServiceAccountToken: false
+      securityContext: {runAsNonRoot: true, runAsUser: 10001, seccompProfile: {type: RuntimeDefault}}
+      containers:
+        - name: app
+          image: ghcr.io/akilanmanivannanak/atlas-app:0.8.0
+          imagePullPolicy: IfNotPresent
+          ports: [{name: http, containerPort: 8501}]
+          resources: {requests: {cpu: 250m, memory: 512Mi}, limits: {cpu: "1", memory: 1536Mi}}
+          readinessProbe: {httpGet: {path: /_stcore/health, port: http}, initialDelaySeconds: 10, periodSeconds: 10}
+          livenessProbe: {httpGet: {path: /_stcore/health, port: http}, initialDelaySeconds: 30, periodSeconds: 20}
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+          volumeMounts: [{name: tmp, mountPath: /tmp}, {name: home, mountPath: /home/atlas}]
+      volumes: [{name: tmp, emptyDir: {sizeLimit: 256Mi}}, {name: home, emptyDir: {sizeLimit: 64Mi}}]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: atlas-app
+  namespace: atlas
+spec:
+  selector: {app.kubernetes.io/name: atlas-app}
+  sessionAffinity: ClientIP        # a Streamlit session lives in one pod
+  ports: [{name: http, port: 80, targetPort: http}]
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: {name: atlas-api, namespace: atlas}
+spec:
+  scaleTargetRef: {apiVersion: apps/v1, kind: Deployment, name: atlas-api}
+  minReplicas: 2
+  maxReplicas: 8
+  metrics:
+    - type: Resource
+      resource: {name: cpu, target: {type: Utilization, averageUtilization: 70}}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata: {name: atlas-api, namespace: atlas}
+spec:
+  minAvailable: 1
+  selector: {matchLabels: {app.kubernetes.io/name: atlas-api}}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: atlas-default-deny-egress, namespace: atlas}
+spec:
+  podSelector: {}
+  policyTypes: [Egress]
+  egress:
+    - to: [{namespaceSelector: {}, podSelector: {matchLabels: {k8s-app: kube-dns}}}]
+      ports: [{protocol: UDP, port: 53}, {protocol: TCP, port: 53}]
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: atlas
+  namespace: atlas
+  annotations: {nginx.ingress.kubernetes.io/affinity: cookie}
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: atlas.example.com
+      http:
+        paths:
+          - {path: /api, pathType: Prefix, backend: {service: {name: atlas-api, port: {name: http}}}}
+          - {path: /, pathType: Prefix, backend: {service: {name: atlas-app, port: {name: http}}}}

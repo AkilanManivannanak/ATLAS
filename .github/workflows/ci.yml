@@ -28,7 +28,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install -r requirements-lock.txt ruff && pip install --no-deps -e .
-      - run: ruff check src tests
+      - run: pip install -r requirements.txt pyyaml      # Streamlit app and manifest tests (PyTorch tests skip in CI)
+      - run: ruff check src tests scripts streamlit_app.py
       - run: pytest -q
       - name: Smoke benchmark (every row must replay exactly)
         run: python -m atlas.benchmark --preset smoke --out /tmp/bench
@@ -53,6 +54,8 @@ jobs:
       - uses: actions/checkout@v6
       - name: Build API image
         run: docker build -t atlas-sigma-api:ci .
+      - name: Build app image
+        run: docker build -f Dockerfile.app -t atlas-sigma-app:ci .
       - name: Build web image
         run: docker build -t atlas-sigma-web:ci ./frontend
       - name: API container answers health check
