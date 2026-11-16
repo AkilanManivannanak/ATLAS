@@ -1,0 +1,37 @@
+name: Review
+description: You tried ATLAS (the app, the browser lab, the CLI or the code). Tell us what worked and what did not.
+title: "Review: "
+labels: [review]
+body:
+  - type: dropdown
+    id: rating
+    attributes:
+      label: Overall
+      options: ["5 - excellent", "4 - good", "3 - mixed", "2 - weak", "1 - poor"]
+    validations:
+      required: true
+  - type: input
+    id: role
+    attributes:
+      label: I am a
+      description: For example payments engineer, treasury analyst, ML engineer, student.
+  - type: input
+    id: tried
+    attributes:
+      label: What I tried
+      description: App, browser lab, my own CSV, CLI, MCP tools, the code.
+  - type: textarea
+    id: worked
+    attributes:
+      label: What worked
+  - type: textarea
+    id: broke
+    attributes:
+      label: What broke or confused me
+      description: The most useful part of a review. Screenshots welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: would_use
+    attributes:
+      label: Would I use this on real data? Why or why not

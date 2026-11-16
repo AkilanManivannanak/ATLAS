@@ -19,7 +19,7 @@ from atlas.stress import build_scenario
 
 LAB_VERSION = "atlas-lab-v1"
 LAB_POLICIES = ("fifo", "priority", "bilateral", "multilateral")
-LAB_CONTROLLERS = ("none", "rule")
+LAB_CONTROLLERS = ("none", "rule", "mpc")      # "mpc" needs numpy and scipy (not offered in the browser lab)
 _NY = "America/New_York"
 
 
@@ -30,7 +30,9 @@ def _clamp(v, lo, hi, default):
         return default
 
 
-def run_lab(params: dict | None = None, csv_text: str | None = None, balances_csv: str | None = None) -> dict:
+def run_lab(params: dict | None = None, csv_text: str | None = None, balances_csv: str | None = None, *, detail: bool = False) -> dict:
+    """``detail=True`` also returns the raw run (``_run``), the result object (``_result``) and the scenario
+    (``_scenario``) for front ends that drill further; those three are not JSON-serialisable."""
     p = params or {}
     policy = p.get("policy", "priority") if p.get("policy") in LAB_POLICIES else "priority"
     controller = p.get("controller", "none") if p.get("controller") in LAB_CONTROLLERS else "none"
@@ -51,6 +53,9 @@ def run_lab(params: dict | None = None, csv_text: str | None = None, balances_cs
     if controller == "rule":
         from atlas.control.mpc import RuleBasedRebalancer
         ctrl = RuleBasedRebalancer()
+    elif controller == "mpc":
+        from atlas.control.mpc import MPCController
+        ctrl = MPCController()
     settings = SimulationSettings(policy=policy, auction=auction, fednow_shared_master=bool(p.get("shared_master", False)))
     result = run_day(scenario, settings, build_scenario(stress), controller=ctrl)
     d = result.to_dict(include_payments=True)
@@ -69,7 +74,8 @@ def run_lab(params: dict | None = None, csv_text: str | None = None, balances_cs
             sys_out[h] += (share or 0.0) * r["A_iii_submitted_minor"]
     own = {x["institution_id"]: x for x in d["per_institution"]}
     unsettled = sorted((x for x in d["payments"] if x["status"] != "settled"), key=lambda x: -x["amount_minor"])
-    return {
+    extra = {"_run": d, "_result": result, "_scenario": scenario, "_bcbs": bcbs} if detail else {}
+    return extra | {
         "version": LAB_VERSION, "data_origin": d["scenario"].get("data_origin"), "ingest": ingest,
         "choices": {"policy": policy, "stress": stress, "controller": controller, "auction": auction or "none",
                     "liquidity_pct": liquidity_bp // 100, "shared_master": bool(p.get("shared_master", False))},

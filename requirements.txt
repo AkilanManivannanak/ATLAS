@@ -1,0 +1,7 @@
+# Dependencies of the Streamlit app (streamlit_app.py). The simulator core itself needs none.
+streamlit>=1.50,<2
+plotly>=5.24
+pandas>=2.2
+numpy>=2.0
+scipy>=1.13
+scikit-learn>=1.5
