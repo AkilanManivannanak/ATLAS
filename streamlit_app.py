@@ -20,7 +20,7 @@ from atlas_app import pages as P  # noqa: E402
 from atlas_app.state import AUCTION, POLICY, STRESS, TREASURY, init, log  # noqa: E402
 from atlas_app.theme import THEMES, inject_css  # noqa: E402
 
-st.set_page_config(page_title="ATLAS-Σ · settlement and liquidity", page_icon="🏛️", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="ATLAS-Σ · settlement and liquidity", page_icon=":material/account_balance:", layout="wide", initial_sidebar_state="expanded")
 init()
 inject_css()
 
@@ -58,16 +58,16 @@ def sidebar() -> None:
 
 
 pages = {
-    "overview": st.Page(P.page_overview, title="Command center", icon="🏛️", default=True, url_path="overview"),
-    "markets": st.Page(P.page_markets, title="Live market", icon="📈", url_path="market"),
-    "stress": st.Page(P.page_stress, title="Stress lab", icon="🧪", url_path="stress"),
-    "upload": st.Page(P.page_upload, title="Your payments", icon="📄", url_path="your-payments"),
-    "alerts": st.Page(P.page_alerts, title="Alerts & cases", icon="🗂️", url_path="alerts"),
-    "controls": st.Page(P.page_controls, title="Controls", icon="🛡️", url_path="controls"),
-    "models": st.Page(P.page_models, title="Model risk", icon="⚖️", url_path="model-risk"),
-    "agent": st.Page(P.page_agent, title="Agent", icon="🤖", url_path="agent"),
-    "evidence": st.Page(P.page_evidence, title="Evidence", icon="📊", url_path="evidence"),
-    "team": st.Page(P.page_team, title="Team", icon="👥", url_path="team"),
+    "overview": st.Page(P.page_overview, title="Command center", icon=":material/hub:", default=True, url_path="overview"),
+    "markets": st.Page(P.page_markets, title="Live market", icon=":material/show_chart:", url_path="market"),
+    "stress": st.Page(P.page_stress, title="Stress lab", icon=":material/tune:", url_path="stress"),
+    "upload": st.Page(P.page_upload, title="Your payments", icon=":material/upload_file:", url_path="your-payments"),
+    "alerts": st.Page(P.page_alerts, title="Alerts & cases", icon=":material/policy:", url_path="alerts"),
+    "controls": st.Page(P.page_controls, title="Controls", icon=":material/verified_user:", url_path="controls"),
+    "models": st.Page(P.page_models, title="Model risk", icon=":material/rule:", url_path="model-risk"),
+    "agent": st.Page(P.page_agent, title="Agent", icon=":material/smart_toy:", url_path="agent"),
+    "evidence": st.Page(P.page_evidence, title="Evidence", icon=":material/insights:", url_path="evidence"),
+    "team": st.Page(P.page_team, title="Team", icon=":material/groups:", url_path="team"),
 }
 st.session_state["_pages"] = pages
 nav = st.navigation({"Operate": [pages[k] for k in ("overview", "markets", "stress", "upload")],

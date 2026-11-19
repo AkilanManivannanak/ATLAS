@@ -20,6 +20,7 @@ from atlas_app.state import (
     STRESS,
     STRESS_ICON,
     TREASURY,
+    VERBS,
     apply,
     artifact,
     badges,
@@ -79,9 +80,43 @@ def people_strip() -> None:
     ui.people(people[:12])
 
 
+def visits_of(user: str, gap_min: int = 30) -> list[dict]:
+    """A person's history from the shared log, split into visits by 30-minute gaps. The visit that belongs to this
+    browser session is marked current."""
+    from datetime import datetime
+    evs = sorted((e for e in workspace().events(5000) if e["user"] == user), key=lambda e: e["seq"])
+    start = st.session_state.get("_session_start", "9999")
+    out: list[dict] = []
+    for e in evs:
+        try:
+            d, at = e["detail"], datetime.fromisoformat(e["at"])
+        except ValueError:
+            continue
+        note = (STRESS.get(d.get("stress"), "") if d.get("stress") else "") or (d.get("q", "")[:60]) or (f"{d['payment']} {d['decision']}" if d.get("decision") else "") \
+            or (f"{d['stars']} stars" if d.get("stars") else "")
+        item = {"kind": e["kind"], "verb": VERBS.get(e["kind"], e["kind"]), "t": e["at"][11:16], "note": note}
+        if not out or (at - out[-1]["_last"]).total_seconds() > gap_min * 60 or (e["at"] >= start) != out[-1]["current"]:
+            out.append({"day": at.strftime("%b %d"), "from": e["at"][11:16], "current": e["at"] >= start, "items": [], "_last": at})
+        out[-1]["items"].append(item)
+        out[-1]["_last"], out[-1]["to"] = at, e["at"][11:16]
+    for v in out:
+        v.pop("_last")
+    return out
+
+
+def my_journey() -> None:
+    name = who()
+    if name == "guest":
+        return
+    v = visits_of(name)
+    past = [x for x in v if not x["current"]]
+    ui.journey(name, v, returning=bool(past))
+
+
 def page_overview() -> None:
     p = palette()
     people_strip()
+    my_journey()
     md, ind = market_brief()
     live = "live" if md.origin.get("sofr") == "live" else "snapshot"
     ui.hero(f"US funding market · {ind['as_of']} · {live} data", f"SOFR {ind['sofr_pct']:.2f}%", f"· {ind['regime']}",
@@ -90,10 +125,11 @@ def page_overview() -> None:
     lede("Pick a day. Watch it settle. Click a bank.", "12 simulated banks · Fedwire, CHIPS, FedNow, RTP · every run replay-verified")
     cols = st.columns(len(PRESETS) + 1)
     for c, name in zip(cols, PRESETS):
-        icon = {"Normal day": "☀️", "Combined stress": "🔥", "Stress + optimiser": "🧠", "Liquidity squeeze": "💧", "A bank fails to pay": "💥"}.get(name, "")
+        icon = {"Normal day": ":material/check_circle:", "Combined stress": ":material/warning:", "Stress + optimiser": ":material/auto_graph:",
+                "Liquidity squeeze": ":material/water_drop:", "A bank fails to pay": ":material/block:"}.get(name, "")
         on = all(st.session_state.get(k) == v for k, v in PRESETS[name].items())
         c.button(f"{icon} {name}", on_click=apply, args=(PRESETS[name],), width="stretch", key=f"pre_{name}", type="primary" if on else "secondary")
-    cols[-1].button("⚡ Today's market", width="stretch", type="primary", help="Start from today's real SOFR, EFFR, RRP and TGA readings",
+    cols[-1].button(":material/bolt: Today's market", width="stretch", type="primary", help="Start from today's real SOFR, EFFR, RRP and TGA readings",
                     on_click=_use_market, args=(ind, None))
     with st.spinner("Simulating the day…"):
         r = current()
@@ -102,7 +138,7 @@ def page_overview() -> None:
     ui.network(r["_frames"])
     ui.tiles(kpi_items(r, s.pinned), cols=3)
     a, b, _ = st.columns([1, 1, 4])
-    if a.button("📌 Pin as baseline", width="stretch", help="Later runs show their change against this one."):
+    if a.button(":material/push_pin: Pin baseline", width="stretch", help="Later runs show their change against this one."):
         s.pinned = {"kpis": r["kpis"], "series": r["series"], "choices": r["choices"]}
         log("pinned", r["choices"])
         st.rerun()
@@ -151,7 +187,8 @@ def page_markets() -> None:
     for c, x in zip(cols, fr):
         edge = "edge-good" if x["fresh"] and x["origin"] == "live" else "edge-warn" if x["fresh"] else "edge-bad"
         tip = f'{x["publisher"]} · {x["rows"]} rows · {x["age_business_days"]} business day(s) old, target ≤ {x["target_lag_days"]}'
-        state = ("🟢 live" if x["origin"] == "live" else "🟠 snapshot") + (" · fresh" if x["fresh"] else " · late")
+        dot = "#13804F" if x["origin"] == "live" and x["fresh"] else "#C77A00"
+        state = f'<span style="color:{dot}">●</span> ' + ("live" if x["origin"] == "live" else "snapshot") + (" · fresh" if x["fresh"] else " · late")
         c.markdown(f'<div class="card {edge}" title="{tip}"><div class="k">{x["series"]}</div><div class="v">{x["last"][5:]}</div><div class="s">{state}</div></div>',
                    unsafe_allow_html=True)
     if any(x["origin"] == "snapshot" for x in fr):
@@ -195,7 +232,7 @@ def page_markets() -> None:
     a, b = st.columns([2, 3])
     with a:
         st.markdown(f'<div class="card edge-p"><div class="k">{pick} · tightness {past["score"]:.0f}/100 · {past["regime"]}</div>'
-                    f'<div class="v">{sim["liq"]}% liquidity</div><div class="s">{STRESS_ICON.get(sim["stress"], "")} {STRESS[sim["stress"]]}<br>'
+                    f'<div class="v">{sim["liq"]}% liquidity</div><div class="s">{STRESS[sim["stress"]]}<br>'
                     + "<br>".join(sim["explanation"]) + "</div></div>", unsafe_allow_html=True)
         st.button("Use this market day everywhere", type="primary", width="stretch", on_click=_use_market, args=(past, pick))
     with b:
@@ -220,7 +257,7 @@ def page_stress() -> None:
     for row in range(0, len(keys), 4):
         cols = st.columns(4)
         for c, k in zip(cols, keys[row:row + 4]):
-            c.button(f"{STRESS_ICON[k]}  {STRESS[k]}", key=f"st_{k}", width="stretch", type="primary" if s.stress == k else "secondary",
+            c.button(f"{STRESS_ICON[k]} {STRESS[k]}", key=f"st_{k}", width="stretch", type="primary" if s.stress == k else "secondary",
                      on_click=apply, args=({"stress": k},))
 
     eyebrow("2 · A vs B")
@@ -386,8 +423,8 @@ def page_alerts() -> None:
     if not alerts:
         st.info("Nothing unusual enough to flag on this day.")
         return
-    icon = {"clear": "✅", "escalate": "⚠️", "file_report": "📝"}
-    df = pd.DataFrame([{"Status": icon.get(dec.get(a["payment_id"], {}).get("decision"), "•"), "Score": a["score"], "Why flagged": a["reason"], "From": a["sender"], "To": a["receiver"],
+    icon = {"clear": "Cleared", "escalate": "Escalated", "file_report": "Reported"}
+    df = pd.DataFrame([{"Status": icon.get(dec.get(a["payment_id"], {}).get("decision"), "Open"), "Score": a["score"], "Why flagged": a["reason"], "From": a["sender"], "To": a["receiver"],
                         "Rail": a["rail"], "Amount": a["amount_minor"] / 100, "Time (UTC)": a["at"][11:19], "Payment": a["payment_id"]} for a in alerts])
     left, right = st.columns([5, 4])
     with left:
@@ -418,7 +455,7 @@ def page_alerts() -> None:
             st.caption(f"Decided by **{prev['user']}** at {prev['at'][:16].replace('T', ' ')} UTC: **{prev['decision']}**. {prev['note']}")
         note = st.text_input("Note for the file", key=f"note_{a['payment_id']}", placeholder="what you checked, who you called")
         b = st.columns(3)
-        for c, d, label in zip(b, DECISIONS, ("✅ Clear", "⚠️ Escalate", "📝 File report")):
+        for c, d, label in zip(b, DECISIONS, (":material/check: Clear", ":material/priority_high: Escalate", ":material/description: File report")):
             if c.button(label, key=f"d_{d}_{a['payment_id']}", width="stretch", type="primary" if d == "escalate" else "secondary"):
                 workspace().decide(who(), a["payment_id"], run_id, d, note)
                 st.toast(f"{a['payment_id']}: {d} · saved for the team")
@@ -483,14 +520,14 @@ def page_models() -> None:
     sm = inv["summary"]
     ui.tiles([dict(label="Models in inventory", value=len(inv["models"]), fmt="int", edge="p"), dict(label="Pass", value=sm["pass"], fmt="int", edge="good"),
               dict(label="Warn", value=sm["warn"], fmt="int", edge="warn"), dict(label="Fail", value=sm["fail"], fmt="int", edge="bad")], cols=4)
-    icon = {"pass": "🟢", "warn": "🟠", "fail": "🔴"}
+    icon = {"pass": ":material/check_circle:", "warn": ":material/error:", "fail": ":material/cancel:"}
     flt = st.segmented_control("Show", ["all", "fail", "warn", "pass"], default="all") or "all"
     for m in inv["models"]:
         if flt != "all" and m["status"] != flt:
             continue
-        with st.expander(f"{icon[m['status']]}  {m['name']}  ·  tier {m['materiality']['tier']}  ·  {m['status'].upper()}"):
-            lede(f"🎯 {m['purpose']}", f"Challenger: {m['challenger']}")
-            st.dataframe(pd.DataFrame([{"": icon[c["status"]], "Check": c["check"], "Value": str(c["value"]), "Rule": c["rule"]} for c in m["checks"]]), hide_index=True, width="stretch")
+        with st.expander(f"{m['name']}  ·  tier {m['materiality']['tier']}  ·  {m['status'].upper()}", icon=icon[m["status"]]):
+            lede(m["purpose"], f"Challenger: {m['challenger']}")
+            st.dataframe(pd.DataFrame([{"Status": c["status"].upper(), "Check": c["check"], "Value": str(c["value"]), "Rule": c["rule"]} for c in m["checks"]]), hide_index=True, width="stretch")
             st.markdown("**Limits:** " + "; ".join(m["limitations"]))
     lede("", inv["disclaimer"])
 
@@ -549,7 +586,7 @@ def _show(m: dict) -> None:
                 f'<span class="tag">Answered by <b>{m["by"]}</b></span><span class="tag"><b>{len(m["trace"])}</b> tool calls</span>', unsafe_allow_html=True)
     for t in m["trace"]:
         args = t.get("args")
-        with st.expander(f"🔧 {t['tool']}({', '.join(f'{k}={v}' for k, v in args.items()) if isinstance(args, dict) else ''})"):
+        with st.expander(f":material/build: {t['tool']}({', '.join(f'{k}={v}' for k, v in args.items()) if isinstance(args, dict) else ''})"):
             res = t.get("result", t.get("error"))
             if isinstance(res, dict) and "passages" in res:
                 for q in res["passages"]:
@@ -576,8 +613,8 @@ def page_agent() -> None:
         st.toggle("Understand questions with the Transformer trained in this repo", key="use_router")
     t1, t2, t3 = st.tabs(["Watch it work", "Ask", "Audit log"])
     with t1:
-        short = dict(zip(["📊 Settled %", "🏦 Most stretched bank", "⚙️ Optimiser savings", "📖 FedNow limit", "🚫 Move $50M"], EXAMPLES))
-        pick = st.pills("Try", list(short), default="📊 Settled %", key="demo_pill", label_visibility="collapsed") or "📊 Settled %"
+        short = dict(zip(["Settled share", "Most stretched bank", "Optimiser savings", "FedNow limit", "Move $50M (refused)"], EXAMPLES))
+        pick = st.pills("Try", list(short), default="Settled share", key="demo_pill", label_visibility="collapsed") or "Settled share"
         q = short[pick]
         st.markdown(f"<div class='cite'>“{q}”</div>", unsafe_allow_html=True)
         if s.get("_demo_q") != q:
@@ -728,8 +765,7 @@ def page_team() -> None:
               dict(label="Activity chain", value="intact" if ok else "broken", edge="good" if ok else "bad")], cols=4)
     t1, t2, t3 = st.tabs(["Activity", "Reviews", "People"])
     with t1:
-        nice = {"joined": "👋 joined", "ran_day": "▶️ ran a day", "ran_live_market": "⚡ ran today's market", "compared": "🔀 compared responses", "uploaded": "📄 uploaded payments",
-                "asked": "💬 asked the agent", "case_decision": "🗂️ decided a case", "review": "⭐ reviewed", "pinned": "📌 pinned a baseline", "exported": "⬇️ exported"}
+        nice = VERBS
         if not events:
             st.info("Nothing yet. Put your name in the sidebar and run a day.")
         for e in events[:60]:
@@ -763,6 +799,9 @@ def page_team() -> None:
                 for x in gh:
                     st.markdown(f"**[{x['title']}]({x['url']})** · @{x['by']} · {x['at']}")
     with t3:
-        if people:
-            st.dataframe(pd.DataFrame([{"Name": x["user"], "Actions": x["n"], "Kinds of thing done": x["kinds"], "First seen (UTC)": x["first"][:16].replace("T", " "),
-                                        "Last seen (UTC)": x["last"][:16].replace("T", " ")} for x in people]), hide_index=True, width="stretch")
+        names = [x["user"] for x in people if x["user"] != "guest"]
+        if not names:
+            st.info("No named users yet.")
+        else:
+            pick = st.pills("Person", names, default=names[0], key="team_pick", label_visibility="collapsed") or names[0]
+            ui.journey(pick, visits_of(pick), returning=True, viewer=False)

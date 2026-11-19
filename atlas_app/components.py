@@ -207,7 +207,7 @@ animation:pop .45s cubic-bezier(.2,1.4,.4,1) both;transition:transform .15s,box-
 .nm{font:600 13px Inter;color:__INK__}.sb{font-size:11.5px;color:__INK2__}.empty{font-size:13px;color:__INK2__;background:#fff;border:1px dashed __LINE__;border-radius:999px;padding:9px 16px}
 @keyframes pop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(19,128,79,.5)}50%{box-shadow:0 0 0 6px rgba(19,128,79,0)}}
 </style><script>const P=__DATA__,el=document.getElementById('pp'),C=['__PRIMARY__','__ACCENT__','__ACCENT2__','__GOOD__','__DEEP__','__WARN__'];
-if(!P.length){el.innerHTML='<div class="empty">👋 Nobody yet. Type your name in the sidebar and be first.</div>'}
+if(!P.length){el.innerHTML='<div class="empty">No one yet. Add your name in the sidebar.</div>'}
 P.forEach((x,i)=>{const h=[...x.name].reduce((a,c)=>a+c.charCodeAt(0),0),ini=x.name.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
 const d=document.createElement('div');d.className='p';d.style.animationDelay=(i*70)+'ms';d.title=x.n+' actions';
 d.innerHTML='<div class="av'+(x.live?' live':'')+'" style="background:'+C[h%C.length]+'">'+ini+'</div><div><div class="nm">'+x.name.replace(/</g,'&lt;')+'</div><div class="sb">'+x.verb+' · '+x.ago+'</div></div>';el.appendChild(d)});</script>"""
@@ -241,14 +241,49 @@ const val=mk(arc(Math.PI,Math.PI*1.0001,95),'__PRIMARY__',18);
 const tx=(y,st)=>{const t=document.createElementNS(NS,'text');t.setAttribute('x',120);t.setAttribute('y',y);t.setAttribute('text-anchor','middle');t.setAttribute('style',st);g.appendChild(t);return t};
 const num=tx(112,'font:700 34px Inter;fill:__INK__'),lab=tx(134,'font:600 11px JetBrains Mono,monospace;letter-spacing:.14em;fill:__MUTED__');
 const box=document.getElementById('sl'),cur={...T};let shown=0;
-const rs=document.createElement('button');rs.className='rs';rs.textContent='↺ today';box.appendChild(rs);
+const rs=document.createElement('button');rs.className='rs';rs.textContent='Reset to today';box.appendChild(rs);
 S.forEach(s=>{const d=document.createElement('div');d.className='s';d.innerHTML=`<div class="t"><span>${s.n}<i>today ${T[s.k]}${s.u}</i></span><b id="v_${s.k}"></b></div><input type="range" id="r_${s.k}" min="${s.min}" max="${s.max}" step="${s.st}" value="${T[s.k]}"><div class="bar"><i id="b_${s.k}"></i></div>`;
 box.appendChild(d);d.querySelector('input').oninput=e=>{cur[s.k]=+e.target.value;upd()}});
 rs.onclick=()=>{S.forEach(s=>{cur[s.k]=T[s.k];document.getElementById('r_'+s.k).value=T[s.k]});upd()};
 function upd(){let score=0;S.forEach(s=>{const p=s.f(cur[s.k]);score+=p;document.getElementById('v_'+s.k).textContent=cur[s.k]+s.u;document.getElementById('b_'+s.k).style.width=(p/s.w*100)+'%'});
  const reg=score<35?'calm':score<65?'firm':'tight',liq=Math.round(Math.max(6,Math.min(26,24-score*0.16)));
- document.getElementById('liq').textContent=liq+'%';document.getElementById('stress').textContent=reg==='tight'?'🔒 Banks hoard':reg==='firm'?'🌊 Funding wobble':'☀️ Normal day';
+ document.getElementById('liq').textContent=liq+'%';document.getElementById('stress').textContent=reg==='tight'?'Banks hoard':reg==='firm'?'Funding strain':'Normal day';
  lab.textContent=reg.toUpperCase()+' · TIGHTNESS';const from=shown,t0=performance.now();
  const step=n=>{const q=Math.min(1,(n-t0)/400),z=from+(score-from)*(1-Math.pow(1-q,3));val.setAttribute('d',arc(Math.PI,Math.PI*(1+Math.max(.0001,z/100)),95));num.textContent=Math.round(z);shown=z;if(q<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
 upd();</script>"""
     embed(html.replace("__DATA__", data), height)
+
+
+# ------------------------------------------------------------------ a person's visits, past and current
+def journey(name: str, visits: list[dict], returning: bool, viewer: bool = True, height: int | None = None) -> None:
+    """Visits as columns, actions as dots coloured by kind. The current visit is outlined; hover a dot for detail."""
+    data = json.dumps({"name": name, "v": visits[-8:], "returning": returning, "viewer": viewer,
+                       "n": sum(len(x["items"]) for x in visits), "visits": len(visits),
+                       "cases": sum(1 for x in visits for i in x["items"] if i["kind"] == "case_decision")})
+    html = """<div class="j"><div class="hd"><div><div class="k mono" id="ey"></div><div class="h" id="hi"></div></div><div class="st" id="st"></div></div><div class="tr" id="tr"></div></div><style>
+.j{background:#fff;border:1px solid __LINE__;border-radius:16px;padding:14px 16px}.hd{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.k{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:__MUTED__}.h{font:650 20px Inter;color:__INK__;letter-spacing:-.01em}
+.st{display:flex;gap:8px}.c{border:1px solid __LINE__;border-radius:10px;padding:5px 11px;text-align:center}.c b{display:block;font:650 17px Inter;color:__INK__}.c span{font-size:10.5px;color:__MUTED__;letter-spacing:.06em;text-transform:uppercase}
+.tr{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 4px}.v{min-width:150px;border:1px solid __LINE__;border-radius:12px;padding:9px 11px;animation:in .4s ease-out both;background:__SOFT__}
+.v.cur{border:2px solid __PRIMARY__;background:#fff}.d{font:600 12px Inter;color:__INK__;display:flex;justify-content:space-between}.d i{font-style:normal;font-weight:500;color:__MUTED__}
+.now{font:600 9.5px 'JetBrains Mono',monospace;letter-spacing:.12em;color:#fff;background:__PRIMARY__;border-radius:4px;padding:1px 5px}
+.dots{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.dot{width:11px;height:11px;border-radius:3px;animation:pop .35s cubic-bezier(.2,1.4,.4,1) both;cursor:default;position:relative}
+.dot:hover{transform:scale(1.35)}.lg{display:flex;gap:12px;margin-top:10px;font-size:11px;color:__INK2__;flex-wrap:wrap}.lg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.tt{position:fixed;pointer-events:none;background:__INK__;color:#fff;font:500 11.5px Inter;padding:5px 8px;border-radius:6px;opacity:0;transition:opacity .1s;max-width:260px;z-index:9}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@keyframes pop{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
+</style><div class="tt" id="tt"></div><script>
+const D=__DATA__,G={run:'__PRIMARY__',case:'__ACCENT__',agent:'__ACCENT2__',review:'__GOOD__',data:'__WARN__',other:'__ACCENT3__'};
+const grp=k=>({ran_day:'run',ran_live_market:'run',compared:'run',pinned:'run',case_decision:'case',asked:'agent',review:'review',uploaded:'data',exported:'data'}[k]||'other');
+document.getElementById('ey').textContent=D.viewer?(D.returning?'Welcome back':'Welcome'):'Activity';
+document.getElementById('hi').textContent=D.name+(D.viewer&&!D.returning?' · first visit':'');
+document.getElementById('st').innerHTML=[[D.visits,'visits'],[D.n,'actions'],[D.cases,'cases']].map(([a,b])=>`<div class="c"><b>${a}</b><span>${b}</span></div>`).join('');
+const tr=document.getElementById('tr'),tt=document.getElementById('tt');let k=0;
+D.v.forEach((v,i)=>{const e=document.createElement('div');e.className='v'+(v.current?' cur':'');e.style.animationDelay=(i*80)+'ms';
+ e.innerHTML=`<div class="d"><span>${v.day} <i>${v.from}–${v.to||v.from}</i></span>${v.current?'<span class="now">NOW</span>':''}</div><div class="dots"></div>`;
+ const ds=e.querySelector('.dots');v.items.forEach(it=>{const d=document.createElement('div');d.className='dot';d.style.background=G[grp(it.kind)];d.style.animationDelay=(80*i+25*(k++))+'ms';
+ d.onmouseenter=ev=>{tt.textContent=it.t+'  '+it.verb+(it.note?' · '+it.note:'');tt.style.opacity=1};d.onmousemove=ev=>{tt.style.left=(ev.clientX+12)+'px';tt.style.top=(ev.clientY-30)+'px'};d.onmouseleave=()=>tt.style.opacity=0;ds.appendChild(d)});
+ tr.appendChild(e)});
+if(!D.v.length)tr.innerHTML='<div style="color:__INK2__;font-size:13px">Run a day and your activity appears here.</div>';
+const lg=document.createElement('div');lg.className='lg';lg.innerHTML=[['run','simulations'],['case','case decisions'],['agent','agent questions'],['review','reviews'],['data','files']].map(([g,t])=>`<span><i style="background:${G[g]}"></i>${t}</span>`).join('');
+document.querySelector('.j').appendChild(lg);</script>"""
+    embed(html.replace("__DATA__", data), height or 200)

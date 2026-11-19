@@ -18,8 +18,12 @@ STRESS = {"baseline": "Normal day", "counterparty_delay": "A major bank pays lat
           "liquidity_withdrawal": "Liquidity withdrawal", "funding_disruption": "Funding disruption", "haircut_shock": "Collateral haircut shock",
           "failure_to_pay": "A bank fails to pay", "concentrated_outflows": "Concentrated outflows", "liquidity_hoarding": "Banks hoard liquidity",
           "messaging_failure": "Messaging failure", "combined": "Combined stress"}
-STRESS_ICON = {"baseline": "☀️", "counterparty_delay": "🐢", "rtgs_outage": "⛔", "liquidity_withdrawal": "💧", "funding_disruption": "🌊", "haircut_shock": "✂️",
-               "failure_to_pay": "💥", "concentrated_outflows": "🌪️", "liquidity_hoarding": "🔒", "messaging_failure": "📡", "combined": "🔥"}
+STRESS_ICON = {"baseline": ":material/check_circle:", "counterparty_delay": ":material/schedule:", "rtgs_outage": ":material/power_off:",
+               "liquidity_withdrawal": ":material/water_drop:", "funding_disruption": ":material/trending_down:", "haircut_shock": ":material/content_cut:",
+               "failure_to_pay": ":material/block:", "concentrated_outflows": ":material/call_split:", "liquidity_hoarding": ":material/lock:",
+               "messaging_failure": ":material/wifi_off:", "combined": ":material/warning:"}
+VERBS = {"joined": "joined", "ran_day": "ran a day", "ran_live_market": "ran a live-market day", "compared": "compared two responses", "uploaded": "uploaded payments",
+         "asked": "asked the agent", "case_decision": "decided a case", "review": "left a review", "pinned": "pinned a baseline", "exported": "exported the workspace"}
 POLICY = {"priority": "Priority queue", "fifo": "First in, first out", "bilateral": "Bilateral offsetting", "multilateral": "Multilateral netting"}
 TREASURY = {"none": "Passive", "rule": "Rule-based rebalancing", "mpc": "Optimiser (MPC)"}
 AUCTION = {"none": "Off", "uniform": "Uniform price", "pay_as_bid": "Pay as bid"}
@@ -38,6 +42,8 @@ def init() -> None:
     for k, v in DEFAULTS.items():
         st.session_state.setdefault(k, v)
     st.session_state.setdefault("_seen_runs", set())
+    from datetime import UTC, datetime
+    st.session_state.setdefault("_session_start", datetime.now(UTC).isoformat(timespec="seconds"))
     if not st.session_state.get("_name_from_link"):
         st.session_state._name_from_link = True
         try:
@@ -131,9 +137,9 @@ def badges(r: dict) -> None:
     ok = i["replay_verified"]
     st.markdown(
         f'<span class="tag {"ok" if ok else "no"}" title="{tip}"><b>{"✓ replay verified" if ok else "✗ replay failed"}</b></span>'
-        f'<span class="tag">{STRESS_ICON.get(ss.stress, "")} <b>{STRESS[ss.stress]}</b></span><span class="tag">💧 <b>{ss.liq}%</b></span>'
-        f'<span class="tag">🏦 <b>{s["institutions"]}</b> · <b>{s["payments"]:,}</b> payments · <b>{usd(s["value_usd"])}</b></span>'
-        + ('<span class="tag">📌 <b>baseline pinned</b></span>' if ss.pinned else ""), unsafe_allow_html=True)
+        f'<span class="tag">Scenario <b>{STRESS[ss.stress]}</b></span><span class="tag">Liquidity <b>{ss.liq}%</b></span>'
+        f'<span class="tag"><b>{s["institutions"]}</b> banks · <b>{s["payments"]:,}</b> payments · <b>{usd(s["value_usd"])}</b></span>'
+        + ('<span class="tag">Baseline <b>pinned</b></span>' if ss.pinned else ""), unsafe_allow_html=True)
 
 
 def kpi_items(r: dict, base: dict | None) -> list[dict]:
