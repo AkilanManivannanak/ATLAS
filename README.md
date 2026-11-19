@@ -90,7 +90,7 @@ Three colour schemes (navy & crimson, ocean & bronze, crimson & gold) sit at the
 2. *Create app* → repository `AkilanManivannanak/ATLAS`, branch `main`, main file `streamlit_app.py`.
 3. *Advanced settings* → Python 3.12 → *Deploy*.
 
-No secrets needed. The live feeds need no keys. The team workspace is a SQLite file inside the app container, so a redeploy resets it; export it from the Team page first.
+No secrets needed to run. To make the team workspace survive redeploys (so returning users are remembered), create a free Supabase project, copy its **Session pooler** connection string, and add it in the app's *Settings → Secrets* as `ATLAS_DB_URL = "postgresql://..."`. Without it the workspace is a local SQLite file that a redeploy resets.
 </details>
 
 ---

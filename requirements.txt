@@ -5,3 +5,4 @@ pandas>=2.2
 numpy>=2.0
 scipy>=1.13
 scikit-learn>=1.5
+psycopg[binary]>=3.2  # optional shared database (ATLAS_DB_URL); app falls back to SQLite

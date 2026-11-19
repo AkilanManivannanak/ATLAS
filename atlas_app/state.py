@@ -62,13 +62,26 @@ def usd(v: float, signed: bool = False) -> str:
 
 
 @st.cache_resource(show_spinner=False)
-def _workspace(path: str) -> Workspace:
-    return Workspace(path)
+def _workspace(path: str, url: str) -> Workspace:
+    if url:
+        try:
+            return Workspace(url=url)
+        except Exception as exc:  # noqa: BLE001 - a bad or unreachable database must not take the app down
+            st.toast(f"Shared database unreachable, using local storage: {type(exc).__name__}")
+    return Workspace(path, url="")
+
+
+def _db_url() -> str:
+    import os
+    try:
+        return str(st.secrets.get("ATLAS_DB_URL", "")) or os.environ.get("ATLAS_DB_URL", "")
+    except Exception:  # noqa: BLE001 - no secrets file
+        return os.environ.get("ATLAS_DB_URL", "")
 
 
 def workspace() -> Workspace:
     from atlas.workspace import default_path
-    return _workspace(str(default_path()))
+    return _workspace(str(default_path()), _db_url())
 
 
 def who() -> str:
