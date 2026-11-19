@@ -92,7 +92,7 @@ def simulate(source: str, csv_text: str | None, banks: int, payments: int, insta
     return out
 
 
-def current(**override) -> dict:
+def current(_log: bool = True, **override) -> dict:
     s = st.session_state
     a = dict(source=s.source, csv_text=s.csv_text, banks=s.banks, payments=s.payments, instant=s.instant, seed=s.seed, stress=s.stress,
              liq=s.liq, policy=s.policy, controller=s.controller, auction=s.auction, shared=s.shared) | override
@@ -100,7 +100,7 @@ def current(**override) -> dict:
         a["source"] = "Synthetic day"
     r = simulate(**a)
     key = r["scenario"]["fingerprint"] + json.dumps(r["choices"], sort_keys=True)
-    if key not in s._seen_runs:
+    if _log and key not in s._seen_runs:
         s._seen_runs.add(key)
         log("ran_day", r["choices"] | {"liq": a["liq"], "source": a["source"], "settled_pct": r["kpis"]["settled_pct"]})
     return r

@@ -67,7 +67,7 @@ const step=n=>{const q=still?1:Math.min(1,(n-t0)/dur),z=1-Math.pow(1-q,3);el.tex
 
 
 # ------------------------------------------------------------------ animated settlement network
-def network(frames: dict, height: int = 560) -> None:
+def network(frames: dict, height: int = 560, meta: str = "") -> None:
     """Payments travel between banks as particles, half hour by half hour. Pause, replay, 1x/3x/10x, scrub, click a bank to pin it."""
     f = frames
     data = json.dumps({"banks": f["banks"], "tiers": f["tiers"], "sent": f["sent_minor"], "avail": f["available_minor"], "labels": f["labels"],
@@ -76,7 +76,7 @@ def network(frames: dict, height: int = 560) -> None:
 <div class="wrap"><div class="bar">
  <button id="pp" class="pill on">Pause</button><button id="rp" class="pill">Replay</button>
  <span class="seg"><button class="sp on" data-s="1">1×</button><button class="sp" data-s="3">3×</button><button class="sp" data-s="10">10×</button></span>
- <input id="scrub" type="range" min="0" value="0" aria-label="Time of day"><span id="clock" class="mono clock">08:30 ET</span></div>
+ <input id="scrub" type="range" min="0" value="0" aria-label="Time of day"><span id="clock" class="mono clock">08:30 ET</span></div><div class="meta mono">__META__</div>
 <div class="row"><svg id="g" viewBox="0 0 640 470" role="img" aria-label="Animated payment network"></svg>
 <div class="side">
  <div class="c"><div class="l mono">Settled so far</div><div id="cs" class="n">$0</div></div>
@@ -91,6 +91,7 @@ def network(frames: dict, height: int = 560) -> None:
 .pill.on{background:__PRIMARY__;color:#fff;border-color:__PRIMARY__}.seg{display:inline-flex;background:__SOFT__;border-radius:999px;padding:2px}
 .sp{border:0;background:transparent;padding:5px 11px}.sp.on{background:__PRIMARY__;color:#fff}
 #scrub{flex:1;min-width:120px;accent-color:__PRIMARY__}.clock{font-size:13px;color:__INK2__;min-width:76px;text-align:right}
+.meta{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:__MUTED__;margin:-2px 0 4px}
 .row{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:12px}@media(max-width:700px){.row{grid-template-columns:1fr}}
 svg#g{width:100%;height:auto;display:block}
 .c{border:1px solid __LINE__;border-left:4px solid __GOOD__;border-radius:12px;padding:10px 12px;margin-bottom:10px}.warnc{border-left-color:__ACCENT__}.pin{border-left-color:__PRIMARY__;min-height:92px}
@@ -140,7 +141,8 @@ scrub.oninput=()=>{parts=[];acc=0;enter(+scrub.value)};
 pinned=D.avail.map((a,i)=>Math.max(...D.queued.map(q=>q[i]))/Math.max(1,a)).reduce((m,v,i,arr)=>v>arr[m]?i:m,0);
 enter(playing?0:T-1);btn();requestAnimationFrame(tick);
 </script>"""
-    embed(html.replace("__DATA__", data), height)
+    import html as _h
+    embed(html.replace("__DATA__", data).replace("__META__", _h.escape(meta)), height)
 
 
 # ------------------------------------------------------------------ agent pipeline (animated)

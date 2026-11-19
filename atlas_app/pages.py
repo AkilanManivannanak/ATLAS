@@ -113,6 +113,64 @@ def my_journey() -> None:
     ui.journey(name, v, returning=bool(past))
 
 
+def _map_points(ind: dict) -> list[dict]:
+    """Every preset day plus today's live market, each simulated so its position is its real outcome."""
+    from atlas.live import to_simulation
+    pts = []
+    for name, cfg in PRESETS.items():
+        r = current(_log=False, **cfg)
+        pts.append({"name": name, "cfg": cfg, "k": r["kpis"]})
+    live = to_simulation(ind)
+    cfg = dict(stress=live["stress"], liq=live["liq"], policy="priority", controller="none", auction="none")
+    pts.append({"name": "Today's market", "cfg": cfg, "k": current(_log=False, **cfg)["kpis"], "live": True})
+    return pts
+
+
+def _pick_from_map() -> None:
+    ev = st.session_state.get("scen_map")
+    try:
+        pt = ev["selection"]["points"][0]
+    except (KeyError, IndexError, TypeError):
+        return
+    name = pt.get("customdata")
+    name = name[0] if isinstance(name, list) else name
+    for x in st.session_state.get("_map_pts", []):
+        if x["name"] == name:
+            apply(x["cfg"])
+            log("ran_live_market" if x.get("live") else "ran_day", x["cfg"] | {"from": "scenario map"})
+
+
+def scenario_map(ind: dict) -> None:
+    """Scenarios as a map of outcomes: x is opening liquidity, y is value settled, size is the cost of the day.
+    Click a point to load that day everywhere."""
+    p = palette()
+    with st.spinner("Placing every scenario on the map…"):
+        pts = _map_points(ind)
+    st.session_state._map_pts = pts
+    cur = {k: st.session_state.get(k) for k in ("stress", "liq", "policy", "controller", "auction")}
+    sizes = [x["k"]["cost_usd"] for x in pts]
+    top = max(sizes) or 1
+    fig = go.Figure()
+    for x in pts:
+        on = all(cur[k] == v for k, v in x["cfg"].items())
+        settled = x["k"]["settled_pct"]
+        col = p["good"] if settled >= 99 else p["warn"] if settled >= 95 else p["bad"]
+        fig.add_trace(go.Scatter(
+            x=[x["k"]["delay_min"]], y=[settled], customdata=[x["name"]], mode="markers+text", text=[x["name"]],
+            textposition={"Normal day": "middle left", "Today's market": "middle right", "A bank fails to pay": "middle right", "Stress + optimiser": "middle right"}.get(x["name"], "top center"),
+            textfont=dict(size=12, color=p["ink"] if on else p["ink2"]),
+            marker=dict(size=18 + 34 * (x["k"]["cost_usd"] / top) ** 0.5, color=p["accent2"] if x.get("live") else col, opacity=0.95 if on else 0.55,
+                        symbol="diamond" if x.get("live") else "circle", line=dict(color=p["primary"] if on else "#fff", width=4 if on else 1.5)),
+            hovertemplate=(f"<b>{x['name']}</b><br>settled %{{y:.2f}}%<br>average delay %{{x:.1f}} min<br>opening liquidity {x['cfg']['liq']}%<br>cost {usd(x['k']['cost_usd'])}"
+                           f"<br>delay {x['k']['delay_min']:.1f} min<extra></extra>"), showlegend=False))
+    fig.add_hrect(y0=99, y1=100.6, fillcolor=rgba(p["good"], 0.06), line_width=0)
+    xs = [x["k"]["delay_min"] for x in pts]
+    fig.update_xaxes(title_text="average delay (minutes)", range=[max(0, min(xs) - 6), max(xs) + 6], showgrid=False)
+    fig.update_yaxes(title_text="value settled", ticksuffix="%", range=[min(x["k"]["settled_pct"] for x in pts) - 3, 101.5])
+    fig.update_layout(clickmode="event+select", dragmode=False)
+    st.plotly_chart(layout(fig, 330, t=10), config=PLOT, key="scen_map", on_select=_pick_from_map, selection_mode="points")
+
+
 def page_overview() -> None:
     p = palette()
     people_strip()
@@ -122,20 +180,15 @@ def page_overview() -> None:
     ui.hero(f"US funding market · {ind['as_of']} · {live} data", f"SOFR {ind['sofr_pct']:.2f}%", f"· {ind['regime']}",
             f"SOFR − EFFR {ind['spread_bp']:+.1f} bp · RRP ${ind['rrp_bn']:.1f}bn · TGA ${ind['tga_bn']:,.0f}bn · tightness {ind['score']:.0f}/100")
     st.title("Settlement command center")
-    lede("Pick a day. Watch it settle. Click a bank.", "12 simulated banks · Fedwire, CHIPS, FedNow, RTP · every run replay-verified")
-    cols = st.columns(len(PRESETS) + 1)
-    for c, name in zip(cols, PRESETS):
-        icon = {"Normal day": ":material/check_circle:", "Combined stress": ":material/warning:", "Stress + optimiser": ":material/auto_graph:",
-                "Liquidity squeeze": ":material/water_drop:", "A bank fails to pay": ":material/block:"}.get(name, "")
-        on = all(st.session_state.get(k) == v for k, v in PRESETS[name].items())
-        c.button(f"{icon} {name}", on_click=apply, args=(PRESETS[name],), width="stretch", key=f"pre_{name}", type="primary" if on else "secondary")
-    cols[-1].button(":material/bolt: Today's market", width="stretch", type="primary", help="Start from today's real SOFR, EFFR, RRP and TGA readings",
-                    on_click=_use_market, args=(ind, None))
+    lede("Click a day on the map. Watch it settle below.", "Each dot is a simulated day: higher = more settled, left = faster, bigger = costlier; diamond = today's live market")
+    scenario_map(ind)
     with st.spinner("Simulating the day…"):
         r = current()
     s = st.session_state
-    badges(r)
-    ui.network(r["_frames"])
+    i_ = r["integrity"]
+    meta = (f"{'replay verified' if i_['replay_verified'] else 'REPLAY FAILED'} · {r['scenario']['institutions']} banks · "
+            f"{r['scenario']['payments']:,} payments · {usd(r['scenario']['value_usd'])}")
+    ui.network(r["_frames"], meta=meta)
     ui.tiles(kpi_items(r, s.pinned), cols=3)
     a, b, _ = st.columns([1, 1, 4])
     if a.button(":material/push_pin: Pin baseline", width="stretch", help="Later runs show their change against this one."):
