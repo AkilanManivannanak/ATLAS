@@ -38,6 +38,15 @@ def init() -> None:
     for k, v in DEFAULTS.items():
         st.session_state.setdefault(k, v)
     st.session_state.setdefault("_seen_runs", set())
+    if not st.session_state.get("_name_from_link"):
+        st.session_state._name_from_link = True
+        try:
+            name = (st.query_params.get("name") or "").strip()[:40]
+        except Exception:  # noqa: BLE001 - older Streamlit
+            name = ""
+        if name and not st.session_state.user:
+            st.session_state.user = name
+            log("joined", {"via": "personal link"})
 
 
 def usd(v: float, signed: bool = False) -> str:
