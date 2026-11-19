@@ -62,13 +62,18 @@ def usd(v: float, signed: bool = False) -> str:
 
 
 @st.cache_resource(show_spinner=False)
-def _workspace(path: str, url: str) -> Workspace:
+def _workspace(path: str, url: str) -> tuple[Workspace, str]:
+    """No Streamlit calls in here: cached functions must not draw. Returns the workspace and, if the shared
+    database could not be used, a reason with any credentials removed."""
     if url:
         try:
-            return Workspace(url=url)
+            return Workspace(url=url), ""
         except Exception as exc:  # noqa: BLE001 - a bad or unreachable database must not take the app down
-            st.toast(f"Shared database unreachable, using local storage: {type(exc).__name__}")
-    return Workspace(path, url="")
+            import re
+            msg = re.sub(r"://[^@\s]*@", "://***@", f"{type(exc).__name__}: {exc}")
+            msg = re.sub(r"password[^\s,;]*", "password=***", msg, flags=re.I)
+            return Workspace(path, url=""), msg[:300]
+    return Workspace(path, url=""), ""
 
 
 def _db_url() -> str:
@@ -81,7 +86,14 @@ def _db_url() -> str:
 
 def workspace() -> Workspace:
     from atlas.workspace import default_path
-    return _workspace(str(default_path()), _db_url())
+    return _workspace(str(default_path()), _db_url())[0]
+
+
+def workspace_status() -> tuple[str, str]:
+    """(backend, problem) for showing on the Team page."""
+    from atlas.workspace import default_path
+    ws, problem = _workspace(str(default_path()), _db_url())
+    return ws.backend, problem
 
 
 def who() -> str:

@@ -805,14 +805,19 @@ def github_reviews() -> list[dict] | None:
 
 def page_team() -> None:
     ws = workspace()
+    from atlas_app.state import workspace_status
+    backend, problem = workspace_status()
     st.title("Team")
+    if problem:
+        st.warning(f"Shared database not connected, so history resets on redeploy. Reason: {problem}")
     lede("Who used it, what they did, what they said.", "Shared workspace, hash-chained so edits show")
     people, events, reviews = ws.people(), ws.events(300), ws.reviews()
     ok = ws.verify()
     ui.tiles([dict(label="People", value=len([x for x in people if x["user"] != "guest"]), fmt="int", edge="p", sub="named users of this deployment"),
               dict(label="Actions logged", value=sum(x["n"] for x in people), fmt="int", edge="a"),
               dict(label="Reviews here", value=len(reviews), fmt="int", edge="good", sub=(f"average {sum(x['stars'] for x in reviews) / len(reviews):.1f} ★" if reviews else "none yet")),
-              dict(label="Activity chain", value="intact" if ok else "broken", edge="good" if ok else "bad")], cols=4)
+              dict(label="Activity chain", value="intact" if ok else "broken", edge="good" if ok else "bad",
+                   sub="permanent database" if backend == "postgres" else "temporary storage")], cols=4)
     t1, t2, t3 = st.tabs(["Activity", "Reviews", "People"])
     with t1:
         nice = VERBS
