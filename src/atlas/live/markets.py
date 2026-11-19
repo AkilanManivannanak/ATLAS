@@ -25,6 +25,7 @@ from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from statistics import mean
+from zoneinfo import ZoneInfo
 
 SNAPSHOT = Path(__file__).resolve().parents[3] / "data" / "live" / "snapshot.json"
 _NYF = "https://markets.newyorkfed.org/api"
@@ -156,7 +157,7 @@ def _business_days_between(a: date, b: date) -> int:
 
 def freshness(md: MarketData, today: date | None = None) -> list[dict]:
     """Per series: last observation, its age in business days, and whether that meets the publication lag target."""
-    today = today or datetime.now(UTC).date()
+    today = today or datetime.now(ZoneInfo("America/New_York")).date()  # publishers date their data in New York time
     out = []
     for k, spec in SERIES.items():
         last = md.latest(k)

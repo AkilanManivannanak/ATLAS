@@ -10,7 +10,7 @@
 ![replay](https://img.shields.io/badge/every%20run-replay--verified-1baf7a)
 ![deps](https://img.shields.io/badge/simulator%20core-zero%20dependencies-2a78d6)
 
-## [▶ Run it in your browser](https://akilanmanivannanak.github.io/ATLAS/lab.html) &nbsp;·&nbsp; [📊 Explore the results](https://akilanmanivannanak.github.io/ATLAS/) &nbsp;·&nbsp; [⭐ Review it](https://github.com/AkilanManivannanak/ATLAS/issues/new?template=review.yml)
+## [🚀 Open the live app](https://atlas-sigma.streamlit.app) &nbsp;·&nbsp; [▶ Browser lab](https://akilanmanivannanak.github.io/ATLAS/lab.html) &nbsp;·&nbsp; [📊 Explore the results](https://akilanmanivannanak.github.io/ATLAS/) &nbsp;·&nbsp; [⭐ Review it](https://github.com/AkilanManivannanak/ATLAS/issues/new?template=review.yml)
 
 <img src="docs/assets/app.gif" alt="ATLAS app: payments flowing between twelve banks as particles, banks turning amber and red as payments queue, then the day re-run on today's real funding-market readings" width="100%">
 
@@ -63,13 +63,14 @@ Three colour schemes (navy & crimson, ocean & bronze, crimson & gold) sit at the
 
 ## Try it with your team, then tell me what broke
 
-1. Open the app, put your name in the sidebar.
+1. Open **[atlas-sigma.streamlit.app](https://atlas-sigma.streamlit.app)**, put your name in the sidebar.
 2. Press **⚡ Today's market** on the Command center and watch the day.
 3. On **Alerts & cases**, decide three cases. Your teammates see your decisions.
 4. On **Team → Reviews**, leave stars and one thing that broke.
 
 | | |
 |---|---|
+| **Live app** | [atlas-sigma.streamlit.app](https://atlas-sigma.streamlit.app) |
 | **Run locally** | `pip install -r requirements.txt && streamlit run streamlit_app.py` |
 | **No install** | [browser lab](https://akilanmanivannanak.github.io/ATLAS/lab.html) |
 | **Public review** | [open the review form](https://github.com/AkilanManivannanak/ATLAS/issues/new?template=review.yml) · [read the reviews](https://github.com/AkilanManivannanak/ATLAS/issues?q=label%3Areview) |
