@@ -126,49 +126,46 @@ def _map_points(ind: dict) -> list[dict]:
     return pts
 
 
-def _pick_from_map() -> None:
-    ev = st.session_state.get("scen_map")
+def _pick_from_blotter() -> None:
+    ev = st.session_state.get("blotter")
     try:
-        pt = ev["selection"]["points"][0]
+        row = ev["selection"]["rows"][0]
     except (KeyError, IndexError, TypeError):
         return
-    name = pt.get("customdata")
-    name = name[0] if isinstance(name, list) else name
-    for x in st.session_state.get("_map_pts", []):
-        if x["name"] == name:
-            apply(x["cfg"])
-            log("ran_live_market" if x.get("live") else "ran_day", x["cfg"] | {"from": "scenario map"})
+    pts = st.session_state.get("_map_pts", [])
+    if 0 <= row < len(pts):
+        x = pts[row]
+        apply(x["cfg"])
+        if x.get("live"):
+            log("ran_live_market", x["cfg"] | {"from": "blotter"})
 
 
-def scenario_map(ind: dict) -> None:
-    """Scenarios as a map of outcomes: x is opening liquidity, y is value settled, size is the cost of the day.
-    Click a point to load that day everywhere."""
-    p = palette()
-    with st.spinner("Placing every scenario on the map…"):
+def scenario_blotter(ind: dict) -> None:
+    """A trading-desk style blotter: one row per simulated day, numbers in columns, an intraday sparkline of value
+    waiting to settle, sortable, and a click on any row loads that day everywhere."""
+    with st.spinner("Pricing every scenario…"):
         pts = _map_points(ind)
     st.session_state._map_pts = pts
-    cur = {k: st.session_state.get(k) for k in ("stress", "liq", "policy", "controller", "auction")}
-    sizes = [x["k"]["cost_usd"] for x in pts]
-    top = max(sizes) or 1
-    fig = go.Figure()
+    rows = []
     for x in pts:
-        on = all(cur[k] == v for k, v in x["cfg"].items())
-        settled = x["k"]["settled_pct"]
-        col = p["good"] if settled >= 99 else p["warn"] if settled >= 95 else p["bad"]
-        fig.add_trace(go.Scatter(
-            x=[x["k"]["delay_min"]], y=[settled], customdata=[x["name"]], mode="markers+text", text=[x["name"]],
-            textposition={"Normal day": "middle left", "Today's market": "middle right", "A bank fails to pay": "middle right", "Stress + optimiser": "middle right"}.get(x["name"], "top center"),
-            textfont=dict(size=12, color=p["ink"] if on else p["ink2"]),
-            marker=dict(size=18 + 34 * (x["k"]["cost_usd"] / top) ** 0.5, color=p["accent2"] if x.get("live") else col, opacity=0.95 if on else 0.55,
-                        symbol="diamond" if x.get("live") else "circle", line=dict(color=p["primary"] if on else "#fff", width=4 if on else 1.5)),
-            hovertemplate=(f"<b>{x['name']}</b><br>settled %{{y:.2f}}%<br>average delay %{{x:.1f}} min<br>opening liquidity {x['cfg']['liq']}%<br>cost {usd(x['k']['cost_usd'])}"
-                           f"<br>delay {x['k']['delay_min']:.1f} min<extra></extra>"), showlegend=False))
-    fig.add_hrect(y0=99, y1=100.6, fillcolor=rgba(p["good"], 0.06), line_width=0)
-    xs = [x["k"]["delay_min"] for x in pts]
-    fig.update_xaxes(title_text="average delay (minutes)", range=[max(0, min(xs) - 6), max(xs) + 6], showgrid=False)
-    fig.update_yaxes(title_text="value settled", ticksuffix="%", range=[min(x["k"]["settled_pct"] for x in pts) - 3, 101.5])
-    fig.update_layout(clickmode="event+select", dragmode=False)
-    st.plotly_chart(layout(fig, 330, t=10), config=PLOT, key="scen_map", on_select=_pick_from_map, selection_mode="points")
+        r = current(_log=False, **x["cfg"])
+        q = r["series"]["queued_usd"]
+        step = max(1, len(q) // 32)
+        rows.append({"Scenario": x["name"] + (" · live" if x.get("live") else ""),
+                     "Settled": x["k"]["settled_pct"], "Intraday queue": [v / 1e6 for v in q[::step]],
+                     "Delay": x["k"]["delay_min"], "Unsettled": x["k"]["unsettled_usd"], "Cost": x["k"]["cost_usd"],
+                     "Liquidity": x["cfg"]["liq"], "Treasury": TREASURY[x["cfg"]["controller"]]})
+    lo = min(r_["Settled"] for r_ in rows)
+    st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch", key="blotter", on_select=_pick_from_blotter, selection_mode="single-row",
+                 column_config={
+                     "Scenario": st.column_config.TextColumn(width="medium"),
+                     "Settled": st.column_config.ProgressColumn("Settled", min_value=float(int(lo) - 1), max_value=100.0, format="%.2f%%"),
+                     "Intraday queue": st.column_config.LineChartColumn("Waiting to settle, 08:00 to 18:00", width="medium"),
+                     "Delay": st.column_config.NumberColumn("Avg delay", format="%.1f min"),
+                     "Unsettled": st.column_config.NumberColumn("Unsettled", format="dollar"),
+                     "Cost": st.column_config.NumberColumn("Cost of day", format="dollar"),
+                     "Liquidity": st.column_config.NumberColumn("Opening liq.", format="%d%%"),
+                 })
 
 
 def page_overview() -> None:
@@ -180,8 +177,8 @@ def page_overview() -> None:
     ui.hero(f"US funding market · {ind['as_of']} · {live} data", f"SOFR {ind['sofr_pct']:.2f}%", f"· {ind['regime']}",
             f"SOFR − EFFR {ind['spread_bp']:+.1f} bp · RRP ${ind['rrp_bn']:.1f}bn · TGA ${ind['tga_bn']:,.0f}bn · tightness {ind['score']:.0f}/100")
     st.title("Settlement command center")
-    lede("Click a day on the map. Watch it settle below.", "Each dot is a simulated day: higher = more settled, left = faster, bigger = costlier; diamond = today's live market")
-    scenario_map(ind)
+    lede("Select a row to load that day.", "Every row is a full simulated day on the same payments; sort any column; the live row is set by today's NY Fed and Treasury data")
+    scenario_blotter(ind)
     with st.spinner("Simulating the day…"):
         r = current()
     s = st.session_state
