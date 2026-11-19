@@ -30,7 +30,7 @@ html,body,[class*="css"],.stMarkdown,.stButton button,input,textarea,select{{fon
 section[data-testid="stSidebar"]{{background:#FFFFFF;border-right:1px solid var(--line)}}
 h1{{color:var(--p)!important;font-weight:700!important;letter-spacing:-.025em;font-size:2.3rem!important;margin-bottom:.1rem!important}}
 h2,h3,h4{{color:var(--ink)!important;font-weight:600!important;letter-spacing:-.01em}}
-.lede{{color:var(--ink2);font-size:1.02rem;margin:-.1rem 0 1.0rem;max-width:880px}}
+.lede{{color:var(--ink2);font-size:1.05rem;margin:-.1rem 0 .9rem;max-width:880px}}.tip{{cursor:help;color:var(--muted);font-size:.85rem;margin-left:4px}}
 .eyebrow{{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:1.2rem 0 .4rem}}
 .tag{{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 11px;margin:0 6px 6px 0;font-size:.78rem;color:var(--ink2);background:#fff}}
 .tag b{{color:var(--ink);font-weight:600}}.tag.ok{{border-color:#BFE3CF}}.tag.ok b{{color:{p['good']}}}.tag.no{{border-color:#F3C0C8}}.tag.no b{{color:{p['bad']}}}

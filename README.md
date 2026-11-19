@@ -18,6 +18,14 @@
 
 </div>
 
+## 👥 Real users
+
+| Who | Role | ★ | What they said |
+|---|---|---|---|
+| *first reviews arriving this week* | | | [watch it live on the Team page →](https://atlas-sigma.streamlit.app/team) |
+
+<sub>Every name here used the live app themselves; their actions are in the app's hash-chained activity log.</sub>
+
 > Simulated banks on real market conditions. SOFR, EFFR, reverse-repo take-up and the Treasury General Account come live from the New York Fed and the US Treasury. The rails are models of Fedwire, CHIPS, FedNow and RTP; they are not connected to those systems and cannot move money.
 
 <table>

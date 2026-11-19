@@ -111,8 +111,11 @@ def apply(settings: dict) -> None:
         st.session_state[k] = v
 
 
-def lede(text: str) -> None:
-    st.markdown(f'<p class="lede">{text}</p>', unsafe_allow_html=True)
+def lede(text: str, tip: str | None = None) -> None:
+    """One short line; detail lives in a hover tooltip, not on the page."""
+    import html
+    info = f' <span class="tip" title="{html.escape(tip)}">ⓘ</span>' if tip else ""
+    st.markdown(f'<p class="lede">{text}{info}</p>', unsafe_allow_html=True)
 
 
 def eyebrow(text: str) -> None:
@@ -120,14 +123,17 @@ def eyebrow(text: str) -> None:
 
 
 def badges(r: dict) -> None:
+    """One compact row; the technical detail is in the hover title."""
+    import html
     i, s = r["integrity"], r["scenario"]
-    origin = "your file" if r["data_origin"] == "user_supplied" else "synthetic"
+    ss = st.session_state
+    tip = html.escape(f"state hash {i['state_hash']} · {i['events']:,} ledger events in {i['runtime_s']}s · data {r['data_origin']}")
+    ok = i["replay_verified"]
     st.markdown(
-        f'<span class="tag {"ok" if i["replay_verified"] else "no"}">Ledger replay <b>{"verified ✓" if i["replay_verified"] else "FAILED"}</b></span>'
-        f'<span class="tag">State hash <b>{i["state_hash"][:12]}…</b></span>'
-        f'<span class="tag"><b>{s["institutions"]}</b> banks · <b>{s["payments"]:,}</b> payments · <b>{usd(s["value_usd"])}</b></span>'
-        f'<span class="tag"><b>{i["events"]:,}</b> ledger events in <b>{i["runtime_s"]}s</b></span><span class="tag">Data <b>{origin}</b></span>'
-        + ('<span class="tag">Baseline <b>pinned</b></span>' if st.session_state.pinned else ""), unsafe_allow_html=True)
+        f'<span class="tag {"ok" if ok else "no"}" title="{tip}"><b>{"✓ replay verified" if ok else "✗ replay failed"}</b></span>'
+        f'<span class="tag">{STRESS_ICON.get(ss.stress, "")} <b>{STRESS[ss.stress]}</b></span><span class="tag">💧 <b>{ss.liq}%</b></span>'
+        f'<span class="tag">🏦 <b>{s["institutions"]}</b> · <b>{s["payments"]:,}</b> payments · <b>{usd(s["value_usd"])}</b></span>'
+        + ('<span class="tag">📌 <b>baseline pinned</b></span>' if ss.pinned else ""), unsafe_allow_html=True)
 
 
 def kpi_items(r: dict, base: dict | None) -> list[dict]:

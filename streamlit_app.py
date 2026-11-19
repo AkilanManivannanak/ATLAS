@@ -20,8 +20,6 @@ from atlas_app import pages as P  # noqa: E402
 from atlas_app.state import AUCTION, POLICY, STRESS, TREASURY, init, log  # noqa: E402
 from atlas_app.theme import THEMES, inject_css  # noqa: E402
 
-from atlas import __version__  # noqa: E402
-
 st.set_page_config(page_title="ATLAS-Σ · settlement and liquidity", page_icon="🏛️", layout="wide", initial_sidebar_state="expanded")
 init()
 inject_css()
@@ -35,8 +33,8 @@ def _named() -> None:
 def sidebar() -> None:
     s = st.session_state
     with st.sidebar:
-        st.markdown(f"<div style='font-weight:700;font-size:1.15rem;color:var(--p)'>ATLAS-Σ <span style='color:#8A93A8;font-weight:400;font-size:.8rem'>v{__version__}</span></div>"
-                    "<div style='color:#8A93A8;font-size:.78rem;margin-bottom:.6rem'>Interbank settlement and intraday liquidity, simulated on live market conditions</div>",
+        st.markdown("<div style='font-weight:700;font-size:1.15rem;color:var(--p)'>ATLAS-Σ</div>"
+                    "<div style='color:#8A93A8;font-size:.78rem;margin-bottom:.6rem'>Settlement and liquidity, on live markets</div>",
                     unsafe_allow_html=True)
         st.text_input("Your name", key="user", placeholder="so your team sees your work", on_change=_named)
         with st.expander("The day", expanded=False):
@@ -56,7 +54,7 @@ def sidebar() -> None:
             st.selectbox("Liquidity auction", list(AUCTION), format_func=AUCTION.get, key="auction")
             st.toggle("FedNow shares the Fed master account", key="shared")
         st.selectbox("Colours", list(THEMES), key="theme")
-        st.caption("Simulated banks only. Not connected to any real payment system.")
+        st.caption("Simulated banks · cannot move money")
 
 
 pages = {
@@ -77,6 +75,6 @@ nav = st.navigation({"Operate": [pages[k] for k in ("overview", "markets", "stre
                      "Explain": [pages[k] for k in ("agent", "evidence", "team")]}, position="sidebar")
 sidebar()
 nav.run()
-st.markdown(f"<div style='margin-top:2.5rem;color:#8A93A8;font-size:.8rem'>ATLAS-Σ v{__version__} · "
+st.markdown("<div style='margin-top:2.5rem;color:#8A93A8;font-size:.8rem'>ATLAS-Σ · "
             "<a href='https://github.com/AkilanManivannanak/ATLAS' style='color:inherit'>code on GitHub</a> · market data: Federal Reserve Bank of New York, US Treasury</div>",
             unsafe_allow_html=True)

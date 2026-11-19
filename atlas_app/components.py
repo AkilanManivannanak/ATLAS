@@ -189,3 +189,26 @@ def ticker(items: list[tuple[str, str, str]], height: int = 46) -> None:
 .tk{{overflow:hidden;background:#fff;border:1px solid __LINE__;border-radius:999px;white-space:nowrap}}.m{{display:inline-block;padding:9px 0;animation:mv 38s linear infinite}}
 .tk:hover .m{{animation-play-state:paused}}.i{{margin:0 22px;font-size:14px}}.l{{font-size:11px;letter-spacing:.1em;color:__MUTED__}}b{{color:__INK__}}
 .good{{color:__GOOD__}}.bad{{color:__BAD__}}.flat{{color:__ACCENT3__}}@keyframes mv{{from{{transform:translateX(0)}}to{{transform:translateX(-50%)}}}}</style>""", height)
+
+
+# ------------------------------------------------------------------ real people on this deployment
+def people(items: list[dict], height: int = 92) -> None:
+    """items: {name, n, ago, last, live}. Avatars of the people who actually used this deployment."""
+    verbs = {"joined": "joined", "ran_day": "ran a day", "ran_live_market": "ran today's market", "compared": "compared A/B", "uploaded": "uploaded payments",
+             "asked": "asked the agent", "case_decision": "decided a case", "review": "left a review", "pinned": "pinned a baseline", "exported": "exported"}
+    for x in items:
+        x["verb"] = verbs.get(x["last"], x["last"])
+    html = """<div class="row"><div class="lab mono">USED BY</div><div id="pp"></div></div><style>
+.row{display:flex;align-items:center;gap:12px;overflow-x:auto;padding:4px 2px 8px}.lab{font-size:10.5px;letter-spacing:.14em;color:__MUTED__;white-space:nowrap}
+#pp{display:flex;gap:10px}.p{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid __LINE__;border-radius:999px;padding:5px 14px 5px 5px;white-space:nowrap;
+animation:pop .45s cubic-bezier(.2,1.4,.4,1) both;transition:transform .15s,box-shadow .15s}.p:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(14,26,51,.1)}
+.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font:600 13px Inter;position:relative}
+.live:after{content:'';position:absolute;right:-1px;bottom:-1px;width:10px;height:10px;border-radius:50%;background:__GOOD__;border:2px solid #fff;animation:pulse 1.6s infinite}
+.nm{font:600 13px Inter;color:__INK__}.sb{font-size:11.5px;color:__INK2__}.empty{font-size:13px;color:__INK2__;background:#fff;border:1px dashed __LINE__;border-radius:999px;padding:9px 16px}
+@keyframes pop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(19,128,79,.5)}50%{box-shadow:0 0 0 6px rgba(19,128,79,0)}}
+</style><script>const P=__DATA__,el=document.getElementById('pp'),C=['__PRIMARY__','__ACCENT__','__ACCENT2__','__GOOD__','__DEEP__','__WARN__'];
+if(!P.length){el.innerHTML='<div class="empty">👋 Nobody yet. Type your name in the sidebar and be first.</div>'}
+P.forEach((x,i)=>{const h=[...x.name].reduce((a,c)=>a+c.charCodeAt(0),0),ini=x.name.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const d=document.createElement('div');d.className='p';d.style.animationDelay=(i*70)+'ms';d.title=x.n+' actions';
+d.innerHTML='<div class="av'+(x.live?' live':'')+'" style="background:'+C[h%C.length]+'">'+ini+'</div><div><div class="nm">'+x.name.replace(/</g,'&lt;')+'</div><div class="sb">'+x.verb+' · '+x.ago+'</div></div>';el.appendChild(d)});</script>"""
+    embed(html.replace("__DATA__", json.dumps(items)), height)

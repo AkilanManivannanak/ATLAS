@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import statistics
-from datetime import date
+from datetime import UTC, date
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -60,14 +60,34 @@ def _use_market(ind: dict, as_of: str | None) -> None:
 
 
 # ================================================================== 1. command center
+def people_strip() -> None:
+    """Real people who used this deployment, newest first. Shows nothing invented: empty until someone types a name."""
+    from datetime import datetime
+    seen: dict[str, dict] = {}
+    for e in workspace().events(800):
+        if e["user"] == "guest":
+            continue
+        d = seen.setdefault(e["user"], {"name": e["user"], "n": 0, "last_at": e["at"], "last": e["kind"]})
+        d["n"] += 1
+    now = datetime.now(UTC)
+    people = []
+    for d in seen.values():
+        mins = (now - datetime.fromisoformat(d["last_at"])).total_seconds() / 60
+        d["ago"] = "now" if mins < 2 else f"{mins:.0f}m ago" if mins < 60 else f"{mins / 60:.0f}h ago" if mins < 1440 else f"{mins / 1440:.0f}d ago"
+        d["live"] = mins < 15
+        people.append(d)
+    ui.people(people[:12])
+
+
 def page_overview() -> None:
     p = palette()
+    people_strip()
     md, ind = market_brief()
     live = "live" if md.origin.get("sofr") == "live" else "snapshot"
     ui.hero(f"US funding market · {ind['as_of']} · {live} data", f"SOFR {ind['sofr_pct']:.2f}%", f"· {ind['regime']}",
             f"SOFR − EFFR {ind['spread_bp']:+.1f} bp · RRP ${ind['rrp_bn']:.1f}bn · TGA ${ind['tga_bn']:,.0f}bn · tightness {ind['score']:.0f}/100")
     st.title("Settlement command center")
-    lede("Twelve banks send each other a day of payments over Fedwire, CHIPS, FedNow and RTP. Choose a day, watch it settle, and click any bank.")
+    lede("Pick a day. Watch it settle. Click a bank.", "12 simulated banks · Fedwire, CHIPS, FedNow, RTP · every run replay-verified")
     cols = st.columns(len(PRESETS) + 1)
     for c, name in zip(cols, PRESETS):
         c.button(name, on_click=apply, args=(PRESETS[name],), width="stretch", key=f"pre_{name}")
@@ -76,8 +96,6 @@ def page_overview() -> None:
     with st.spinner("Simulating the day…"):
         r = current()
     s = st.session_state
-    st.markdown(f'<span class="tag">Scenario <b>{STRESS_ICON.get(s.stress, "")} {STRESS[s.stress]}</b></span><span class="tag">Opening liquidity <b>{s.liq}%</b></span>'
-                f'<span class="tag">Queue <b>{POLICY[s.policy]}</b></span><span class="tag">Treasury <b>{TREASURY[s.controller]}</b></span>', unsafe_allow_html=True)
     badges(r)
     ui.network(r["_frames"])
     ui.tiles(kpi_items(r, s.pinned), cols=3)
@@ -118,15 +136,14 @@ def page_markets() -> None:
     from atlas.live import freshness, indicators, to_simulation
     p = palette()
     st.title("Live funding market")
-    lede("Real readings a bank treasury desk checks every morning, pulled from the New York Fed and the US Treasury. "
-         "They set how much liquidity the simulated banks start with.")
+    lede("Today's real funding market drives the simulation.", "New York Fed Markets API + US Treasury Daily Treasury Statement, no keys")
     md, ind = market_brief()
     tone = lambda v: "bad" if v > 0 else "good"  # noqa: E731
     ui.ticker([("SOFR", f"{ind['sofr_pct']:.2f}%", "flat"), ("EFFR", f"{ind['effr_pct']:.2f}%", "flat"), ("SOFR − EFFR", f"{ind['spread_bp']:+.1f} bp", tone(ind["spread_bp"])),
                ("SOFR 99th − 1st", f"{ind['sofr_tail_bp']:.0f} bp", "flat"), ("SOFR volume", f"${ind['sofr_volume_bn']:,.0f}bn", "flat"),
                ("RRP take-up", f"${ind['rrp_bn']:.2f}bn", "bad" if ind["rrp_bn"] < 50 else "good"), ("TGA", f"${ind['tga_bn']:,.0f}bn", "flat"),
                ("TGA 5-day change", f"{ind['tga_5d_change_bn']:+.1f}bn", tone(ind["tga_5d_change_bn"]))])
-    eyebrow("Promises the feeds make, checked on every load")
+    eyebrow("Feeds")
     fr = freshness(md)
     cols = st.columns(len(fr))
     for c, x in zip(cols, fr):
@@ -137,9 +154,9 @@ def page_markets() -> None:
     if any(x["origin"] == "snapshot" for x in fr):
         with st.expander(f"Some feeds could not be reached from this server, so they show the snapshot taken {md.snapshot_at[:16].replace('T', ' ')} UTC"):
             st.code("\n".join(f"{k}: {v}" for k, v in md.errors.items()), language=None)
-    eyebrow("How tight are reserves?")
+    eyebrow("Reserve tightness")
     ui.gauge(ind["score"], ind["regime"], ind["score_parts"], height=190)
-    st.caption(ind["method"])
+    lede("How the score is built", ind["method"])
 
     sofr, effr, rrp, tga = (md.series[k] for k in ("sofr", "effr", "rrp", "tga"))
     fig = make_subplots(rows=2, cols=2, subplot_titles=("SOFR with its 1st–99th percentile band, and EFFR", "SOFR minus EFFR (bp)",
@@ -160,10 +177,8 @@ def page_markets() -> None:
                              hovertemplate="%{x}: $%{y:,.0f}bn<extra></extra>"), 2, 2)
     fig.update_yaxes(ticksuffix="%", row=1, col=1)
     st.plotly_chart(layout(fig, 560, t=40), config=PLOT)
-    st.caption(f"Sources: Federal Reserve Bank of New York Markets API (SOFR, EFFR, reverse repo), US Treasury Fiscal Data API (Daily Treasury Statement). "
-               f"SOFR printed above EFFR on {ind['days_sofr_above_effr_20d']} of the last 20 days.")
 
-    eyebrow("Run a day in these conditions")
+    eyebrow("Replay any market day")
     days = [r["date"] for r in sofr]
     special = {d: d for d in days}
     for d in days:
@@ -187,7 +202,6 @@ def page_markets() -> None:
                   dict(label="Cost of the day", value=r["kpis"]["cost_usd"], fmt="usd", edge="a", low=True, base=base["kpis"]["cost_usd"]),
                   dict(label="Left unsettled", value=r["kpis"]["unsettled_usd"], fmt="usd", edge="bad", low=True, base=base["kpis"]["unsettled_usd"]),
                   dict(label="Instant rejected", value=r["kpis"]["instant_rejected"], fmt="int", edge="p", low=True, base=base["kpis"]["instant_rejected"])], cols=2)
-        st.caption("Baseline = a normal day with 18% opening liquidity, same payments.")
     if st.session_state.get("_market_ran") == pick:
         st.page_link(st.session_state["_pages"]["overview"], label="Watch it settle on the network →", icon="▶️")
 
@@ -197,17 +211,16 @@ def page_stress() -> None:
     p = palette()
     s = st.session_state
     st.title("Stress lab")
-    lede("Pick what goes wrong. Then compare two responses on the same payments, find the breaking point, and see how much liquidity the system really needs.")
-    eyebrow("1 · What goes wrong")
+    lede("Break it. Fix it. Find the limit.")
+    eyebrow("1 · Break it")
     keys = list(STRESS)
     for row in range(0, len(keys), 4):
         cols = st.columns(4)
         for c, k in zip(cols, keys[row:row + 4]):
             c.button(f"{STRESS_ICON[k]}  {STRESS[k]}", key=f"st_{k}", width="stretch", type="primary" if s.stress == k else "secondary",
                      on_click=apply, args=({"stress": k},))
-    st.caption(f"Opening liquidity {st.session_state.liq}% of each bank's outflow · change it under **The day** in the sidebar, or let the reverse stress test below find the limit.")
 
-    eyebrow("2 · Two responses, same day")
+    eyebrow("2 · A vs B")
     ca, cb = st.columns(2)
     with ca:
         st.markdown("#### A")
@@ -238,7 +251,7 @@ def page_stress() -> None:
         s._cmp_logged = log_key
         log("compared", {"a": [pa, ta, aa], "b": [pb, tb, ab], "stress": s.stress, "cost_change_pct": round(change, 1)})
 
-    eyebrow("3 · How little liquidity can it run on?")
+    eyebrow("3 · Liquidity sweep")
     if st.button("Sweep opening liquidity from 6% to 30% for A and B"):
         with st.spinner("Twelve simulated days…"):
             s.sweep = {"A": liquidity_sweep(lambda pct: current(policy=pa, controller=ta, auction=aa, liq=pct)),
@@ -255,8 +268,8 @@ def page_stress() -> None:
         fig.update_yaxes(tickformat="$.2s", row=1, col=2)
         st.plotly_chart(layout(fig, 330, t=40), config=PLOT)
 
-    eyebrow("4 · Reverse stress test")
-    lede("Start from the outcome you cannot accept and search for the conditions that produce it: the least opening liquidity at which response B still settles your target.")
+    eyebrow("4 · Breaking point")
+    lede("Least liquidity that still settles your target.", "Bisection over opening liquidity for response B")
     target = st.slider("Must settle at least (% of large-value value)", 90.0, 100.0, 99.0, 0.5)
     if st.button("Find the breaking point", type="primary"):
         lo, hi, tried = 2, 40, []
@@ -306,7 +319,7 @@ def page_upload() -> None:
     from atlas.ingest import export_scenario_csv, template_csv
     from atlas.scenario import generate_scenario
     st.title("Your payments")
-    lede("Run the simulator on your own day of payments. Four columns are enough: sender, receiver, amount, time. The file stays in this session and is not stored.")
+    lede("Drop a CSV. Every page runs on it.", "Needs sender, receiver, amount, time. Kept in your session only, never stored.")
     c = st.columns(3)
     c[0].download_button("Download the template", template_csv(), "atlas_payments_template.csv", "text/csv", width="stretch")
     c[1].download_button("Download a sample day", export_scenario_csv(generate_scenario(seed=21)), "atlas_sample_day.csv", "text/csv", width="stretch")
@@ -355,7 +368,7 @@ def page_alerts() -> None:
     from atlas.workspace import DECISIONS
     p = palette()
     st.title("Alerts and cases")
-    lede("Unusual payments ranked for a person to review. Open a case, read the evidence, decide. Decisions are saved for the whole team and nothing is blocked automatically.")
+    lede("Pick a case. Decide. Your team sees it.", "Nothing is blocked automatically; a person decides every alert")
     r = current()
     run_id = r["integrity"]["state_hash"]
     pays = r["_run"]["payments"]
@@ -409,7 +422,7 @@ def page_alerts() -> None:
                 st.rerun()
     det = artifact("anomaly_detection.json")
     if det and det.get("explainability"):
-        eyebrow("What the trained model relies on, and how it degrades")
+        eyebrow("Inside the model")
         imp = det["explainability"]["gbt"][:7][::-1]
         a2, b2 = st.columns(2)
         fig = go.Figure(go.Bar(y=[x["feature"].replace("_", " ") for x in imp], x=[x["drop_in_pr_auc"] for x in imp], orientation="h", marker=dict(color=p["primary"])))
@@ -427,7 +440,7 @@ def page_controls() -> None:
     r = current()
     t1, t2 = st.tabs(["Intraday liquidity report (BCBS 248)", "Tamper with the ledger"])
     with t1:
-        lede("What a supervisor monitors: each bank's largest net debit during the day against the liquidity it started with, and how early it pays.")
+        lede("Who ran out of liquidity, and when.", "BCBS 248 intraday liquidity monitoring")
         banks = sorted(r["banks"], key=lambda x: -x["usage_pct"])
         over = sum(1 for b in banks if b["usage_pct"] > 100)
         ui.tiles([dict(label="Banks over their liquidity", value=over, fmt="int", edge="bad" if over else "good"),
@@ -446,7 +459,7 @@ def page_controls() -> None:
         b.plotly_chart(layout(fig, 300, title="Share of the day's payments sent, by hour"), config=PLOT)
         st.download_button("Download the full report (JSON)", json.dumps(r["_bcbs"], indent=1), "intraday_liquidity_bcbs248.json", "application/json")
     with t2:
-        lede("Every event is chained by SHA-256 and the ledger can be rebuilt from the log. Change one payment by 1% and see who notices.")
+        lede("Change one payment by 1%. Watch it get caught.", "SHA-256 hash chain + full ledger replay")
         res = r["_result"]
         n_settled = sum(1 for e in res.events if e.event_type == "PaymentSettled")
         which = st.slider("Which settled payment to alter", 1, n_settled, min(n_settled, 250))
@@ -463,7 +476,7 @@ def page_models() -> None:
     from atlas.governance import build_inventory
     st.title("Model risk")
     inv = build_inventory(ROOT / "results")
-    lede("Every statistical model has an owner, a materiality tier, a challenger and automated validation checks, in the structure of the 2026 US model-risk guidance (SR 26-2).")
+    lede("Every model, checked. Some fail.", "SR 26-2 structure: owner, materiality tier, challenger, automated checks")
     sm = inv["summary"]
     ui.tiles([dict(label="Models in inventory", value=len(inv["models"]), fmt="int", edge="p"), dict(label="Pass", value=sm["pass"], fmt="int", edge="good"),
               dict(label="Warn", value=sm["warn"], fmt="int", edge="warn"), dict(label="Fail", value=sm["fail"], fmt="int", edge="bad")], cols=4)
@@ -545,7 +558,7 @@ def _show(m: dict) -> None:
 def page_agent() -> None:
     from atlas.agent.tools import ToolSession
     st.title("Agent")
-    lede("An agent with nine read-only tools over this day and the payments rulebook. It can simulate and look things up; it cannot move money. Every number it says is checked against what its tools returned.")
+    lede("Ask anything. It can look, never move money.", "9 read-only tools · every number checked against tool output · hash-chained audit")
     r = current()
     sid = r["scenario"]["fingerprint"]
     s = st.session_state
@@ -592,7 +605,7 @@ NAMES = {"priority": "Priority queue", "fifo": "FIFO", "fifo_strict": "Strict FI
 def page_evidence() -> None:
     p = palette()
     st.title("Evidence")
-    lede("The same questions over many simulated days and on real data, with paired statistics. Every chart reads a results file in the repository.")
+    lede("1,320 simulated days and real fraud data.", "Paired bootstrap statistics; every chart reads a results file in the repo")
     t1, t2, t3, t4, t5, t6 = st.tabs(["Which response wins", "Every bad day", "Real fraud data", "Deep learning", "Retrieval and agents", "What banks hire for"])
     with t1:
         b = artifact("benchmarks/extended.json") or artifact("benchmarks/standard.json")
@@ -628,7 +641,7 @@ def page_evidence() -> None:
         f = artifact("real_fraud.json")
         if f:
             ds, de = f["dataset"], f["design"]
-            lede(f"The detector families on real labels: {ds['rows']:,} card transactions with {ds['frauds']} confirmed frauds ({ds['name']}, {ds['period']}). Trained on the first 80% in time, tested on the last 20%.")
+            lede(f"{ds['rows']:,} real card transactions, {ds['frauds']} real frauds.", f"{ds['name']}, {ds['period']}; trained on first 80% in time, tested on last 20%")
             nice = {"amount_only_rule": "Rule: largest amounts", "isolation_forest": "Isolation forest (no labels)", "logistic_regression": "Logistic regression", "gradient_boosting": "Gradient boosting"}
             fig = go.Figure(go.Bar(y=list(nice.values()), x=[f["models"][m]["frauds_caught"] for m in nice], orientation="h",
                                    marker=dict(color=[p["accent3"], p["accent"], p["accent2"], p["primary"]]), text=[f'{f["models"][m]["frauds_caught"]} of {de["test_frauds"]}' for m in nice], textposition="outside"))
@@ -701,7 +714,7 @@ def github_reviews() -> list[dict] | None:
 def page_team() -> None:
     ws = workspace()
     st.title("Team")
-    lede("Everyone using this deployment shares one workspace: who ran what, case decisions and reviews. The log is hash-chained, so edits show.")
+    lede("Who used it, what they did, what they said.", "Shared workspace, hash-chained so edits show")
     people, events, reviews = ws.people(), ws.events(300), ws.reviews()
     ok = ws.verify()
     ui.tiles([dict(label="People", value=len([x for x in people if x["user"] != "guest"]), fmt="int", edge="p", sub="named users of this deployment"),
@@ -735,7 +748,6 @@ def page_team() -> None:
                 st.rerun()
             c2.link_button("Or post it on GitHub →", review_url(REPO, rating=(stars + 1) if stars is not None else None, role=role, tried=[], worked=worked, broke=broke, would_use=""),
                            width="stretch")
-            st.caption("Reviews saved here are shown to everyone on this deployment under the name in the sidebar. GitHub reviews are public and permanent.")
         with b:
             for x in reviews[:20]:
                 st.markdown(f'<div class="card edge-a"><div class="k">{x["user"]} · {x["role"] or "—"} · {x["at"][:10]}</div><div class="v">{"★" * x["stars"]}{"☆" * (5 - x["stars"])}</div>'
