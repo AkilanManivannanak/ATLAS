@@ -212,3 +212,43 @@ P.forEach((x,i)=>{const h=[...x.name].reduce((a,c)=>a+c.charCodeAt(0),0),ini=x.n
 const d=document.createElement('div');d.className='p';d.style.animationDelay=(i*70)+'ms';d.title=x.n+' actions';
 d.innerHTML='<div class="av'+(x.live?' live':'')+'" style="background:'+C[h%C.length]+'">'+ini+'</div><div><div class="nm">'+x.name.replace(/</g,'&lt;')+'</div><div class="sb">'+x.verb+' · '+x.ago+'</div></div>';el.appendChild(d)});</script>"""
     embed(html.replace("__DATA__", json.dumps(items)), height)
+
+
+# ------------------------------------------------------------------ reserve tightness, drag to explore
+def tightness_lab(ind: dict, height: int = 300) -> None:
+    """Gauge plus four sliders that start at today's real readings. Dragging recomputes the score, the opening
+    liquidity and the stress scenario in the browser, with the same rule as atlas.live.to_simulation."""
+    data = json.dumps({"spread": ind["spread_bp"], "tail": ind["sofr_tail_bp"], "tga": ind["tga_5d_change_bn"], "rrp": ind["rrp_20d_avg_bn"]})
+    html = """<div class="w"><div><svg viewBox="0 0 240 140" id="gg"></svg><div class="out"><div><div class="k mono">Opening liquidity</div><div class="v" id="liq">–</div></div>
+<div><div class="k mono">Scenario</div><div class="v sm" id="stress">–</div></div></div></div><div id="sl"></div></div><style>
+.w{background:#fff;border:1px solid __LINE__;border-radius:16px;padding:12px 16px;display:grid;grid-template-columns:250px 1fr;gap:22px;align-items:center}
+@media(max-width:620px){.w{grid-template-columns:1fr}}.out{display:flex;gap:18px;justify-content:center;margin-top:2px}
+.k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:__MUTED__}.v{font:650 22px Inter;color:__INK__;font-variant-numeric:tabular-nums}.sm{font-size:15px;padding-top:5px}
+.s{margin:9px 0}.t{display:flex;justify-content:space-between;font-size:12.5px;color:__INK2__;margin-bottom:3px}.t b{color:__INK__;font-variant-numeric:tabular-nums}
+.t i{font-style:normal;color:__MUTED__;font-size:11px;margin-left:6px}input[type=range]{width:100%;accent-color:__PRIMARY__;cursor:grab}
+.bar{height:5px;background:__SOFT__;border-radius:3px;overflow:hidden;margin-top:2px}.bar i{display:block;height:100%;background:__ACCENT__;transition:width .25s}
+.rs{font:500 12px Inter;border:1px solid __LINE__;background:#fff;border-radius:999px;padding:4px 12px;cursor:pointer;color:__INK2__;float:right}.rs:hover{border-color:__PRIMARY__;color:__PRIMARY__}
+</style><script>
+const T=__DATA__,NS='http://www.w3.org/2000/svg',g=document.getElementById('gg');
+const S=[{k:'spread',n:'SOFR − EFFR',u:' bp',min:-10,max:25,st:0.5,w:40,f:v=>Math.min(Math.max(v,0),15)/15*40},
+{k:'tail',n:'SOFR 99th − 1st pct',u:' bp',min:0,max:40,st:0.5,w:20,f:v=>Math.min(Math.max(v-8,0),12)/12*20},
+{k:'tga',n:'TGA 5-day change',u:' $bn',min:-150,max:200,st:1,w:20,f:v=>Math.min(Math.max(v,0),100)/100*20},
+{k:'rrp',n:'RRP 20-day average',u:' $bn',min:0,max:800,st:1,w:20,f:v=>20*(1-Math.min(v,500)/500)}];
+const arc=(a0,a1,r)=>{const p=a=>[120+r*Math.cos(a),125+r*Math.sin(a)];const [x0,y0]=p(a0),[x1,y1]=p(a1);return `M${x0},${y0} A${r},${r} 0 ${a1-a0>Math.PI?1:0} 1 ${x1},${y1}`};
+const mk=(d,c,w)=>{const e=document.createElementNS(NS,'path');e.setAttribute('d',d);e.setAttribute('stroke',c);e.setAttribute('stroke-width',w);e.setAttribute('fill','none');e.setAttribute('stroke-linecap','round');g.appendChild(e);return e};
+mk(arc(Math.PI,2*Math.PI,95),'__SOFT__',18);[[0,.35,'__GOOD__'],[.35,.65,'__WARN__'],[.65,1,'__BAD__']].forEach(([a,b,c])=>mk(arc(Math.PI*(1+a)+.02,Math.PI*(1+b)-.02,112),c,4));
+const val=mk(arc(Math.PI,Math.PI*1.0001,95),'__PRIMARY__',18);
+const tx=(y,st)=>{const t=document.createElementNS(NS,'text');t.setAttribute('x',120);t.setAttribute('y',y);t.setAttribute('text-anchor','middle');t.setAttribute('style',st);g.appendChild(t);return t};
+const num=tx(112,'font:700 34px Inter;fill:__INK__'),lab=tx(134,'font:600 11px JetBrains Mono,monospace;letter-spacing:.14em;fill:__MUTED__');
+const box=document.getElementById('sl'),cur={...T};let shown=0;
+const rs=document.createElement('button');rs.className='rs';rs.textContent='↺ today';box.appendChild(rs);
+S.forEach(s=>{const d=document.createElement('div');d.className='s';d.innerHTML=`<div class="t"><span>${s.n}<i>today ${T[s.k]}${s.u}</i></span><b id="v_${s.k}"></b></div><input type="range" id="r_${s.k}" min="${s.min}" max="${s.max}" step="${s.st}" value="${T[s.k]}"><div class="bar"><i id="b_${s.k}"></i></div>`;
+box.appendChild(d);d.querySelector('input').oninput=e=>{cur[s.k]=+e.target.value;upd()}});
+rs.onclick=()=>{S.forEach(s=>{cur[s.k]=T[s.k];document.getElementById('r_'+s.k).value=T[s.k]});upd()};
+function upd(){let score=0;S.forEach(s=>{const p=s.f(cur[s.k]);score+=p;document.getElementById('v_'+s.k).textContent=cur[s.k]+s.u;document.getElementById('b_'+s.k).style.width=(p/s.w*100)+'%'});
+ const reg=score<35?'calm':score<65?'firm':'tight',liq=Math.round(Math.max(6,Math.min(26,24-score*0.16)));
+ document.getElementById('liq').textContent=liq+'%';document.getElementById('stress').textContent=reg==='tight'?'🔒 Banks hoard':reg==='firm'?'🌊 Funding wobble':'☀️ Normal day';
+ lab.textContent=reg.toUpperCase()+' · TIGHTNESS';const from=shown,t0=performance.now();
+ const step=n=>{const q=Math.min(1,(n-t0)/400),z=from+(score-from)*(1-Math.pow(1-q,3));val.setAttribute('d',arc(Math.PI,Math.PI*(1+Math.max(.0001,z/100)),95));num.textContent=Math.round(z);shown=z;if(q<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
+upd();</script>"""
+    embed(html.replace("__DATA__", data), height)

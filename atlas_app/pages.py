@@ -90,7 +90,9 @@ def page_overview() -> None:
     lede("Pick a day. Watch it settle. Click a bank.", "12 simulated banks · Fedwire, CHIPS, FedNow, RTP · every run replay-verified")
     cols = st.columns(len(PRESETS) + 1)
     for c, name in zip(cols, PRESETS):
-        c.button(name, on_click=apply, args=(PRESETS[name],), width="stretch", key=f"pre_{name}")
+        icon = {"Normal day": "☀️", "Combined stress": "🔥", "Stress + optimiser": "🧠", "Liquidity squeeze": "💧", "A bank fails to pay": "💥"}.get(name, "")
+        on = all(st.session_state.get(k) == v for k, v in PRESETS[name].items())
+        c.button(f"{icon} {name}", on_click=apply, args=(PRESETS[name],), width="stretch", key=f"pre_{name}", type="primary" if on else "secondary")
     cols[-1].button("⚡ Today's market", width="stretch", type="primary", help="Start from today's real SOFR, EFFR, RRP and TGA readings",
                     on_click=_use_market, args=(ind, None))
     with st.spinner("Simulating the day…"):
@@ -148,14 +150,15 @@ def page_markets() -> None:
     cols = st.columns(len(fr))
     for c, x in zip(cols, fr):
         edge = "edge-good" if x["fresh"] and x["origin"] == "live" else "edge-warn" if x["fresh"] else "edge-bad"
-        c.markdown(f'<div class="card {edge}"><div class="k">{x["series"]}</div><div class="v">{x["last"]}</div>'
-                   f'<div class="s">{x["origin"]} · {x["age_business_days"]} business day(s) old · target ≤ {x["target_lag_days"]}<br>{x["rows"]} rows · {x["publisher"]}</div></div>',
+        tip = f'{x["publisher"]} · {x["rows"]} rows · {x["age_business_days"]} business day(s) old, target ≤ {x["target_lag_days"]}'
+        state = ("🟢 live" if x["origin"] == "live" else "🟠 snapshot") + (" · fresh" if x["fresh"] else " · late")
+        c.markdown(f'<div class="card {edge}" title="{tip}"><div class="k">{x["series"]}</div><div class="v">{x["last"][5:]}</div><div class="s">{state}</div></div>',
                    unsafe_allow_html=True)
     if any(x["origin"] == "snapshot" for x in fr):
         with st.expander(f"Some feeds could not be reached from this server, so they show the snapshot taken {md.snapshot_at[:16].replace('T', ' ')} UTC"):
             st.code("\n".join(f"{k}: {v}" for k, v in md.errors.items()), language=None)
-    eyebrow("Reserve tightness")
-    ui.gauge(ind["score"], ind["regime"], ind["score_parts"], height=190)
+    eyebrow("Reserve tightness · drag to explore")
+    ui.tightness_lab(ind)
     lede("How the score is built", ind["method"])
 
     sofr, effr, rrp, tga = (md.series[k] for k in ("sofr", "effr", "rrp", "tga"))
@@ -486,10 +489,10 @@ def page_models() -> None:
         if flt != "all" and m["status"] != flt:
             continue
         with st.expander(f"{icon[m['status']]}  {m['name']}  ·  tier {m['materiality']['tier']}  ·  {m['status'].upper()}"):
-            st.caption(f"{m['purpose']}. Challenger: {m['challenger']}.")
+            lede(f"🎯 {m['purpose']}", f"Challenger: {m['challenger']}")
             st.dataframe(pd.DataFrame([{"": icon[c["status"]], "Check": c["check"], "Value": str(c["value"]), "Rule": c["rule"]} for c in m["checks"]]), hide_index=True, width="stretch")
             st.markdown("**Limits:** " + "; ".join(m["limitations"]))
-    st.caption(inv["disclaimer"])
+    lede("", inv["disclaimer"])
 
 
 # ================================================================== 8. agent
@@ -566,7 +569,6 @@ def page_agent() -> None:
         s.ask_sid, s.ask_session, s.chat = sid, ToolSession(r["_scenario"], max_calls=200, max_simulations=40), []
     session = s.ask_session
     with st.sidebar.expander("Connect a language model (optional)"):
-        st.caption("Any OpenAI-compatible endpoint. Without one, a deterministic planner answers.")
         st.text_input("Base URL", placeholder="https://…/v1", key="llm_base")
         st.text_input("Model", key="llm_model")
         st.text_input("API key", type="password", key="llm_key")
@@ -574,7 +576,10 @@ def page_agent() -> None:
         st.toggle("Understand questions with the Transformer trained in this repo", key="use_router")
     t1, t2, t3 = st.tabs(["Watch it work", "Ask", "Audit log"])
     with t1:
-        q = st.radio("Example", EXAMPLES, label_visibility="collapsed", key="demo_q")
+        short = dict(zip(["📊 Settled %", "🏦 Most stretched bank", "⚙️ Optimiser savings", "📖 FedNow limit", "🚫 Move $50M"], EXAMPLES))
+        pick = st.pills("Try", list(short), default="📊 Settled %", key="demo_pill", label_visibility="collapsed") or "📊 Settled %"
+        q = short[pick]
+        st.markdown(f"<div class='cite'>“{q}”</div>", unsafe_allow_html=True)
         if s.get("_demo_q") != q:
             s._demo_q, s._demo = q, _answer(q, session)
         _show(s._demo)
